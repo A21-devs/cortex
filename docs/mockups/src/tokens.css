@@ -1,0 +1,93 @@
+/* ===== Cortex design tokens (dark; the plugin scopes these to .cx-root) ===== */
+.cx-root {
+  /* chrome: bound to Obsidian, fallbacks = this vault's live dark values */
+  --cx-chrome: var(--background-primary, #1c1c1c);
+  --cx-chrome-alt: var(--background-secondary, #282828);
+  --cx-chrome-raised: #2a2a2a;
+  --cx-chrome-hover: rgba(255,255,255,.075);
+  --cx-chrome-active: rgba(255,255,255,.11);
+  --cx-line: var(--background-modifier-border, #333333);
+  --cx-line-strong: #474747;
+  --cx-text-1: var(--text-normal, #dadada);
+  --cx-text-2: var(--text-muted, #b3b3b3);
+  --cx-text-3: #9aa0aa;
+  --cx-text-off: var(--text-faint, #666666);
+  --cx-accent: var(--interactive-accent, #8a5cf5);
+  --cx-accent-hover: var(--interactive-accent-hover, #9b74f7);
+  --cx-accent-fill: color-mix(in oklab, var(--interactive-accent, #8a5cf5) 90%, #000);  /* #774fd5: white text 5.4:1 */
+  --cx-accent-soft: rgba(138,92,245,.18);
+  --cx-on-accent: var(--text-on-accent, #ffffff);
+  --cx-focus: var(--interactive-accent, #8a5cf5);
+
+  /* stage ("Ink"; the Stage tint setting rotates the hue of --cx-stage-lift and the haze only) */
+  --cx-stage: #06070a;
+  --cx-stage-lift: #0e121a;
+  --cx-strip: #090b10;
+  --cx-glass: rgba(14,16,22,.86);
+  --cx-glass-strong: rgba(19,22,30,.95);
+  --cx-glass-hover: rgba(255,255,255,.06);
+  --cx-glass-active: rgba(255,255,255,.11);
+  --cx-glass-line: rgba(255,255,255,.09);
+  --cx-glass-line-strong: rgba(255,255,255,.17);
+  --cx-glass-blur: 14px;
+  --cx-stage-text-1: #eceef2;
+  --cx-stage-text-2: #c3c8d1;
+  --cx-stage-text-3: #9ea5b1;
+  --cx-scrim: rgba(3,4,6,.64);
+
+  /* data: Prism (fill = 2D marks on chrome, glow = particles and stage keys); see palette_check.py */
+  --cx-cat-1: #5293ed; --cx-cat-1-glow: #7ab9fd;   /* azure  */
+  --cx-cat-2: #cd8000; --cx-cat-2-glow: #deb125;   /* amber  */
+  --cx-cat-3: #d35e9a; --cx-cat-3-glow: #f58ebc;   /* rose   */
+  --cx-cat-4: #9d9900; --cx-cat-4-glow: #cbd871;   /* citron */
+  --cx-cat-5: #00a0ad; --cx-cat-5-glow: #2eeafd;   /* teal   */
+  --cx-cat-6: #d95833; --cx-cat-6-glow: #e6ac86;   /* coral  */
+  --cx-cat-7: #9875e3; --cx-cat-7-glow: #c4a9ff;   /* violet */
+  --cx-cat-8: #09a773; --cx-cat-8-glow: #6ad39a;   /* mint   */
+  --cx-cat-other: #7b90a5; --cx-cat-other-glow: #b6bbd3;   /* mist: folded groups */
+  --cx-none: #66686f;      --cx-none-glow: #727b8a;        /* slate: no value */
+  --cx-age-0: #866fc8; --cx-age-1: #5890ec; --cx-age-2: #37acc3; --cx-age-3: #56c4a7;
+  --cx-age-4: #90cf82; --cx-age-5: #cdd261; --cx-age-6: #e1d6ba; --cx-age-7: #f0e0c6;
+  --cx-undated: var(--cx-none-glow);
+  --cx-age-ramp: linear-gradient(90deg, var(--cx-age-0), var(--cx-age-1), var(--cx-age-2), var(--cx-age-3), var(--cx-age-4), var(--cx-age-5), var(--cx-age-6), var(--cx-age-7));
+  --cx-count-empty: #1e2b38;
+  --cx-count-1: #1e2c3f; --cx-count-2: #004568; --cx-count-3: #265d8e; --cx-count-4: #3d6dc3;
+  --cx-count-5: #5692ec; --cx-count-6: #73b2f8; --cx-count-7: #abcffe;
+  --cx-you: var(--cx-cat-2-glow); --cx-assistant: var(--cx-cat-7-glow);
+  --cx-voice-other: var(--cx-cat-5-glow); --cx-tool: var(--cx-none-glow);
+  --cx-you-fill: var(--cx-cat-2); --cx-assistant-fill: var(--cx-cat-7);
+  --cx-machine: #b8a6ff;
+  --cx-ok: #4cc38a; --cx-warn: #dfbc5e; --cx-serious: #f27733; --cx-critical: #e6737c;
+  --cx-live: var(--cx-ok);
+
+  /* type: Obsidian's own fonts; nothing is bundled */
+  --cx-font: var(--font-interface, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif);
+  --cx-font-mono: var(--font-monospace, "Cascadia Mono", "Cascadia Code", Consolas, monospace);
+  --cx-fs-xs: 11px; --cx-fs-sm: 12px; --cx-fs-md: 13px; --cx-fs-body: 14px;
+  --cx-fs-lg: 16px; --cx-fs-title: 18px; --cx-fs-xl: 22px;
+  --cx-lh-tight: 1.22; --cx-lh-ui: 1.4; --cx-lh-read: 1.62;
+
+  /* space, shape, depth */
+  --cx-sp-1: 2px; --cx-sp-2: 4px; --cx-sp-3: 6px; --cx-sp-4: 8px; --cx-sp-5: 12px;
+  --cx-sp-6: 16px; --cx-sp-7: 20px; --cx-sp-8: 24px; --cx-sp-9: 32px; --cx-sp-10: 40px;
+  --cx-r-xs: 4px; --cx-r-sm: 6px; --cx-r-md: 10px; --cx-r-lg: 14px; --cx-r-pill: 999px;
+  --cx-shadow-glass: 0 10px 30px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.045);
+  --cx-shadow-pop: 0 18px 44px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.05);
+  --cx-shadow-sheet-float: -14px 0 36px rgba(0,0,0,.45);
+
+  /* motion */
+  --cx-ease-out: cubic-bezier(.16,.84,.3,1);
+  --cx-ease-inout: cubic-bezier(.62,.02,.33,.98);
+  --cx-ease-pop: cubic-bezier(.34,1.32,.64,1);
+  --cx-t-hover: 90ms; --cx-t-pop: 140ms; --cx-t-sheet: 220ms; --cx-t-stack: 260ms;
+  --cx-t-dock: 300ms; --cx-t-fly: 520ms; --cx-t-recolour: 600ms; --cx-t-chart: 750ms;
+  --cx-t-shape: 1400ms; --cx-t-grow: 3600ms;
+
+  /* layout */
+  --cx-header-h: 44px; --cx-strip-h: 64px; --cx-sheet-w: 400px; --cx-inset: 16px;
+  --cx-tool: 36px; --cx-cmd-w: 640px; --cx-cmd-h: 44px; --cx-pop-w: 304px; --cx-compass: 104px;
+
+  /* layers (inside the view; Obsidian modals sit above all of these) */
+  --cx-z-canvas: 0; --cx-z-labels: 5; --cx-z-overlay: 10; --cx-z-sheet: 20; --cx-z-pop: 30;
+  --cx-z-console: 32; --cx-z-results: 34; --cx-z-tip: 40; --cx-z-toast: 45; --cx-z-hint: 50;
+}
