@@ -1,0 +1,2 @@
+{"type":"user","uuid":"sa-u1","parentUuid":null,"timestamp":"2026-11-01T09:00:20.000Z","sessionId":"11111111-2222-3333-4444-555555555555","isSidechain":true,"agentId":"a1","message":{"role":"user","content":"Find the parser files."}}
+{"type":"assistant","uuid":"sa-a1","parentUuid":"sa-u1","timestamp":"2026-11-01T09:00:21.000Z","sessionId":"11111111-2222-3333-4444-555555555555","isSidechain":true,"agentId":"a1","message":{"id":"msg_S1","role":"assistant","model":"claude-haiku-5-5","content":[{"type":"text","text":"Found two parser files."}]}}
