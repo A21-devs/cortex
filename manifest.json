@@ -1,0 +1,9 @@
+{
+  "id": "cortex",
+  "name": "Cortex",
+  "version": "0.1.0",
+  "minAppVersion": "1.12.0",
+  "description": "Grows a living 3D particle nervous system from your notes, source documents and AI conversations. Your own words stay untouched; every machine label is marked and reversible.",
+  "author": "Cortex",
+  "isDesktopOnly": true
+}
