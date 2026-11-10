@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- A trusted local bundle with Node access: no remote code, no inline script, workers only from blob: URLs. -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; worker-src blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: file:; font-src 'self' data:; connect-src 'self' data: blob:; media-src 'self' data: blob:"
+    />
+    <title>Cortex</title>
+    <link rel="stylesheet" href="desktop.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="theme-dark">
+    <div class="cxd-host"></div>
+    <div class="cxd-layer"></div>
+    <script src="renderer.js"></script>
+  </body>
+</html>
