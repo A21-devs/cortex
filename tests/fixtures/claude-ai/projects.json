@@ -1,0 +1,14 @@
+[
+  {
+    "uuid": "proj-1",
+    "name": "Garden notes",
+    "description": "",
+    "prompt_template": "Answer as a patient gardener.",
+    "created_at": "2026-02-01T09:00:00.000000Z",
+    "updated_at": "2026-02-02T09:00:00.000000Z",
+    "docs": [
+      { "uuid": "doc-1", "filename": "beds.md", "content": "Bed one gets peas.", "created_at": "2026-02-01T09:05:00.000000Z" },
+      { "uuid": "doc-2", "filename": "empty.md", "content": "", "created_at": "2026-02-01T09:06:00.000000Z" }
+    ]
+  }
+]

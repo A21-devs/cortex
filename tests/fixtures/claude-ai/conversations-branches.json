@@ -1,0 +1,15 @@
+[
+  {
+    "uuid": "br-1",
+    "name": "Naming a cat",
+    "created_at": "2026-04-01T08:00:00.000000Z",
+    "updated_at": "2026-04-01T08:09:00.000000Z",
+    "project_uuid": "proj-1",
+    "chat_messages": [
+      { "uuid": "b1", "sender": "human", "text": "Name my cat.", "content": [{ "type": "text", "text": "Name my cat." }], "created_at": "2026-04-01T08:00:00.000000Z", "parent_message_uuid": "00000000-0000-4000-8000-000000000000", "attachments": [], "files": [{ "file_name": "cat.png" }] },
+      { "uuid": "b2", "sender": "assistant", "text": "", "content": [{ "type": "text", "text": "How about Miso?" }, { "type": "thinking", "thinking": "private chain" }], "created_at": "2026-04-01T08:01:00.000000Z", "parent_message_uuid": "b1", "attachments": [], "files": [] },
+      { "uuid": "b3", "sender": "assistant", "text": "", "content": [{ "type": "text", "text": "Perhaps Biscuit." }], "created_at": "2026-04-01T08:02:00.000000Z", "parent_message_uuid": "b1", "attachments": [], "files": [] },
+      { "uuid": "b4", "sender": "human", "text": "Biscuit it is, thanks 🐈", "content": [{ "type": "text", "text": "Biscuit it is, thanks 🐈" }], "created_at": "2026-04-01T08:09:00.000000Z", "parent_message_uuid": "b3", "attachments": [], "files": [] }
+    ]
+  }
+]

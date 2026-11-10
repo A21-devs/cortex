@@ -1,0 +1,8 @@
+[
+  { "header": "Gemini Apps", "title": "Prompted newest question", "time": "2026-05-03T09:00:00.000Z", "products": ["Gemini Apps"], "safeHtmlItem": [{ "html": "<p>Newest <b>answer</b>.</p>" }] },
+  { "header": "Gemini Apps", "title": "Used Gemini Apps", "time": "2026-05-03T08:59:00.000Z", "products": ["Gemini Apps"] },
+  { "header": "Gemini Apps", "title": "Prompted café ☕ 你好", "time": "2026-05-02T19:05:00.000Z", "products": ["Gemini Apps"], "attachedFiles": ["photo.jpg"], "safeHtmlItem": [{ "html": "<p>Bonjour 🌱</p>" }] },
+  { "header": "Gemini Apps", "title": "Prompted second in the evening", "time": "2026-05-02T19:00:00.000Z", "products": ["Gemini Apps"], "safeHtmlItem": [{ "html": "<p>Sure.</p>" }] },
+  { "header": "Gemini Apps", "title": "Prompted no date at all", "products": ["Gemini Apps"], "safeHtmlItem": [{ "html": "<p>Undated reply.</p>" }] },
+  { "header": "Gemini Apps", "title": "Prompted from long ago", "time": "2026-01-01T00:00:00.000Z", "products": ["Gemini Apps"], "description": "<p>Old reply</p>" }
+]

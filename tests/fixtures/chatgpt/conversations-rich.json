@@ -1,0 +1,21 @@
+[
+  {
+    "title": "Café ☕ plans",
+    "create_time": 1731000000,
+    "update_time": 1731000900,
+    "conversation_id": "rich-1",
+    "current_node": "a2",
+    "default_model_slug": "gpt-4o",
+    "mapping": {
+      "root": { "id": "root", "parent": null, "children": ["sys"], "message": null },
+      "sys": { "id": "sys", "parent": "root", "children": ["ctx"], "message": { "id": "sys", "author": { "role": "system" }, "create_time": null, "content": { "content_type": "text", "parts": ["You are a helpful assistant."] }, "metadata": {} } },
+      "ctx": { "id": "ctx", "parent": "sys", "children": ["u1"], "message": { "id": "ctx", "author": { "role": "user" }, "create_time": null, "content": { "content_type": "user_editable_context", "user_profile": "private profile text" }, "metadata": { "is_user_system_message": true } } },
+      "u1": { "id": "u1", "parent": "ctx", "children": ["a1"], "message": { "id": "u1", "author": { "role": "user" }, "create_time": 1731000010, "content": { "content_type": "multimodal_text", "parts": ["Café ☕ — 你好 🌱 مرحبا. My key is AKIAIOSFODNN7EXAMPLE, ok?", { "content_type": "image_asset_pointer", "asset_pointer": "file-service://file-pic1", "size_bytes": 5000, "width": 10, "height": 10 }] }, "metadata": { "attachments": [{ "id": "file-doc1", "name": "plan.pdf", "size": 2048, "mime_type": "application/pdf" }] } } },
+      "a1": { "id": "a1", "parent": "u1", "children": ["t1"], "message": { "id": "a1", "author": { "role": "assistant" }, "create_time": 1731000020, "content": { "content_type": "text", "parts": ["Planted citeturn0search0 in spring."] }, "metadata": { "model_slug": "gpt-4o" }, "recipient": "all" } },
+      "t1": { "id": "t1", "parent": "a1", "children": ["t2"], "message": { "id": "t1", "author": { "role": "assistant" }, "create_time": 1731000030, "content": { "content_type": "code", "language": "python", "text": "print(1 + 1)" }, "metadata": { "model_slug": "gpt-4o" }, "recipient": "python" } },
+      "t2": { "id": "t2", "parent": "t1", "children": ["th"], "message": { "id": "t2", "author": { "role": "tool", "name": "python" }, "create_time": 1731000031, "content": { "content_type": "execution_output", "text": "2" }, "metadata": {}, "recipient": "all" } },
+      "th": { "id": "th", "parent": "t2", "children": ["a2"], "message": { "id": "th", "author": { "role": "assistant" }, "create_time": 1731000032, "content": { "content_type": "thoughts", "thoughts": [{ "summary": "s", "content": "weighing the options" }] }, "metadata": {}, "recipient": "all" } },
+      "a2": { "id": "a2", "parent": "th", "children": [], "message": { "id": "a2", "author": { "role": "assistant" }, "create_time": null, "content": { "content_type": "text", "parts": ["The answer is two."] }, "metadata": { "model_slug": "gpt-4o" }, "recipient": "all" } }
+    }
+  }
+]
