@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+docs/research/
+*.log
+.tmp/
+.vite/
+.vitest/
+.DS_Store
+Thumbs.db
+dist-desktop/
+release/
+__pycache__/
+*.pyc

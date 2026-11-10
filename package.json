@@ -1,0 +1,48 @@
+{
+  "name": "cortex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cortex: an Obsidian desktop plugin that grows a living 3D particle nervous system from your whole record.",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --watch",
+    "watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.browser.json --noEmit && node scripts/check-boundaries.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "deploy": "node scripts/deploy.mjs",
+    "deploy:dry": "node scripts/deploy.mjs --dry-run",
+    "sample": "node scripts/sample-data.mjs",
+    "scale": "node scripts/scale.mjs",
+    "desktop": "node scripts/build-desktop.mjs --launch",
+    "desktop:build": "node scripts/build-desktop.mjs",
+    "desktop:shot": "node scripts/desktop-shot.mjs",
+    "desktop:package": "node scripts/package-desktop.mjs",
+    "check": "npm run typecheck && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@preact/signals": "2.11.3",
+    "@preact/signals-core": "1.14.4",
+    "preact": "10.29.8",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "@types/node": "22.20.5",
+    "@types/three": "0.186.0",
+    "electron": "44.9.3",
+    "esbuild": "0.28.2",
+    "lucide-static": "1.61.0",
+    "marked": "18.1.1",
+    "obsidian": "1.12.3",
+    "preact-render-to-string": "6.8.1",
+    "typescript": "6.0.3",
+    "vite": "7.3.7",
+    "vitest": "5.0.5",
+    "yaml": "2.9.1"
+  }
+}
