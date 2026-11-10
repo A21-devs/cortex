@@ -1,0 +1,21 @@
+/* Space chip (click, wheel, hover cycle) and the walkthrough (SPEC F13, F47). Imported from styles.css. */
+
+/* ── space chip: a name part (click = next area) and a caret part (opens the menu) ── */
+.cx-scope:not(.is-icon) { padding: 0 2px 0 10px; }
+.cx-scope-main, .cx-scope-menu { display: inline-flex; align-items: center; gap: 6px; height: 100%; margin: 0; padding: 0; border: 0; border-radius: var(--cx-r-pill); background: none; box-shadow: none; color: inherit; font: inherit; cursor: pointer; }
+.cx-scope-main { flex: 1 1 auto; min-width: 0; }
+.cx-scope-menu { padding: 0 8px; }
+.cx-scope-menu:hover .cx-scope-caret, .cx-scope-menu:focus-visible .cx-scope-caret { color: var(--cx-text-1); }
+.cx-scope-main:focus-visible, .cx-scope-menu:focus-visible { outline: 2px solid var(--cx-accent); outline-offset: -2px; }
+.cx-rail-scope .cx-scope-menu { margin-left: auto; }
+
+/* ── walkthrough: a ring around what a step points at, a card beside it, a one-time offer ── */
+.cx-tour-layer { position: absolute; inset: 0; z-index: var(--cx-z-hint); pointer-events: none; }
+.cx-tour-ring { position: absolute; border: 2px solid var(--cx-accent); border-radius: var(--cx-r-md); box-shadow: 0 0 0 3px var(--cx-accent-soft), 0 0 18px var(--cx-accent-soft); transition: left .25s ease, top .25s ease, width .25s ease, height .25s ease; }
+.cx-tour-card, .cx-tour-offer { position: absolute; display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border: 1px solid var(--cx-line-strong); border-radius: var(--cx-r-md); background: var(--cx-chrome-alt); color: var(--cx-text-1); box-shadow: var(--cx-shadow-pop); font-size: var(--cx-fs-sm); pointer-events: auto; transition: left .25s ease, top .25s ease; }
+.cx-tour-offer { left: 50%; top: 64px; width: 320px; transform: translateX(-50%); }
+.cx-tour-title { margin: 0; font-size: var(--cx-fs-lg); font-weight: 600; }
+.cx-tour-body, .cx-tour-demo { margin: 0; color: var(--cx-text-2); }
+.cx-tour-progress { margin: 0; color: var(--cx-text-3); font-size: var(--cx-fs-xs); font-variant-numeric: tabular-nums; }
+.cx-tour-actions { display: flex; align-items: center; gap: 8px; }
+.cx-root.is-reduced .cx-tour-ring, .cx-root.is-reduced .cx-tour-card { transition: none; }
