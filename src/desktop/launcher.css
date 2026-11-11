@@ -1,0 +1,81 @@
+/* The quick window (desktop/launcher.ts): a small black card, Cortex's mark and the area name, one field. */
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  color: #f2f2f2;
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  overflow: hidden;
+  user-select: none;
+}
+.cxl {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 14px 18px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  background: #000;
+  -webkit-app-region: drag;
+}
+.cxl-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #cfcfcf;
+}
+.cxl-mark {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: #f2f2f2;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+.cxl-seed {
+  fill: #f2f2f2;
+  stroke: none;
+}
+.cxl-word {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #f2f2f2;
+}
+.cxl-space {
+  color: #8f8f8f;
+}
+.cxl-field {
+  -webkit-app-region: no-drag;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #0b0b0b;
+}
+.cxl-field:focus-within {
+  border-color: #a68af9;
+}
+.cxl-input {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f2f2f2;
+  font: inherit;
+  font-size: 16px;
+  user-select: text;
+}
+.cxl-input::placeholder {
+  color: #8f8f8f;
+}
+.cxl-hint {
+  font-size: 11px;
+  color: #8f8f8f;
+}

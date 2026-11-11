@@ -1,0 +1,10 @@
+{"timestamp":"2026-03-01T10:00:00.000Z","type":"session_meta","payload":{"id":"019a0000-aaaa-bbbb-cccc-000000000001","timestamp":"2026-03-01T10:00:00.000Z","cwd":"C:\\Users\\test\\sample-proj","originator":"codex_cli_rs","cli_version":"0.1.0"}}
+{"timestamp":"2026-03-01T10:00:01.000Z","type":"response_item","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":"<environment_context>\n  <cwd>C:\\Users\\test\\sample-proj</cwd>\n</environment_context>"}]}}
+{"timestamp":"2026-03-01T10:00:02.000Z","type":"response_item","payload":{"type":"message","role":"developer","content":[{"type":"input_text","text":"developer rules that are not mine"}]}}
+{"timestamp":"2026-03-01T10:00:03.000Z","type":"response_item","payload":{"type":"message","role":"user","content":[{"type":"input_text","text":"Add a retry to the upload helper."}]}}
+{"timestamp":"2026-03-01T10:00:04.000Z","type":"response_item","payload":{"type":"reasoning","summary":[{"type":"summary_text","text":"private reasoning words"}]}}
+{"timestamp":"2026-03-01T10:00:05.000Z","type":"response_item","payload":{"type":"function_call","name":"shell","arguments":"{\"command\":[\"ls\"]}","call_id":"call_1"}}
+{"timestamp":"2026-03-01T10:00:06.000Z","type":"response_item","payload":{"type":"function_call_output","call_id":"call_1","output":"README.md\nupload.ts"}}
+{"timestamp":"2026-03-01T10:00:07.000Z","type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"I added a three-attempt retry with backoff."}]}}
+{"timestamp":"2026-03-01T10:00:08.000Z","type":"event_msg","payload":{"type":"agent_message","message":"I added a three-attempt retry with backoff."}}
+{"timestamp":"2026-03-01T10:00:09.000Z","type":"event_msg","payload":{"type":"token_count","info":{"total_token_usage":{"input_tokens":10}}}}
