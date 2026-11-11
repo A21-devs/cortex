@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "Cortex live capture",
+  "version": "1.0.0",
+  "description": "Sends each finished chat turn on the sites you approve to Cortex on this computer. Nothing goes anywhere else.",
+  "minimum_chrome_version": "111",
+  "permissions": ["storage", "scripting", "alarms"],
+  "host_permissions": ["http://127.0.0.1/*"],
+  "optional_host_permissions": ["https://chatgpt.com/*", "https://chat.openai.com/*", "https://claude.ai/*", "https://gemini.google.com/*"],
+  "background": { "service_worker": "background.js" },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "action": { "default_title": "Cortex live capture", "default_popup": "options.html" }
+}
