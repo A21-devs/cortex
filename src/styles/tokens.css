@@ -1,0 +1,220 @@
+/*
+ * Cortex design tokens (CORTEX-UX §4). Owner: E11. Ported from docs/mockups/src/tokens.css; data colours equal
+ * src/shared/palette.ts (checked by tests/originality.test.ts against palette_check.py). Chrome binds to
+ * Obsidian's variables; the stage, glass and data colours are Cortex's own and switch with the theme or the
+ * Stage setting (data-stage on .cx-main, which holds the stage and the strip). No font is bundled: --cx-font and --cx-font-mono follow Obsidian.
+ */
+.cx-root,
+.cx-modal {
+  /* chrome: bound to Obsidian, fallbacks = this vault's live dark values */
+  --cx-chrome: var(--background-primary, #1c1c1c);
+  --cx-chrome-alt: var(--background-secondary, #282828);
+  --cx-chrome-raised: #2a2a2a;
+  --cx-chrome-hover: rgba(255,255,255,.075);
+  --cx-chrome-active: rgba(255,255,255,.11);
+  --cx-line: var(--background-modifier-border, #333333);
+  --cx-line-strong: #474747;
+  --cx-text-1: var(--text-normal, #dadada);
+  --cx-text-2: var(--text-muted, #b3b3b3);
+  --cx-text-3: #9aa0aa;
+  --cx-text-off: var(--text-faint, #666666);
+  --cx-accent: var(--interactive-accent, #8a5cf5);
+  --cx-accent-hover: var(--interactive-accent-hover, #9b74f7);
+  --cx-accent-fill: color-mix(in oklab, var(--interactive-accent, #8a5cf5) 90%, #000);  /* #774fd5: white text 5.4:1 */
+  --cx-accent-soft: rgba(138,92,245,.18);
+  --cx-on-accent: var(--text-on-accent, #ffffff);
+  --cx-focus: var(--interactive-accent, #8a5cf5);
+
+  /* stage ("Ink"; the Stage tint setting rotates the hue of --cx-stage-lift and the haze only) */
+  --cx-stage: #06070a;
+  --cx-stage-lift: #0e121a;
+  --cx-strip: #090b10;
+  --cx-glass: rgba(14,16,22,.86);
+  --cx-glass-strong: rgba(19,22,30,.95);
+  --cx-glass-hover: rgba(255,255,255,.06);
+  --cx-glass-active: rgba(255,255,255,.11);
+  --cx-glass-line: rgba(255,255,255,.09);
+  --cx-glass-line-strong: rgba(255,255,255,.17);
+  --cx-glass-blur: 14px;
+  --cx-stage-text-1: #eceef2;
+  --cx-stage-text-2: #c3c8d1;
+  --cx-stage-text-3: #9ea5b1;
+  --cx-scrim: rgba(3,4,6,.64);
+
+  /* data: Prism (fill = 2D marks on chrome, glow = particles and stage keys); see palette_check.py */
+  --cx-cat-1: #5293ed; --cx-cat-1-glow: #7ab9fd;   /* azure  */
+  --cx-cat-2: #cd8000; --cx-cat-2-glow: #deb125;   /* amber  */
+  --cx-cat-3: #d35e9a; --cx-cat-3-glow: #f58ebc;   /* rose   */
+  --cx-cat-4: #9d9900; --cx-cat-4-glow: #cbd871;   /* citron */
+  --cx-cat-5: #00a0ad; --cx-cat-5-glow: #2eeafd;   /* teal   */
+  --cx-cat-6: #d95833; --cx-cat-6-glow: #e6ac86;   /* coral  */
+  --cx-cat-7: #9875e3; --cx-cat-7-glow: #c4a9ff;   /* violet */
+  --cx-cat-8: #09a773; --cx-cat-8-glow: #6ad39a;   /* mint   */
+  --cx-cat-other: #7b90a5; --cx-cat-other-glow: #b6bbd3;   /* mist: folded groups */
+  --cx-none: #66686f;      --cx-none-glow: #727b8a;        /* slate: no value */
+  --cx-age-0: #866fc8; --cx-age-1: #5890ec; --cx-age-2: #37acc3; --cx-age-3: #56c4a7;
+  --cx-age-4: #90cf82; --cx-age-5: #cdd261; --cx-age-6: #e1d6ba; --cx-age-7: #f0e0c6;
+  --cx-undated: var(--cx-none-glow);
+  --cx-age-ramp: linear-gradient(90deg, var(--cx-age-0), var(--cx-age-1), var(--cx-age-2), var(--cx-age-3), var(--cx-age-4), var(--cx-age-5), var(--cx-age-6), var(--cx-age-7));
+  --cx-count-empty: #1e2b38;
+  --cx-count-1: #1e2c3f; --cx-count-2: #004568; --cx-count-3: #265d8e; --cx-count-4: #3d6dc3;
+  --cx-count-5: #5692ec; --cx-count-6: #73b2f8; --cx-count-7: #abcffe;
+  --cx-you: var(--cx-cat-2-glow); --cx-assistant: var(--cx-cat-7-glow);
+  --cx-voice-other: var(--cx-cat-5-glow); --cx-tool: var(--cx-none-glow);
+  --cx-you-fill: var(--cx-cat-2); --cx-assistant-fill: var(--cx-cat-7);
+  --cx-machine: #b8a6ff;
+  --cx-ok: #4cc38a; --cx-warn: #dfbc5e; --cx-serious: #f27733; --cx-critical: #e6737c;
+  --cx-live: var(--cx-ok);
+
+  /* type: Obsidian's own fonts; nothing is bundled */
+  --cx-font: var(--font-interface, "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif);
+  --cx-font-mono: var(--font-monospace, "Cascadia Mono", "Cascadia Code", Consolas, monospace);
+  --cx-fs-xs: 11px; --cx-fs-sm: 12px; --cx-fs-md: 13px; --cx-fs-body: 14px;
+  --cx-fs-lg: 16px; --cx-fs-title: 18px; --cx-fs-xl: 22px;
+  --cx-lh-tight: 1.22; --cx-lh-ui: 1.4; --cx-lh-read: 1.62;
+
+  /* space, shape, depth */
+  --cx-sp-1: 2px; --cx-sp-2: 4px; --cx-sp-3: 6px; --cx-sp-4: 8px; --cx-sp-5: 12px;
+  --cx-sp-6: 16px; --cx-sp-7: 20px; --cx-sp-8: 24px; --cx-sp-9: 32px; --cx-sp-10: 40px;
+  --cx-r-xs: 4px; --cx-r-sm: 6px; --cx-r-md: 10px; --cx-r-lg: 14px; --cx-r-pill: 999px;
+  --cx-shadow-glass: 0 10px 30px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.045);
+  --cx-shadow-pop: 0 18px 44px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.05);
+  --cx-shadow-sheet-float: -14px 0 36px rgba(0,0,0,.45);
+
+  /* motion */
+  --cx-ease-out: cubic-bezier(.16,.84,.3,1);
+  --cx-ease-inout: cubic-bezier(.62,.02,.33,.98);
+  --cx-ease-pop: cubic-bezier(.34,1.32,.64,1);
+  --cx-t-hover: 90ms; --cx-t-pop: 140ms; --cx-t-sheet: 220ms; --cx-t-stack: 260ms;
+  --cx-t-dock: 300ms; --cx-t-fly: 520ms; --cx-t-recolour: 600ms; --cx-t-chart: 750ms;
+  --cx-t-shape: 1400ms; --cx-t-grow: 3600ms;
+
+  /* layout */
+  --cx-header-h: 44px; --cx-strip-h: 64px; --cx-sheet-w: 400px; --cx-inset: 16px;
+  --cx-tool: 36px; --cx-cmd-w: 640px; --cx-cmd-h: 44px; --cx-pop-w: 304px; --cx-compass: 104px;
+
+  /* layers (inside the view; Obsidian modals sit above all of these) */
+  --cx-z-canvas: 0; --cx-z-labels: 5; --cx-z-overlay: 10; --cx-z-sheet: 20; --cx-z-pop: 30;
+  --cx-z-console: 32; --cx-z-results: 34; --cx-z-tip: 40; --cx-z-toast: 45; --cx-z-hint: 50;
+}
+
+/* Light theme (§4.3): chrome stays native; the stage follows unless Settings › Appearance › Stage pins it. */
+body.theme-light .cx-root,
+body.theme-light .cx-modal,
+.cx-root .cx-main[data-stage="paper"] {
+  --cx-chrome: var(--background-primary, #ffffff);
+  --cx-chrome-alt: var(--background-secondary, #f6f6f6);
+  --cx-chrome-raised: #ffffff;
+  --cx-chrome-hover: rgba(0,0,0,.05);
+  --cx-chrome-active: rgba(0,0,0,.08);
+  --cx-line: var(--background-modifier-border, #e0e0e0);
+  --cx-line-strong: #c8c8c8;
+  --cx-text-1: var(--text-normal, #222222);
+  --cx-text-2: var(--text-muted, #5c5c5c);
+  --cx-text-3: #575d66;
+  --cx-accent-soft: rgba(138,92,245,.12);
+  --cx-stage: #f4f2ee; --cx-stage-lift: #ffffff; --cx-strip: #efede8;
+  --cx-glass: rgba(255,255,255,.88); --cx-glass-strong: rgba(255,255,255,.96);
+  --cx-glass-hover: rgba(0,0,0,.05); --cx-glass-active: rgba(0,0,0,.08);
+  --cx-glass-line: rgba(0,0,0,.10); --cx-glass-line-strong: rgba(0,0,0,.18);
+  --cx-stage-text-1: #1f2329; --cx-stage-text-2: #4a5059; --cx-stage-text-3: #5a616b;
+  --cx-scrim: rgba(244,242,238,.72);
+  --cx-ok: #168a5a; --cx-warn: #a66a00; --cx-serious: #b9541d; --cx-critical: #ce2637;
+  --cx-machine: #7b4acc;
+  --cx-cat-1: #156ec3; --cx-cat-2: #a56500; --cx-cat-3: #b84580; --cx-cat-4: #878300;
+  --cx-cat-5: #0090a4; --cx-cat-6: #c5482c; --cx-cat-7: #864fc2; --cx-cat-8: #008c5f;
+  --cx-cat-other: #4a5666; --cx-none: #7e8086;
+  --cx-age-0: #b1b0ed; --cx-age-1: #82a5ec; --cx-age-2: #229dc3; --cx-age-3: #018d87;
+  --cx-age-4: #2c7f44; --cx-age-5: #5f6700; --cx-age-6: #734c00; --cx-age-7: #772e00;
+  --cx-count-empty: #e5e4d1;
+  --cx-count-1: #aacefc; --cx-count-2: #92b0e6; --cx-count-3: #5593ea; --cx-count-4: #426ec3;
+  --cx-count-5: #0f62a4; --cx-count-6: #084c81; --cx-count-7: #0c3965;
+}
+
+/* A dark Ink stage inside the light theme keeps the dark stage tokens; chrome stays light. */
+body.theme-light .cx-root .cx-main[data-stage="ink"] {
+  --cx-stage: #06070a; --cx-stage-lift: #0e121a; --cx-strip: #090b10;
+  --cx-glass: rgba(14,16,22,.86); --cx-glass-strong: rgba(19,22,30,.95);
+  --cx-glass-line: rgba(255,255,255,.09); --cx-glass-line-strong: rgba(255,255,255,.17);
+  --cx-stage-text-1: #eceef2; --cx-stage-text-2: #c3c8d1; --cx-stage-text-3: #9ea5b1;
+}
+
+/* Frosted panels off: no blur, strong fill. */
+.cx-root.is-flat { --cx-glass-blur: 0px; --cx-glass: var(--cx-glass-strong); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-root:not(.is-motion-full) { --cx-t-pop: 120ms; --cx-t-sheet: 120ms; --cx-t-stack: 120ms; --cx-t-dock: 0ms; --cx-t-fly: 0ms; }
+}
+
+/*
+ * Cortex window themes (P21; Settings > Appearance cards Vesper, Lichen, Copper). Each is a dark stage: the grounds
+ * below equal shared/palette.ts THEME_STAGES. data-cx-theme sits on .cx-root (chrome, only tinted when Obsidian is
+ * dark) and on .cx-main (stage, strip, glass), and is absent for Follow theme, Ink and Paper.
+ */
+body .cx-root .cx-main[data-stage][data-cx-theme="vesper"] {
+  --cx-stage: #0a0914; --cx-stage-lift: #191535; --cx-strip: #0d0b1c;
+  --cx-glass: rgba(18,15,40,.86); --cx-glass-strong: rgba(24,20,52,.95);
+  --cx-glass-line: rgba(190,175,255,.11); --cx-glass-line-strong: rgba(190,175,255,.2);
+  --cx-accent: #9f8cff; --cx-accent-hover: #b3a4ff; --cx-accent-fill: #6c55dc; --cx-accent-soft: rgba(159,140,255,.2); --cx-focus: #b3a4ff;
+}
+body .cx-root .cx-main[data-stage][data-cx-theme="lichen"] {
+  --cx-stage: #06090a; --cx-stage-lift: #102019; --cx-strip: #080d0b;
+  --cx-glass: rgba(10,20,16,.86); --cx-glass-strong: rgba(15,29,23,.95);
+  --cx-glass-line: rgba(150,230,185,.1); --cx-glass-line-strong: rgba(150,230,185,.19);
+  --cx-accent: #74cf9c; --cx-accent-hover: #8fdcb0; --cx-accent-fill: #1f7a4f; --cx-accent-soft: rgba(116,207,156,.18); --cx-focus: #8fdcb0;
+}
+body .cx-root .cx-main[data-stage][data-cx-theme="copper"] {
+  --cx-stage: #0b0705; --cx-stage-lift: #261811; --cx-strip: #100a07;
+  --cx-glass: rgba(26,16,11,.86); --cx-glass-strong: rgba(36,23,16,.95);
+  --cx-glass-line: rgba(255,200,150,.1); --cx-glass-line-strong: rgba(255,200,150,.19);
+  --cx-accent: #f0a35f; --cx-accent-hover: #f5b57d; --cx-accent-fill: #9a5415; --cx-accent-soft: rgba(240,163,95,.18); --cx-focus: #f5b57d;
+}
+body .cx-root .cx-main[data-stage][data-cx-theme="cobalt"] {
+  --cx-stage: #05080f; --cx-stage-lift: #10203f; --cx-strip: #070b14;
+  --cx-glass: rgba(10,17,36,.86); --cx-glass-strong: rgba(14,24,50,.95);
+  --cx-glass-line: rgba(150,185,255,.11); --cx-glass-line-strong: rgba(150,185,255,.2);
+  --cx-accent: #6ea8ff; --cx-accent-hover: #8fbcff; --cx-accent-fill: #2a5fc4; --cx-accent-soft: rgba(110,168,255,.2); --cx-focus: #8fbcff;
+}
+body .cx-root .cx-main[data-stage][data-cx-theme="flint"] {
+  --cx-stage: #08090a; --cx-stage-lift: #1d2024; --cx-strip: #0b0c0d;
+  --cx-glass: rgba(18,20,23,.86); --cx-glass-strong: rgba(26,29,33,.95);
+  --cx-glass-line: rgba(200,210,225,.1); --cx-glass-line-strong: rgba(200,210,225,.19);
+  --cx-accent: #b8c0cc; --cx-accent-hover: #cdd3dc; --cx-accent-fill: #5d6672; --cx-accent-soft: rgba(184,192,204,.18); --cx-focus: #cdd3dc;
+}
+body .cx-root .cx-main[data-stage][data-cx-theme="garnet"] {
+  --cx-stage: #0b0607; --cx-stage-lift: #2b1418; --cx-strip: #100809;
+  --cx-glass: rgba(28,13,16,.86); --cx-glass-strong: rgba(38,18,22,.95);
+  --cx-glass-line: rgba(255,160,170,.11); --cx-glass-line-strong: rgba(255,160,170,.2);
+  --cx-accent: #f2707c; --cx-accent-hover: #f68a94; --cx-accent-fill: #b3303f; --cx-accent-soft: rgba(242,112,124,.2); --cx-focus: #f68a94;
+}
+body.theme-dark .cx-root[data-cx-theme="garnet"] {
+  --cx-chrome: #170b0d; --cx-chrome-alt: #1f1013; --cx-chrome-raised: #2f1a1f; --cx-line: #402329; --cx-line-strong: #64363f;
+  --cx-chrome-hover: rgba(255,160,170,.08); --cx-chrome-active: rgba(255,160,170,.14);
+  --cx-accent: #f2707c; --cx-accent-hover: #f68a94; --cx-accent-fill: #b3303f; --cx-accent-soft: rgba(242,112,124,.2); --cx-focus: #f68a94;
+}
+body.theme-dark .cx-root[data-cx-theme="cobalt"] {
+  --cx-chrome: #0a1226; --cx-chrome-alt: #0f1a35; --cx-chrome-raised: #172647; --cx-line: #1c2d58; --cx-line-strong: #2c4584;
+  --cx-chrome-hover: rgba(150,185,255,.08); --cx-chrome-active: rgba(150,185,255,.14);
+  --cx-accent: #6ea8ff; --cx-accent-hover: #8fbcff; --cx-accent-fill: #2a5fc4; --cx-accent-soft: rgba(110,168,255,.2); --cx-focus: #8fbcff;
+}
+body.theme-dark .cx-root[data-cx-theme="flint"] {
+  --cx-chrome: #121416; --cx-chrome-alt: #171a1d; --cx-chrome-raised: #20242a; --cx-line: #2a2f35; --cx-line-strong: #3d444c;
+  --cx-chrome-hover: rgba(200,210,225,.08); --cx-chrome-active: rgba(200,210,225,.14);
+  --cx-accent: #b8c0cc; --cx-accent-hover: #cdd3dc; --cx-accent-fill: #5d6672; --cx-accent-soft: rgba(184,192,204,.18); --cx-focus: #cdd3dc;
+}
+body.theme-dark .cx-root[data-cx-theme="vesper"] {
+  --cx-chrome: #110e24; --cx-chrome-alt: #171330; --cx-chrome-raised: #211c42; --cx-line: #2a2452; --cx-line-strong: #3e3774;
+  --cx-chrome-hover: rgba(190,175,255,.08); --cx-chrome-active: rgba(190,175,255,.14);
+  --cx-accent: #9f8cff; --cx-accent-hover: #b3a4ff; --cx-accent-fill: #6c55dc; --cx-accent-soft: rgba(159,140,255,.2); --cx-focus: #b3a4ff;
+}
+body.theme-dark .cx-root[data-cx-theme="lichen"] {
+  --cx-chrome: #0b1411; --cx-chrome-alt: #101c17; --cx-chrome-raised: #17291f; --cx-line: #1f3a2c; --cx-line-strong: #2f5842;
+  --cx-chrome-hover: rgba(150,230,185,.08); --cx-chrome-active: rgba(150,230,185,.14);
+  --cx-accent: #74cf9c; --cx-accent-hover: #8fdcb0; --cx-accent-fill: #1f7a4f; --cx-accent-soft: rgba(116,207,156,.18); --cx-focus: #8fdcb0;
+}
+body.theme-dark .cx-root[data-cx-theme="copper"] {
+  --cx-chrome: #150d09; --cx-chrome-alt: #1d120c; --cx-chrome-raised: #2c1c13; --cx-line: #3b2518; --cx-line-strong: #5a3a25;
+  --cx-chrome-hover: rgba(255,200,150,.08); --cx-chrome-active: rgba(255,200,150,.14);
+  --cx-accent: #f0a35f; --cx-accent-hover: #f5b57d; --cx-accent-fill: #9a5415; --cx-accent-soft: rgba(240,163,95,.18); --cx-focus: #f5b57d;
+}
+/* Light themes' accents on a light chrome keep Obsidian's accent: only the stage is themed there. */
