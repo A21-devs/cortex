@@ -1,0 +1,33 @@
+/*
+ * Cortex Desktop: the legend list's finishing (src/ui/stage/KeyList.tsx), loaded after desktop-shell.css.
+ * The total at the heading's right and the "notes · record" caption; the chosen row as a filled pill with the others
+ * at 40% in normal type; the chosen Area's subfolders; the help lines and the standing "Show every group" button.
+ */
+/* Room for the pill to reach past the text edge: the list is 8px wider each side and its content stays where it was. */
+.cx-root.is-desktop .cx-keylist { box-sizing: border-box; left: calc(var(--cx-inset) - 8px); width: 212px; padding: 0 8px; }
+.cx-root.is-desktop .cx-keylist-tools { gap: 8px; min-width: 0; }
+.cx-root.is-desktop .cx-keylist-sum { flex: none; font-size: 10px; letter-spacing: .02em; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-keylist-cols { margin: -5px 2px 4px 0; text-align: right; font-size: 9.5px; letter-spacing: .04em; color: var(--cx-stage-text-3); }
+
+/* Rows: a chosen row is a filled pill; the rest sit back at 40% (readable, never struck by the choice itself). */
+.cx-root.is-desktop .cx-keylist-row { transition: opacity 150ms linear; }
+.cx-root.is-desktop .cx-keylist-row.is-dim { opacity: .4; }
+.cx-root.is-desktop .cx-keylist-row.is-selected .cx-keylist-item { margin: 0 -8px; padding: 0 8px; border-radius: 10px; background: rgba(255, 255, 255, .13); }
+.cx-root.is-desktop .cx-keylist-row.is-selected .cx-keylist-eye { right: -2px; background: transparent; }
+.cx-root.is-desktop .cx-keylist-row.is-hidden .cx-keylist-count { text-decoration: line-through; opacity: .6; }
+
+/* The chosen Area's folders: indented under it, names wrap, counts at the right. */
+.cx-root.is-desktop .cx-keylist-sub { align-items: flex-start; gap: 8px; padding: 3px 0 3px 15px; font-size: 11px; line-height: 1.25; font-weight: 300; color: #cfcfcf; }
+.cx-root.is-desktop .cx-keylist-sub .cx-keylist-name { overflow: visible; white-space: normal; overflow-wrap: anywhere; }
+.cx-root.is-desktop .cx-keylist-sub .cx-keylist-count { visibility: visible; }
+.cx-root.is-desktop .cx-keylist-sub:hover .cx-keylist-count { visibility: visible; }
+
+/* Under the list: three dim help lines, then one standing full-width button. */
+.cx-root.is-desktop .cx-keylist-help { margin-top: -6px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .1); }
+.cx-root.is-desktop .cx-keylist-help p { margin: 0 0 4px; font-size: 10px; line-height: 1.35; font-weight: 300; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-keylist-help strong { font-weight: 600; color: var(--cx-stage-text-2); }
+.cx-root.is-desktop .cx-keylist-showall { flex: none; width: 100%; height: 28px; padding: 0 10px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 14px; background: rgba(255, 255, 255, .05); font-size: 11px; font-weight: 300; color: var(--cx-stage-text-1); text-align: center; }
+.cx-root.is-desktop .cx-keylist-showall:hover { background: rgba(255, 255, 255, .11); color: #fff; }
+.cx-root.is-desktop .cx-keylist-showall.is-idle { border-color: rgba(255, 255, 255, .09); background: transparent; color: var(--cx-stage-text-3); cursor: default; }
+.cx-root.is-desktop .cx-keylist-showall.is-idle:hover { background: transparent; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-keylist-help + .cx-keylist-showall { margin-top: -8px; }

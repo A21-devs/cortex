@@ -1,0 +1,410 @@
+/*
+ * Cortex Desktop shell: the standalone app's look (the plugin never gets .is-desktop; ui/host.ts). Pure black
+ * stage and chrome, hairline separators, light thin text, no header bar. A narrow plain-text rail on the left, the
+ * figure dominant in the stage, a compact legend list bottom left, a folded histogram bottom right, one icon cluster
+ * top right, floating black panels with small-caps section headings. Everything is scoped under .cx-root.is-desktop.
+ * Owner: shell track.
+ */
+.cx-root.is-desktop {
+  --cx-top: 32px;
+  --cx-hair: rgba(255,255,255,.12);
+  --cx-chrome: #000;
+  --cx-chrome-alt: #000;
+  --cx-chrome-raised: #0b0b0b;
+  --cx-chrome-hover: rgba(255,255,255,.055);
+  --cx-chrome-active: rgba(255,255,255,.08);
+  --cx-line: rgba(255,255,255,.12);
+  --cx-line-strong: rgba(255,255,255,.22);
+  --cx-text-1: #f2f2f2;
+  --cx-text-2: #c9c9c9;
+  --cx-text-3: #8f8f8f;
+  --cx-glass: #000;
+  --cx-glass-strong: #000;
+  --cx-glass-hover: rgba(255,255,255,.07);
+  --cx-glass-active: rgba(255,255,255,.12);
+  --cx-glass-line: rgba(255,255,255,.14);
+  --cx-glass-line-strong: rgba(255,255,255,.24);
+  --cx-glass-blur: 0px;
+  --cx-shadow-glass: none;
+  --cx-shadow-pop: 0 10px 30px rgba(0,0,0,.7);
+  --cx-inset: 14px;
+  padding-top: var(--cx-top);
+  font-weight: 300;
+  background: #000;
+}
+.cx-root.is-desktop .cx-main[data-stage="ink"] {
+  --cx-stage: #000;
+  --cx-stage-lift: #000;
+  --cx-strip: #000;
+  --cx-stage-text-1: #f2f2f2;
+  --cx-stage-text-2: #cfcfcf;
+  --cx-stage-text-3: #8f8f8f;
+}
+.cx-root.is-desktop .cx-main, .cx-root.is-desktop .cx-stage { background: #000; }
+.cx-root.is-desktop :is(b, strong, h1, h2, h3) { font-weight: 500; }
+
+/* ── the rail: plain left-aligned text on black, about 160 px ── */
+.cx-root.is-desktop .cx-rail { width: 160px; gap: 14px; padding: 10px 12px 12px 14px; background: #000; border-right: 1px solid var(--cx-hair); overflow-x: hidden; }
+.cx-root.is-desktop .cx-rail-head { gap: 10px; }
+.cx-root.is-desktop .cx-rail-brand-row { gap: 8px; }
+.cx-root.is-desktop .cx-rail-word { justify-content: flex-start; font-size: 17px; }
+.cx-root.is-desktop .cx-rail-word-main { font-weight: 600; }
+.cx-root.is-desktop .cx-rail-suffix { font-weight: 300; }
+.cx-root.is-desktop .cx-rail-search { height: 26px; padding: 0 2px 0 0; border-radius: 0; background: none; color: var(--cx-text-3); font-weight: 300; }
+.cx-root.is-desktop .cx-rail-search:hover { background: none; color: var(--cx-text-1); }
+.cx-root.is-desktop .cx-rail-key { padding: 0; border: 0; background: none; font-family: var(--cx-font); font-size: 10px; color: var(--cx-text-3); }
+.cx-root.is-desktop .cx-rail-search-line { position: relative; height: 2px; background: var(--cx-hair); overflow: hidden; }
+.cx-root.is-desktop .cx-rail-search-fill { position: absolute; left: 0; top: 0; bottom: 0; display: block; transition: width 240ms linear; }
+.cx-root.is-desktop .cx-rail-search-line.is-sweep .cx-rail-search-fill { width: 35% !important; animation: cx-rail-sweep 1.2s ease-in-out infinite; }
+@keyframes cx-rail-sweep { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }
+.cx-root.is-reduced.is-desktop .cx-rail-search-line.is-sweep .cx-rail-search-fill { animation: none; }
+.cx-root.is-desktop .cx-rail-scope .cx-scope-main, .cx-root.is-desktop .cx-rail-scope .cx-scope-menu { display: inline-flex; align-items: center; gap: 6px; height: 22px; padding: 0; border: 0; border-radius: 0; background: none; color: inherit; font-weight: 300; }
+.cx-root.is-desktop .cx-rail-scope .cx-scope-main { flex: 1 1 auto; min-width: 0; }
+.cx-root.is-desktop .cx-rail-scope .cx-scope-ring { width: 12px; height: 12px; }
+.cx-root.is-desktop .cx-rail-scope .cx-scope { height: 22px; padding: 0; gap: 6px; border: 0; border-radius: 0; background: none; color: var(--cx-text-2); font-size: var(--cx-fs-sm); }
+.cx-root.is-desktop .cx-rail-scope .cx-scope:hover { color: var(--cx-text-1); }
+.cx-root.is-desktop .cx-nav { gap: 2px; }
+.cx-root.is-desktop .cx-nav-row { gap: 10px; width: auto; height: 22px; border-radius: 0; background: none; }
+.cx-root.is-desktop .cx-nav-row:hover { background: none; }
+.cx-root.is-desktop .cx-nav-row.is-add { margin-top: 12px; }
+.cx-root.is-desktop .cx-nav-item { flex: none; height: 22px; padding: 0 0 0 8px; border-radius: 0; background: none; color: var(--cx-text-2); font-size: var(--cx-fs-md); font-weight: 300; }
+.cx-root.is-desktop .cx-nav-row.is-pair .cx-nav-item { padding-left: 0; }
+.cx-root.is-desktop .cx-nav-row.is-pair .cx-nav-item:first-child { padding-left: 8px; }
+.cx-root.is-desktop .cx-nav-item::before { left: 0; width: 2px; height: 14px; margin-top: -7px; border-radius: 0; }
+.cx-root.is-desktop .cx-nav-row.is-pair .cx-nav-item:not(:first-child)::before { display: none; }
+.cx-root.is-desktop .cx-nav-item:hover, .cx-root.is-desktop .cx-nav-item.is-active { background: none; color: var(--cx-text-1); }
+.cx-root.is-desktop .cx-nav-item.is-active { font-weight: 600; }
+.cx-root.is-desktop .cx-nav-more { width: auto; color: var(--cx-text-2); }
+.cx-root.is-desktop .cx-nav-more .cx-nav-chevron { margin-left: 4px; }
+.cx-root.is-desktop .cx-rail-foot { margin-top: auto; padding-top: 0; gap: 8px; border-top: 0; }
+.cx-root.is-desktop .cx-rail-foot .cx-row-label { color: var(--cx-text-2); font-weight: 300; }
+.cx-root.is-desktop .cx-toggle { background: rgba(255,255,255,.22); }
+.cx-root.is-desktop .cx-toggle.is-on { background: #fff; }
+.cx-root.is-desktop .cx-toggle.is-on .cx-toggle-knob { background: #000; }
+.cx-root.is-desktop .cx-rail-status { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; font-size: var(--cx-fs-xs); color: var(--cx-text-2); }
+.cx-root.is-desktop .cx-rail-status:empty { display: none; }
+.cx-root.is-desktop .cx-rail-status :is(.cx-live, .cx-loading-chip, .cx-arrivals, .cx-agent-chip) { height: auto; padding: 0; border: 0; border-radius: 0; background: none; gap: 6px; font-size: var(--cx-fs-xs); font-weight: 300; color: var(--cx-text-2); text-align: left; }
+.cx-root.is-desktop .cx-rail-status .cx-arrivals:hover, .cx-root.is-desktop .cx-rail-status .cx-agent-chip:hover { color: var(--cx-text-1); }
+.cx-root.is-desktop .cx-rail-status .cx-agent-chip .cx-glyph { width: 12px; height: 12px; }
+.cx-root.is-desktop .cx-rail-status .cx-arrivals.is-line { display: block; line-height: 1.4; cursor: pointer; }
+.cx-root.is-desktop .cx-rail-status .cx-arrivals-show { margin-left: 2px; color: var(--cx-text-1); text-decoration: underline; text-underline-offset: 2px; }
+.cx-root.is-desktop .cx-rail-meters { gap: 6px; }
+.cx-root.is-desktop .cx-rail-meter { grid-template-columns: auto 1fr auto; align-items: center; gap: 0 8px; font-weight: 300; }
+.cx-root.is-desktop .cx-rail-meter-label { grid-area: 1 / 1; }
+.cx-root.is-desktop .cx-rail-meter-bar { grid-area: 1 / 2; height: 1px; background: var(--cx-hair); }
+.cx-root.is-desktop .cx-rail-meter-value { grid-area: 1 / 3; font-family: var(--cx-font); }
+/* short windows: tighter rail spacing, and the meters always whole at the foot of the rail */
+@media (max-height: 820px) { .cx-root.is-desktop .cx-rail { gap: 10px; } .cx-root.is-desktop .cx-nav-row.is-add { margin-top: 8px; } .cx-root.is-desktop .cx-rail-foot { gap: 6px; } }
+@media (max-height: 700px) { .cx-root.is-desktop .cx-rail { gap: 8px; padding-top: 8px; padding-bottom: 8px; } .cx-root.is-desktop .cx-rail-head { gap: 6px; } .cx-root.is-desktop .cx-nav-row, .cx-root.is-desktop .cx-nav-item { height: 20px; } .cx-root.is-desktop .cx-nav-row.is-add { margin-top: 4px; } .cx-root.is-desktop .cx-rail-status { gap: 3px; } .cx-root.is-desktop .cx-rail-meters { gap: 4px; } }
+
+/* ── the stage: figure dominant, overlays flat on black ── */
+.cx-root.is-desktop .cx-cluster { position: absolute; right: var(--cx-inset); top: 10px; display: flex; align-items: center; gap: 0; z-index: var(--cx-z-overlay); }
+.cx-root.is-desktop .cx-cluster-btn { width: 28px; height: 28px; color: var(--cx-stage-text-2); }
+.cx-root.is-desktop .cx-cluster-btn:hover { background: none; color: #fff; }
+/* The Display button: outlined while its panel is closed, filled white with a dark glyph while it is open. */
+.cx-root.is-desktop .cx-cluster-btn[data-cx-popover-toggle] { border: 1px solid var(--cx-glass-line); border-radius: 4px; margin-right: 4px; }
+.cx-root.is-desktop .cx-cluster-btn[data-cx-popover-toggle].is-on { background: #fff; color: #000; border-color: #fff; }
+.cx-root.is-desktop .cx-cluster-btn .cx-icon { width: 15px; height: 15px; }
+.cx-root.is-desktop .cx-agent-button { top: 50%; right: 12px; width: 40px; height: 40px; border: 0; border-radius: 6px; background: none; box-shadow: none; backdrop-filter: none; color: var(--cx-stage-text-2); }
+.cx-root.is-desktop .cx-agent-button:hover { background: none; color: #fff; }
+.cx-root.is-desktop .cx-agent-pill { background: #000; border-radius: 4px; font-weight: 300; }
+/* the caption pill stays under the glyph at rest, dim and small; it brightens on hover and steps back while a reader is open at the right edge */
+.cx-root.is-desktop .cx-agent-pill { right: auto; left: 50%; top: calc(100% - 4px); padding: 1px 7px; background: rgba(255, 255, 255, .07); border-color: transparent; color: var(--cx-stage-text-3); font-size: 9.5px; letter-spacing: .04em; opacity: 1; transform: translate(-50%, 0); }
+.cx-root.is-desktop .cx-agent-button:hover .cx-agent-pill, .cx-root.is-desktop .cx-agent-button:focus-visible .cx-agent-pill { background: rgba(255, 255, 255, .16); color: #fff; transform: translate(-50%, 0); }
+.cx-root.is-desktop .cx-agent-button.is-reader-open .cx-agent-pill { opacity: 0; }
+.cx-root.is-desktop .cx-toasts { bottom: 66px; }
+
+/* the stage's top-left row: the page title with its dim counts line, then the slim on-stage search field */
+.cx-root.is-desktop .cx-stage-head { position: absolute; left: var(--cx-inset); top: 10px; display: flex; align-items: center; gap: 18px; max-width: calc(100% - 2 * var(--cx-inset) - 150px); z-index: var(--cx-z-overlay); pointer-events: none; }
+.cx-root.is-desktop .cx-stage-head .cx-title-block { position: static; flex: none; }
+.cx-root.is-desktop .cx-title-block-name { font-size: 13px; }
+.cx-root.is-desktop .cx-title-block-counts { font-size: 10px; font-weight: 300; }
+.cx-stage-search { pointer-events: auto; flex: 0 1 240px; min-width: 150px; display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 3px 0 9px; border: 1px solid var(--cx-glass-line-strong, var(--cx-glass-line)); border-radius: 13px; background: var(--cx-glass); color: var(--cx-stage-text-2); }
+.cx-stage-search:focus-within { border-color: var(--cx-stage-text-1); }
+.cx-stage-search.is-ask { border-color: var(--cx-accent); }
+.cx-stage-search .cx-icon { width: 13px; height: 13px; flex: none; }
+.cx-stage-search .cx-stage-search-input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; border-radius: 0; outline: none; background: none; box-shadow: none; color: var(--cx-stage-text-1); font: inherit; font-size: 11.5px; font-weight: 300; }
+.cx-stage-search .cx-stage-search-input::placeholder { color: var(--cx-stage-text-3); }
+.cx-stage-search .cx-stage-search-clear, .cx-stage-search .cx-stage-search-ask { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; min-height: 0; padding: 0; border: 0; border-radius: 10px; background: none; box-shadow: none; color: var(--cx-stage-text-3); cursor: pointer; }
+.cx-stage-search .cx-stage-search-clear:hover, .cx-stage-search .cx-stage-search-ask:hover { color: var(--cx-stage-text-1); background: var(--cx-glass-hover, rgba(255, 255, 255, .08)); }
+.cx-stage-search .cx-stage-search-ask.is-on { color: var(--cx-accent); }
+.cx-stage-search button:focus-visible { outline: 1px solid var(--cx-stage-text-1); outline-offset: 0; }
+
+/* the legend list */
+.cx-root.is-desktop .cx-keylist { position: absolute; left: var(--cx-inset); bottom: var(--cx-inset); width: 210px; max-height: calc(100% - 100px); overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 12px; z-index: var(--cx-z-overlay); font-size: var(--cx-fs-sm); color: var(--cx-stage-text-1); scrollbar-width: none; }
+.cx-root.is-desktop .cx-keylist-headrow { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 5px; }
+.cx-root.is-desktop .cx-keylist-head { display: inline-flex; align-items: center; gap: 3px; min-width: 0; padding: 0; border: 0; border-radius: 0; background: none; font-size: 10px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase; color: var(--cx-stage-text-1); }
+.cx-root.is-desktop .cx-keylist-head > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cx-root.is-desktop .cx-keylist-head .cx-select-caret-icon { width: 10px; height: 10px; opacity: .7; }
+.cx-root.is-desktop .cx-keylist-layers { display: inline-flex; padding: 0; border: 0; background: none; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-keylist-layers:hover { color: #fff; }
+.cx-root.is-desktop .cx-keylist-layers .cx-icon { width: 13px; height: 13px; }
+.cx-root.is-desktop .cx-keylist-rows { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; }
+.cx-root.is-desktop .cx-keylist-row { position: relative; display: flex; align-items: center; }
+.cx-root.is-desktop .cx-keylist-item { display: flex; align-items: center; gap: 7px; flex: 1 1 auto; min-width: 0; height: 18px; padding: 0; border: 0; border-radius: 0; background: none; text-align: left; font-size: var(--cx-fs-sm); font-weight: 300; color: var(--cx-stage-text-1); }
+.cx-root.is-desktop .cx-keylist-item:hover .cx-keylist-name { color: #fff; }
+.cx-root.is-desktop .cx-keylist-item .cx-key-dot { width: 7px; height: 7px; }
+.cx-root.is-desktop .cx-keylist-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cx-root.is-desktop .cx-keylist-count { flex: none; padding-right: 2px; font-family: var(--cx-font); font-size: 11px; font-variant-numeric: tabular-nums; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-keylist-row.is-selected .cx-keylist-name, .cx-root.is-desktop .cx-keylist-row.is-lens .cx-keylist-name { font-weight: 600; color: #fff; }
+.cx-root.is-desktop .cx-keylist-row { transition: opacity 130ms linear; }
+.cx-root.is-reduced.is-desktop .cx-keylist-row { transition: none; }
+.cx-root.is-desktop .cx-keylist-row .cx-disclosure, .cx-root.is-desktop .cx-keylist-row .cx-disclosure-space { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 12px; height: 18px; margin-right: 2px; padding: 0; cursor: pointer; }
+.cx-root.is-desktop .cx-keylist-row .cx-disclosure-space { flex: none; cursor: default; }
+.cx-root.is-desktop .cx-keylist-row .cx-disclosure::before { content: ""; border: 3.5px solid transparent; border-left: 5px solid currentColor; border-right-width: 0; transition: transform var(--cx-t-hover) linear; }
+.cx-root.is-desktop .cx-keylist-row .cx-disclosure.is-open::before { transform: rotate(90deg); }
+.cx-root.is-desktop .cx-keylist-row .cx-disclosure:hover { color: #fff; }
+.cx-root.is-desktop .cx-keylist-row.is-child { padding-left: 12px; }
+.cx-root.is-desktop .cx-keylist-row.is-dim { opacity: .45; }
+.cx-root.is-desktop .cx-keylist-row.is-hidden .cx-keylist-name { opacity: .5; text-decoration: line-through; }
+.cx-root.is-desktop .cx-keylist-eye { position: absolute; right: 0; top: 0; display: none; align-items: center; justify-content: center; width: 18px; height: 18px; padding: 0; border: 0; background: #000; color: var(--cx-stage-text-1); }
+.cx-root.is-desktop .cx-keylist-eye .cx-icon { width: 12px; height: 12px; }
+.cx-root.is-desktop .cx-keylist-row:hover .cx-keylist-eye, .cx-root.is-desktop .cx-keylist-row:focus-within .cx-keylist-eye { display: inline-flex; }
+.cx-root.is-desktop .cx-keylist-row:hover .cx-keylist-count, .cx-root.is-desktop .cx-keylist-row:focus-within .cx-keylist-count { visibility: hidden; }
+.cx-root.is-desktop .cx-keylist-all { align-self: flex-start; margin-top: 4px; padding: 0; border: 0; background: none; font-size: var(--cx-fs-xs); font-weight: 300; color: var(--cx-stage-text-2); text-align: left; }
+.cx-root.is-desktop .cx-keylist-all:hover { color: #fff; }
+.cx-root.is-desktop .cx-keylist-all.is-showall { margin-top: -4px; text-decoration: underline; }
+.cx-root.is-desktop .cx-keylist-tools { display: inline-flex; align-items: center; gap: 8px; }
+/* Expanded in place: the list becomes a scrollable multi-column grid across the stage's foot; the figure's area shrinks by the same amount (--cx-legend-lift). */
+.cx-root.is-desktop .cx-keylist.is-grid { right: 176px; width: auto; height: var(--cx-grid-h); max-height: none; overflow: hidden; gap: 0; }
+.cx-root.is-desktop .cx-keylist.is-grid .cx-keylist-section { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.cx-root.is-desktop .cx-keylist-grid { flex: 1 1 auto; min-height: 0; display: grid; grid-template-columns: repeat(var(--cx-grid-cols, 4), minmax(0, 1fr)); column-gap: 28px; align-content: start; margin: 0; padding: 0 6px 0 0; list-style: none; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--cx-stage-text-3) transparent; }
+.cx-root.is-desktop .cx-keylist-grid .cx-keylist-count { white-space: nowrap; }
+.cx-root.is-desktop .cx-keylist-grid .cx-keylist-row:hover .cx-keylist-count { visibility: visible; }
+.cx-root.is-desktop .cx-canvas-host { bottom: var(--cx-legend-lift, 0px); height: auto; transition: opacity 200ms linear, bottom 180ms var(--cx-ease-out); }
+.cx-root.is-desktop .cx-keylist-empty, .cx-root.is-desktop .cx-keylist-total { margin: 0; font-size: var(--cx-fs-xs); color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-keylist .cx-age-key, .cx-root.is-desktop .cx-key-popover .cx-age-key { display: grid; grid-template-columns: auto 1fr auto; gap: 3px 8px; width: 100%; font-family: var(--cx-font); font-size: 10px; font-weight: 300; }
+.cx-root.is-desktop .cx-keylist .cx-age-ramp, .cx-root.is-desktop .cx-key-popover .cx-age-ramp { width: auto; height: 3px; border-radius: 0; min-width: 0; }
+.cx-root.is-desktop .cx-keylist .cx-age-undated, .cx-root.is-desktop .cx-key-popover .cx-age-undated { grid-column: 1 / -1; }
+
+/* the folded histogram */
+.cx-root.is-desktop .cx-strip-dock { position: absolute; right: var(--cx-inset); bottom: var(--cx-inset); width: 132px; height: 44px; border: 1px solid var(--cx-hair); background: #000; z-index: var(--cx-z-overlay); overflow: hidden; }
+.cx-root.is-desktop .cx-strip-dock.is-open { left: var(--cx-inset); width: auto; height: 64px; z-index: calc(var(--cx-z-overlay) + 4); overflow: visible; border-color: var(--cx-glass-line-strong); }
+.cx-root.is-desktop .cx-strip-dock .cx-strip { background: none; border-top: 0; }
+.cx-root.is-desktop .cx-strip-dock .cx-strip.is-mini .cx-strip-plot { cursor: pointer; }
+.cx-root.is-desktop .cx-strip-dock-hit { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 0; background: none; cursor: pointer; z-index: 3; }
+.cx-root.is-desktop .cx-strip .cx-picker { border-radius: 0; background: none; border-color: var(--cx-glass-line-strong); font-weight: 300; }
+.cx-root.is-desktop .cx-undated-pill { border-radius: 0; background: none; font-weight: 300; }
+
+/* the command line stays out of the way until invoked (Tab, Ctrl K or the rail field) */
+.cx-root.is-desktop .cx-command[data-idle="true"]:not(:focus-within) { opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(10px); }
+.cx-root.is-desktop .cx-command { transition: opacity 140ms linear, transform 140ms var(--cx-ease-out); bottom: 68px; border-radius: 6px; }
+.cx-root.is-desktop .cx-command .cx-command-bar { border-radius: 6px; background: #000; }
+.cx-root.is-desktop .cx-command .cx-command-modes { background: none; border: 1px solid var(--cx-hair); border-radius: 4px; }
+
+/* ── floating panels: black, hairline sections, small-caps headings, compact rows ── */
+.cx-root.is-desktop .cx-popover { padding: 4px 14px 12px; border: 1px solid var(--cx-glass-line); border-radius: 4px; background: #000; box-shadow: var(--cx-shadow-pop); backdrop-filter: none; font-size: var(--cx-fs-sm); font-weight: 300; }
+.cx-root.is-desktop .cx-popover.cx-display { left: auto; right: var(--cx-inset); top: 44px; width: 252px; max-height: calc(100vh - 110px); overflow: hidden; }
+/* The thin-groups notice sits in the free strip along the top of the stage (left of the panel buttons), so it never covers the figure's top cluster. */
+.cx-root.is-desktop .cx-banner.is-thin-groups, .cx-root.is-desktop .cx-title-block ~ .cx-banner.is-thin-groups { top: 48px; left: var(--cx-inset); transform: none; max-width: calc(100% - 2 * var(--cx-inset) - 120px); justify-content: flex-start; }
+.cx-root.is-desktop .cx-banner.is-thin-groups .cx-banner-text { text-align: left; }
+.cx-root.is-desktop .cx-popover.cx-key-popover { left: var(--cx-inset); right: auto; top: 12px; width: 280px; max-height: calc(100% - 28px); overflow-y: auto; }
+.cx-root.is-desktop .cx-popover-title { margin: 0 -6px; padding: 8px 0 4px; }
+.cx-root.is-desktop .cx-popover-title h3 { font-size: 10px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; }
+.cx-root.is-desktop .cx-popover-body { gap: 2px; }
+.cx-root.is-desktop .cx-popover-foot { margin-top: 12px; padding-top: 8px; border-top: 1px solid var(--cx-hair); font-size: 10px; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-section-label, .cx-root.is-desktop .cx-key-section-head { margin: 12px 0 6px; padding-top: 10px; border-top: 1px solid var(--cx-hair); font-size: 10px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-popover-body > .cx-section-label:first-child { margin-top: 6px; }
+.cx-root.is-desktop .cx-row { min-height: 24px; }
+.cx-root.is-desktop .cx-row-label { color: var(--cx-stage-text-1); }
+.cx-root.is-desktop .cx-select { height: 24px; padding: 0 6px; border: 1px solid var(--cx-glass-line); border-radius: 3px; background: #000; }
+.cx-root.is-desktop .cx-segmented { padding: 0; gap: 0; border: 1px solid var(--cx-glass-line); border-radius: 3px; background: none; }
+.cx-root.is-desktop .cx-seg { height: 22px; flex: 1 1 0; border-radius: 0; font-weight: 300; }
+.cx-root.is-desktop .cx-seg.is-on { background: #fff; color: #000; font-weight: 500; }
+.cx-root.is-desktop .cx-slider-rail { background: rgba(255,255,255,.22); height: 2px; top: 8px; }
+.cx-root.is-desktop .cx-slider-fill { background: #fff; height: 2px; top: 8px; }
+.cx-root.is-desktop .cx-slider-thumb { width: 9px; height: 9px; margin-left: -4.5px; top: 5px; border-radius: 1px; background: #fff; box-shadow: none; }
+.cx-root.is-desktop .cx-slider-tick { background: rgba(255,255,255,.3); }
+.cx-root.is-desktop .cx-display-more { display: none; }
+.cx-root.is-desktop .cx-display-foot { margin-top: 8px; padding-top: 6px; gap: 2px; }
+.cx-root.is-desktop .cx-display-links { gap: 0 12px; justify-content: space-between; }
+.cx-root.is-desktop .cx-display-link, .cx-root.is-desktop .cx-display-toggle { font-size: 10px; font-weight: 300; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-display-link:hover, .cx-root.is-desktop .cx-display-toggle:hover { color: #fff; }
+.cx-root.is-desktop .cx-display .cx-swatches { gap: 5px; flex-wrap: nowrap; }
+.cx-root.is-desktop .cx-display .cx-swatch { flex: 1 1 0; min-width: 0; width: auto; height: 16px; max-width: 18px; border-radius: 2px; border: 0; }
+.cx-root.is-desktop .cx-display .cx-swatch.is-white { box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
+.cx-root.is-desktop .cx-display .cx-swatch.is-on { box-shadow: 0 0 0 2px #000, 0 0 0 3px #fff; }
+.cx-root.is-desktop .cx-display .cx-custom-colour { margin-top: 8px; }
+.cx-root.is-desktop .cx-display .cx-custom-colour .cx-hex { height: 22px; border-radius: 3px; background: #000; }
+.cx-root.is-desktop .cx-display .cx-custom-colour input[type="color"] { border-radius: 2px; }
+.cx-root.is-desktop .cx-shape-controls.is-slider-only .cx-icon-button { grid-row: 1; grid-column: 3; width: 20px; height: 20px; }
+.cx-root.is-desktop .cx-shape-controls.is-slider-only { grid-template-columns: 1fr auto auto; }
+.cx-root.is-desktop .cx-shape-controls.is-slider-only .cx-shape-end:nth-of-type(2) { grid-column: 2; }
+.cx-root.is-desktop .cx-row.is-indented .cx-row-label::before { content: "↳"; margin-right: 4px; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-shape-controls.in-popover { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 8px; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-end:nth-of-type(2) { grid-row: 1; grid-column: 2; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-end:nth-of-type(1) { grid-row: 1; grid-column: 1; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-slider { grid-row: 2; grid-column: 1 / -1; width: 100%; max-width: none; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-slider .cx-slider-track { width: 100%; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-end { justify-content: flex-start; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-end:nth-of-type(2) { justify-self: end; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-end { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; font-size: var(--cx-fs-sm); font-weight: 300; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-end.is-on { color: #fff; font-weight: 500; }
+.cx-root.is-desktop .cx-shape-controls .cx-vsep { display: none; }
+.cx-root.is-desktop .cx-shape-controls .cx-shape-picker { grid-row: 3; grid-column: 1; justify-content: space-between; height: 24px; padding: 0 6px; border: 1px solid var(--cx-glass-line); border-radius: 3px; background: #000; font-weight: 300; }
+.cx-root.is-desktop .cx-shape-controls .cx-icon-button { grid-row: 3; grid-column: 2; width: 24px; height: 24px; }
+.cx-root.is-desktop .cx-display-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--cx-glass-line); border-radius: 3px; }
+.cx-root.is-desktop .cx-display-tool { display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border: 0; border-radius: 0; background: none; font-size: var(--cx-fs-sm); font-weight: 300; color: var(--cx-stage-text-2); text-align: left; }
+.cx-root.is-desktop .cx-display-tool:nth-child(odd) { border-right: 1px solid var(--cx-hair); }
+.cx-root.is-desktop .cx-display-tool:nth-child(n+3) { border-top: 1px solid var(--cx-hair); }
+.cx-root.is-desktop .cx-display-tool:hover { color: #fff; background: var(--cx-glass-hover); }
+.cx-root.is-desktop .cx-display-tool[aria-pressed="true"] { background: #fff; color: #000; }
+.cx-root.is-desktop .cx-display-tool .cx-icon { width: 13px; height: 13px; }
+.cx-root.is-desktop .cx-display-scope .cx-scope { height: 24px; width: 100%; padding: 0 6px; border: 1px solid var(--cx-glass-line); border-radius: 3px; background: #000; font-weight: 300; }
+
+/* ── the sheet and its pages: black, hairlines, the same small-caps headings ── */
+.cx-root.is-desktop .cx-sheet { background: #000; border-left-color: var(--cx-hair); }
+.cx-root.is-desktop .cx-sheet.is-left { border-right-color: var(--cx-hair); }
+.cx-root.is-desktop .cx-sheet-header, .cx-root.is-desktop .cx-sheet-mini { background: #000; border-bottom-color: var(--cx-hair); }
+.cx-root.is-desktop .cx-sheet-title { font-weight: 500; }
+.cx-root.is-desktop .cx-sheet-body .cx-section-label { border-top: 0; padding-top: 0; }
+.cx-root.is-desktop .cx-button { border-radius: 3px; border-color: var(--cx-glass-line-strong); font-weight: 300; }
+.cx-root.is-desktop .cx-button.is-primary { background: #fff; color: #000; font-weight: 500; }
+.cx-root.is-desktop .cx-button.is-primary:hover { background: #e4e4e4; }
+.cx-root.is-desktop .cx-input, .cx-root.is-desktop .cx-textarea { background: #000; border-color: var(--cx-glass-line); border-radius: 3px; }
+.cx-root.is-desktop .cx-glass { background: #000; border-radius: 4px; }
+.cx-root.is-desktop.is-immersive { padding-top: 0; }
+
+/* The key popover's rows are lists: drop the browser's 40 px list indent so the dots line up with the filter field. */
+.cx-root.is-desktop .cx-key-rows, .cx-root.is-desktop .cx-key-list ul { margin: 0; padding: 0; list-style: none; }
+
+/* ── key popover (All groups…): heading in one weight, count columns under their own captions, a flat "Show every group" button ── */
+.cx-root.is-desktop .cx-popover-title h3 .cx-key-dimname, .cx-root.is-desktop .cx-key-section-head .cx-key-dimname { font-variant-caps: normal; letter-spacing: inherit; text-transform: uppercase; color: inherit; }
+.cx-root.is-desktop .cx-popover-title h3 .cx-key-dimname { color: var(--cx-stage-text-2); }
+.cx-root.is-desktop .cx-key-section-head { justify-content: space-between; }
+.cx-root.is-desktop .cx-key-cols { gap: 6px; margin-right: 36px; }
+.cx-root.is-desktop .cx-key-cols span, .cx-root.is-desktop .cx-key-item-count { min-width: 38px; text-align: right; }
+.cx-root.is-desktop .cx-key-showall.is-wide { border-radius: 3px; height: 26px; font-weight: 300; }
+.cx-root.is-desktop .cx-key-item-count { font-size: 10px; }
+
+/* group and region names on the figure: a 1 px outlined box on black, so they read over the bright spheres */
+.cx-root.is-desktop .cx-chart-labels.is-groups .cx-axis-label.is-box:not(.is-highlighted) { padding: 1px 6px; border: 1px solid var(--cx-glass-line-strong); border-radius: 2px; background: #000; font-family: inherit; font-size: 11px; font-weight: 300; color: var(--cx-stage-text-1); }
+
+/* chart axis and band names: bright enough to read on black (the depth fade in ChartOverlay already dims the far ones) */
+.cx-root.is-desktop .cx-chart-labels .cx-axis-label:not(.is-muted):not(.is-box):not(.is-title):not(.is-highlighted):not(.is-dimmed) { color: var(--cx-stage-text-2); }
+/* The sample-record notice sits in the top strip too, so it never covers the figure's top names at narrow widths. */
+.cx-root.is-desktop .cx-banner.is-sample, .cx-root.is-desktop .cx-title-block ~ .cx-banner.is-sample { top: 8px; max-width: min(400px, calc(100% - 2 * var(--cx-inset) - 120px)); }
+.cx-root.is-desktop:is(.bp-M, .bp-L) .cx-banner.is-sample { top: 46px; }
+
+/* Window themes (Settings > Appearance): the black ground takes the theme's own deep tint, as the stage does in the plugin. A figure colour theme never sets one.
+   Ink (the default) stays black. --cxd-ground is the window and stage, --cxd-deep the panels that float on it. */
+.cx-root.is-desktop[data-cx-theme="garnet"] { --cxd-ground: #2b1418; --cxd-deep: #1b0d10; }
+.cx-root.is-desktop[data-cx-theme="cobalt"] { --cxd-ground: #10203f; --cxd-deep: #0a1429; }
+.cx-root.is-desktop[data-cx-theme="lichen"] { --cxd-ground: #102019; --cxd-deep: #0a150f; }
+.cx-root.is-desktop[data-cx-theme="copper"] { --cxd-ground: #261811; --cxd-deep: #19100b; }
+.cx-root.is-desktop[data-cx-theme="vesper"] { --cxd-ground: #191535; --cxd-deep: #100e22; }
+.cx-root.is-desktop[data-cx-theme="flint"] { --cxd-ground: #1d2024; --cxd-deep: #121417; }
+.cx-root.is-desktop:is([data-cx-theme="garnet"], [data-cx-theme="cobalt"], [data-cx-theme="lichen"], [data-cx-theme="copper"], [data-cx-theme="vesper"], [data-cx-theme="flint"]) {
+  background: var(--cxd-ground);
+  --cx-glass: var(--cxd-deep);
+  --cx-glass-strong: var(--cxd-deep);
+  --cx-chrome: var(--cxd-ground);
+  --cx-chrome-alt: var(--cxd-deep);
+  --cx-stage: var(--cxd-ground);
+  --cx-stage-lift: var(--cxd-ground);
+  --cx-strip: var(--cxd-ground);
+}
+.cx-root.is-desktop:is([data-cx-theme="garnet"], [data-cx-theme="cobalt"], [data-cx-theme="lichen"], [data-cx-theme="copper"], [data-cx-theme="vesper"], [data-cx-theme="flint"]) :is(.cx-main, .cx-stage, .cx-rail, .cx-strip-dock) { background: var(--cxd-ground); }
+.cx-root.is-desktop:is([data-cx-theme="garnet"], [data-cx-theme="cobalt"], [data-cx-theme="lichen"], [data-cx-theme="copper"], [data-cx-theme="vesper"], [data-cx-theme="flint"]) :is(.cx-sheet, .cx-sheet-header, .cx-sheet-mini, .cx-popover, .cx-glass, .cx-input, .cx-textarea, .cx-select, .cx-command .cx-command-bar, .cx-agent-pill) { background: var(--cxd-deep); }
+
+/* ── controls, side by side with the recordings: squared toggles (outlined while off, white with a dark knob while on),
+   boxed selects with a chevron, a thin grey scrollbar in the long panels, plain-sans values ── */
+.cx-root.is-desktop .cx-toggle { width: 26px; height: 14px; border-radius: 3px; background: #000; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); transition: background 100ms linear, box-shadow 100ms linear; }
+.cx-root.is-desktop .cx-toggle:hover { box-shadow: inset 0 0 0 1px rgba(255,255,255,.8); }
+.cx-root.is-desktop .cx-toggle-knob { top: 3px; left: 3px; width: 8px; height: 8px; border-radius: 1px; }
+.cx-root.is-desktop .cx-toggle.is-on, .cx-root.is-desktop .cx-toggle.is-on:hover { background: #fff; box-shadow: inset 0 0 0 1px #fff; }
+.cx-root.is-desktop .cx-toggle.is-on .cx-toggle-knob { transform: translateX(12px); background: #000; }
+.cx-root.is-desktop .cx-toggle.is-inline { width: 22px; height: 12px; }
+.cx-root.is-desktop .cx-toggle.is-inline .cx-toggle-knob { top: 2.5px; left: 2.5px; width: 7px; height: 7px; }
+.cx-root.is-desktop .cx-toggle.is-inline.is-on .cx-toggle-knob { transform: translateX(10px); }
+.cx-root.is-desktop .cx-toggle:focus-visible { outline: 1px solid #fff; outline-offset: 2px; }
+.cx-root.is-desktop .cx-select { justify-content: space-between; gap: 8px; font-weight: 300; border-color: var(--cx-glass-line-strong); transition: border-color 100ms linear; }
+.cx-root.is-desktop .cx-select:hover { border-color: rgba(255,255,255,.4); }
+.cx-root.is-desktop .cx-row > .cx-select { flex: 0 0 54%; min-width: 0; }
+.cx-root.is-desktop .cx-select > .cx-select-caret { position: relative; flex: none; width: 10px; height: 10px; color: var(--cx-stage-text-2); }
+.cx-root.is-desktop .cx-select > .cx-select-caret::before { content: ""; position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -4px 0 0 -3px; border-right: 1.2px solid currentColor; border-bottom: 1.2px solid currentColor; transform: rotate(45deg); }
+.cx-root.is-desktop .cx-row { min-height: 22px; }
+.cx-root.is-desktop .cx-row-value { font-family: var(--cx-font); font-weight: 300; }
+.cx-root.is-desktop .cx-seg:hover { background: var(--cx-glass-hover); }
+.cx-root.is-desktop .cx-seg.is-on:hover { background: #fff; }
+.cx-root.is-desktop .cx-slider-track:hover .cx-slider-thumb { background: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,.14); }
+.cx-root.is-desktop .cx-slider-track:active .cx-slider-thumb { box-shadow: 0 0 0 4px rgba(255,255,255,.22); }
+.cx-root.is-desktop .cx-display-scroll { scrollbar-width: auto; scrollbar-color: auto; }
+.cx-root.is-desktop .cx-display-scroll::-webkit-scrollbar { width: 6px; }
+.cx-root.is-desktop .cx-display-scroll::-webkit-scrollbar-button { display: none; }
+.cx-root.is-desktop .cx-display-scroll::-webkit-scrollbar-thumb { border: 0; border-radius: 3px; background: rgba(255,255,255,.34); background-clip: border-box; }
+.cx-root.is-desktop .cx-display-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.55); }
+
+/* ── rail LOOK pass (side by side with the reference rail; Owner: rail-and-legend track) ──
+   Reference rail is 187 px of a 1512 px window; wordmark row centred 75 px from the window top (below where the
+   window controls sit), a bordered search field with its palette line 5 px under it, nav rows 23.4 px apart, a
+   hairline and the small "show everything" row under + Add, no minimap (removed at the user's request), and the
+   status and meters at the foot. */
+.cx-root.is-desktop .cx-rail { width: 188px; padding: 32px 13px 24px 14px; }
+.cx-root.is-desktop .cx-rail-head { gap: 11px; }
+.cx-root.is-desktop .cx-rail-brand-row { justify-content: center; }
+.cx-root.is-desktop .cx-rail-word { flex: 0 1 auto; font-size: 19px; }
+.cx-root.is-desktop .cx-rail-brand:has(.cx-rail-word[data-scope="all"]) .cx-rail-bar { display: none; }
+.cx-root.is-desktop .cx-rail-search { height: 26px; padding: 0 8px; border: 1px solid var(--cx-line-strong); border-radius: 3px; font-size: 11.5px; color: var(--cx-text-2); }
+.cx-root.is-desktop .cx-rail-search:hover { border-color: var(--cx-line-strong); }
+.cx-root.is-desktop .cx-rail-search-icon { width: 12px; height: 12px; }
+.cx-root.is-desktop .cx-rail-key { font-size: 9.5px; letter-spacing: .02em; }
+.cx-root.is-desktop .cx-rail-search-line { margin-top: 5px; }
+.cx-root.is-desktop .cx-rail-scope { display: none; }
+.cx-root.is-desktop .cx-nav { gap: 1.4px; }
+.cx-root.is-desktop .cx-nav-item { padding-left: 10px; }
+.cx-root.is-desktop .cx-nav-row.is-pair .cx-nav-item:first-child { padding-left: 10px; }
+.cx-root.is-desktop .cx-nav-item::before { width: 2px; height: 12px; margin-top: -6px; }
+.cx-root.is-desktop .cx-nav-row.is-add { margin-top: 15px; }
+.cx-root.is-desktop .cx-nav-row.is-add .cx-nav-item { gap: 8px; }
+.cx-root.is-desktop .cx-nav-row.is-add .cx-nav-item::after { content: ""; order: -1; flex: none; width: 10px; height: 10px; margin-right: 2px; background: linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat, linear-gradient(currentColor, currentColor) center / 1px 100% no-repeat; opacity: .85; }
+.cx-root.is-desktop .cx-nav-row.is-add .cx-nav-item { padding-left: 9px; }
+.cx-root.is-desktop .cx-rail-showall { margin-top: -8px; padding-top: 1px; border-top: 1px solid var(--cx-line); }
+.cx-root.is-desktop .cx-rail-showall .cx-row { min-height: 24px; padding-left: 10px; flex-wrap: nowrap; }
+.cx-root.is-desktop .cx-rail-showall .cx-row-label { font-size: 10.5px; font-weight: 300; color: var(--cx-text-2); }
+.cx-root.is-desktop .cx-rail-showall .cx-toggle { width: 24px; height: 12px; border-radius: 2px; }
+.cx-root.is-desktop .cx-rail-showall .cx-toggle .cx-toggle-knob { top: 2px; left: 2px; width: 8px; height: 8px; border-radius: 1px; }
+.cx-root.is-desktop .cx-rail-showall .cx-toggle.is-on .cx-toggle-knob { transform: translateX(12px); }
+.cx-root.is-desktop .cx-rail-foot { margin-top: auto; gap: 7px; }
+.cx-root.is-desktop .cx-rail-status { font-size: 10.5px; gap: 4px; }
+.cx-root.is-desktop .cx-rail-status :is(.cx-live, .cx-loading-chip, .cx-arrivals, .cx-agent-chip) { font-size: 10.5px; }
+.cx-root.is-desktop .cx-rail-meters { gap: 7px; }
+.cx-root.is-desktop .cx-rail-meter { grid-template-columns: 12px minmax(0, 1fr) auto auto; gap: 0 7px; font-size: 10.5px; line-height: 14px; }
+.cx-root.is-desktop .cx-rail-meter-icon { grid-area: 1 / 1; width: 11px; height: 11px; color: var(--cx-text-3); }
+.cx-root.is-desktop .cx-rail-meter-bar { grid-area: 1 / 2; align-self: center; background: rgba(255,255,255,.14); }
+.cx-root.is-desktop .cx-rail-meter-label { grid-area: 1 / 3; text-align: right; color: var(--cx-text-1); }
+.cx-root.is-desktop .cx-rail-meter-value { grid-area: 1 / 4; margin-left: -3px; text-align: right; color: var(--cx-text-1); }
+
+/* ── legend, tool buttons and histogram LOOK pass (Owner: rail-and-legend track) ──
+   Reference legend: 196 px wide, a thin small-caps head in grey (no heavy weight), rows 20 px apart with 6 px dots,
+   names in off-white, counts right-aligned in a lighter grey; the tool button is a 24 px outlined square about 42 px
+   in from the window's right edge; the histogram is a borderless 156 px mass of fine bars on a one-pixel baseline. */
+.cx-root.is-desktop .cx-keylist { width: 196px; gap: 18px; }
+.cx-root.is-desktop .cx-keylist-headrow { margin-bottom: 9px; }
+.cx-root.is-desktop .cx-keylist-head { font-size: 9.5px; letter-spacing: .1em; font-weight: 400; color: var(--cx-stage-text-2); }
+.cx-root.is-desktop .cx-keylist-head .cx-select-caret-icon { opacity: .45; }
+.cx-root.is-desktop .cx-keylist-layers { opacity: .7; }
+.cx-root.is-desktop .cx-keylist-item { height: 20px; gap: 8px; font-size: 11px; color: #dedede; }
+.cx-root.is-desktop .cx-keylist-item .cx-key-dot { width: 6px; height: 6px; }
+.cx-root.is-desktop .cx-keylist-count { font-size: 11px; color: var(--cx-stage-text-2); opacity: .8; }
+.cx-root.is-desktop .cx-keylist-eye, .cx-root.is-desktop .cx-keylist-row .cx-disclosure, .cx-root.is-desktop .cx-keylist-row .cx-disclosure-space { height: 20px; }
+.cx-root.is-desktop .cx-keylist-eye { width: 20px; }
+.cx-root.is-desktop .cx-keylist-all { font-size: 10.5px; color: var(--cx-stage-text-3); }
+.cx-root.is-desktop .cx-keylist-all:hover { color: #fff; }
+.cx-root.is-desktop .cx-cluster { top: 40px; right: 36px; }
+.cx-root.is-desktop .cx-cluster-btn { width: 24px; height: 24px; }
+.cx-root.is-desktop .cx-cluster-btn[data-cx-popover-toggle] { border-color: rgba(255,255,255,.2); border-radius: 2px; }
+.cx-root.is-desktop .cx-cluster-btn .cx-icon { width: 13px; height: 13px; }
+.cx-root.is-desktop .cx-strip-dock { width: 156px; right: 8px; border: 0; background: none; }
+.cx-root.is-desktop .cx-strip-dock.is-open { right: var(--cx-inset); border: 1px solid var(--cx-glass-line-strong); background: #000; }
+/* the figure-colours popover: squared cards, hairline frame, a white frame on the chosen one */
+.cx-root.is-desktop .cx-theme-grid { gap: 6px; }
+.cx-root.is-desktop .cx-theme-opt { gap: 6px; min-height: 48px; padding: 8px 8px 9px; border-radius: 2px; box-shadow: inset 0 -2px 0 var(--sw-accent); transition: border-color 100ms linear; }
+.cx-root.is-desktop .cx-theme-opt:hover { border-color: rgba(255,255,255,.5); transform: none; }
+.cx-root.is-desktop .cx-theme-opt.is-on { border-color: #fff; outline: 0; }
+.cx-root.is-desktop .cx-theme-opt.is-on .cx-theme-opt-name { font-weight: 600; }
+.cx-root.is-desktop .cx-theme-opt-sw { gap: 3px; }
+.cx-root.is-desktop .cx-theme-opt-sw i { width: 8px; height: 8px; flex-basis: 8px; }
+.cx-root.is-desktop .cx-theme-opt-name { font-weight: 300; }
+/* counts inside the popovers read in the plain sans, as the recordings' numbers do */
+.cx-root.is-desktop :is(.cx-key-count, .cx-key-item-count, .cx-key-total, .cx-key-head-total) { font-family: var(--cx-font); font-weight: 300; }

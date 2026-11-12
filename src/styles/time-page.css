@@ -1,0 +1,32 @@
+/* Time page: period chips, busy-year stepper, brush, section sentences, label select. Imported from styles.css. */
+
+.cx-pb { display: flex; flex-direction: column; gap: 8px; min-width: 0; margin: 2px 0 6px; }
+.cx-pb-chips { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.cx-pb-chip { height: auto; margin: 0; padding: 0 0 1px; border: 0; border-bottom: 1px solid transparent; border-radius: 0; background: none; box-shadow: none; color: var(--cx-text-3); font-size: var(--cx-fs-sm); cursor: pointer; }
+.cx-pb-chip:hover { color: var(--cx-text-1); }
+.cx-pb-chip.is-on { color: var(--cx-text-1); border-bottom-color: var(--cx-text-1); }
+.cx-pb-chip:focus-visible { outline: 2px solid var(--cx-accent); outline-offset: 2px; }
+.cx-pb-step { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; color: var(--cx-text-3); font-size: var(--cx-fs-sm); }
+.cx-pb-stepbtn { width: 18px; height: 18px; min-height: 0; margin: 0; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--cx-line-strong); border-radius: var(--cx-r-sm); background: none; box-shadow: none; color: var(--cx-text-2); font-size: var(--cx-fs-sm); line-height: 1; cursor: pointer; }
+.cx-pb-stepbtn:hover:not(:disabled) { color: var(--cx-text-1); border-color: var(--cx-text-3); }
+.cx-pb-stepbtn:disabled { opacity: .4; cursor: default; }
+.cx-pb-num { width: 52px; height: 20px; min-height: 0; margin: 0; padding: 0 4px; border: 1px solid var(--cx-line-strong); border-radius: var(--cx-r-sm); background: none; box-shadow: none; color: var(--cx-text-1); font-size: var(--cx-fs-sm); text-align: center; -moz-appearance: textfield; appearance: textfield; }
+.cx-pb-num::-webkit-outer-spin-button, .cx-pb-num::-webkit-inner-spin-button { appearance: none; margin: 0; }
+.cx-pb-brush { position: relative; height: 26px; border: 1px solid var(--cx-line); background: color-mix(in srgb, var(--cx-text-3) 8%, transparent); cursor: crosshair; touch-action: none; user-select: none; }
+.cx-pb-bars { position: absolute; inset: 3px 0 0; width: 100%; height: calc(100% - 3px); fill: var(--cx-accent); opacity: .75; pointer-events: none; }
+.cx-pb-win { position: absolute; top: -1px; bottom: -1px; border: 1px solid var(--cx-text-1); background: color-mix(in srgb, var(--cx-text-1) 7%, transparent); cursor: grab; }
+.cx-pb-win:active { cursor: grabbing; }
+.cx-pb-handle { position: absolute; top: -1px; bottom: -1px; width: 7px; cursor: ew-resize; }
+.cx-pb-handle.is-a { left: -4px; }
+.cx-pb-handle.is-b { right: -4px; }
+.cx-pb-handle::after { content: ""; position: absolute; left: 2px; right: 2px; top: 0; bottom: 0; background: var(--cx-text-1); }
+.cx-pb-handle:focus-visible { outline: 2px solid var(--cx-accent); outline-offset: 1px; }
+.cx-pb-caption { margin: 0; color: var(--cx-text-3); font-size: var(--cx-fs-xs); letter-spacing: .04em; text-transform: uppercase; }
+
+.cx-when-sentence { margin: 0; color: var(--cx-text-2); font-size: var(--cx-fs-sm); line-height: 1.4; overflow-wrap: anywhere; }
+
+/* Selects that name a choice ("kind", "tag", "rejection") keep room to read it, on this page and in the chart panel. */
+.cx-root .cx-when-labelrow .cx-row > .cx-select, .cx-root .cx-time-data .cx-row > .cx-select, .cx-root .cx-chart-zone .cx-row > .cx-select, .cx-root .cx-sheet.is-card .cx-chart-zone .cx-select { flex: 0 1 auto; min-width: 120px; }
+.cx-when-labelrow .cx-select-value { min-width: 0; }
+
+@media (prefers-reduced-motion: reduce) { .cx-pb-chip { transition: none; } }
