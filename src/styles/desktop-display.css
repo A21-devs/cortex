@@ -1,0 +1,24 @@
+/*
+ * Cortex Desktop: the Display panel's first screen and where the panels hang.
+ * The stage cluster's buttons sit at top 40 px and are 24 px tall, so every cluster panel starts 8 px under them
+ * (72 px): the button that opened the panel stays visible, drawn filled, and can be pressed again to close it.
+ * The panel's body scrolls inside its own max-height; the footer stays put.
+ */
+.cx-root.is-desktop { --cx-cluster-bottom: 64px; --cx-panel-top: calc(var(--cx-cluster-bottom) + 8px); }
+.cx-root.is-desktop .cx-popover.cx-display { top: var(--cx-panel-top); max-height: calc(100vh - var(--cx-panel-top) - 66px); }
+.cx-root.is-desktop .cx-popover.cx-theme-pop { top: var(--cx-panel-top); max-height: calc(100vh - var(--cx-panel-top) - 66px); overflow-y: auto; }
+
+/* Labels row: the label, then two compact pickers (what the names are for, how many) */
+.cx-root.is-desktop .cx-display .cx-pair-row { gap: 8px; }
+.cx-root.is-desktop .cx-display .cx-pair { display: flex; flex: 0 0 auto; gap: 4px; min-width: 0; }
+.cx-root.is-desktop .cx-display .cx-pair > .cx-select { flex: 0 0 auto; width: 76px; min-width: 0; gap: 4px; padding: 0 5px; }
+.cx-root.is-desktop .cx-display .cx-pair > .cx-select:first-child { width: 88px; }
+
+/* The lower collapsed block: Colour theme, Stage tint and Data colours */
+.cx-root.is-desktop .cx-display .cx-display-disclosure { display: flex; align-items: center; justify-content: space-between; width: 100%; margin: 12px 0 0; padding: 10px 0 4px; border: 0; border-top: 1px solid var(--cx-hair); border-radius: 0; background: none; color: var(--cx-stage-text-3); font: inherit; font-size: 10px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; text-align: left; cursor: pointer; }
+.cx-root.is-desktop .cx-display .cx-display-disclosure:hover { color: #fff; background: none; }
+.cx-root.is-desktop .cx-display .cx-display-disclosure .cx-icon { width: 12px; height: 12px; transform: rotate(-90deg); transition: transform 120ms ease; }
+.cx-root.is-desktop .cx-display .cx-display-disclosure.is-open .cx-icon { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .cx-root.is-desktop .cx-display .cx-display-disclosure .cx-icon { transition: none; }
+}
