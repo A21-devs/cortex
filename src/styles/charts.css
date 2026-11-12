@@ -1,0 +1,214 @@
+/*
+ * Chart page and the 2D chart overlay (CORTEX-UX §5.25, §7). Owner: E9. The chart marks are particles on the
+ * stage; this sheet styles the gallery, fields and the overlay's axes, labels, readings, tooltip and drop zones.
+ */
+
+/* ── Chart page ── */
+.cx-chart-gallery-groups { display: flex; flex-direction: column; gap: 8px; }
+/* The chart choices read like the recordings' Form and Answers blocks: a hairline grid of plain names, three to a row, the chosen one filled white. */
+.cx-chart-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; border: 1px solid var(--cx-hair, var(--cx-line)); background: #000; }
+.cx-root .cx-chart-tile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: auto; min-height: 22px; padding: 4px 4px; border: 0; border-radius: 0; background: #000; box-shadow: 0 0 0 1px var(--cx-hair, var(--cx-line)); color: var(--cx-stage-text-1); font-family: var(--cx-font); font-size: 11px; font-weight: 300; line-height: 1.25; text-align: center; cursor: pointer; transition: background 100ms linear, color 100ms linear; }
+.cx-chart-tile svg { display: none; }
+.cx-chart-tile span { display: block; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.cx-chart-tile:hover { background: rgba(255, 255, 255, .1); }
+.cx-chart-tile.is-selected, .cx-chart-tile.is-selected:hover { outline: 0; background: #fff; color: #000; }
+.cx-chart-tile.is-pad { cursor: default; pointer-events: none; background: #000; }
+.cx-chart-tile:focus-visible { outline: 1px solid #fff; outline-offset: -2px; }
+.cx-chart-chips, .cx-chart-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.cx-chart-chip { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 2px; border: 1px solid var(--cx-hair, var(--cx-line)); background: #000; color: var(--cx-stage-text-1, var(--cx-text-1)); font-size: 11px; font-weight: 300; cursor: grab; user-select: none; transition: border-color 100ms linear; }
+.cx-chart-chip:hover { border-color: var(--cx-glass-line-strong, rgba(255, 255, 255, .4)); }
+.cx-chart-chip:active { cursor: grabbing; }
+.cx-chart-chip.is-filter { cursor: default; }
+.cx-chart-chip button { display: inline-flex; padding: 0; border: 0; background: none; color: var(--cx-text-3); cursor: pointer; }
+.cx-chart-zones { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.cx-chart-zone { display: flex; align-items: center; gap: 8px; }
+.cx-chart-zone .cx-row-label { min-width: 76px; }
+/* A choice option (Scale, Smoothing, Window, Show…): its name over the segmented control, which can be wider than the row. */
+.cx-chart-opt { display: flex; flex-direction: column; gap: 4px; align-items: stretch; }
+.cx-chart-opt .cx-segmented { width: 100%; }
+.cx-chart-opt .cx-segmented > * { flex: 1 1 auto; }
+/* A choice of five or more (Lifelines Show) wraps onto a second line instead of clipping its last button. */
+.cx-chart-opt .cx-segmented { flex-wrap: wrap; }
+.cx-root.is-desktop .cx-chart-opt .cx-seg { flex: 1 1 auto; padding: 0 8px; }
+.cx-chart-sort { font-size: var(--cx-fs-xs); }
+.cx-chart-readings { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.cx-chart-reading { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 28px; padding: 0 2px; }
+.cx-chart-answer { margin: 0 0 8px; }
+.cx-chart-question { margin: 0 0 2px; font-style: italic; color: var(--cx-text-3); font-size: var(--cx-fs-xs); }
+.cx-chart-answer-line { margin: 0; color: var(--cx-text-1, var(--cx-text-2)); font-size: var(--cx-fs-sm); }
+.cx-chart-attach { margin: 6px 0 0; color: var(--cx-text-3); font-size: var(--cx-fs-xs); }
+.cx-chart-stepper { display: inline-flex; align-items: center; gap: 10px; }
+.cx-chart-folders { list-style: none; margin: 0; padding: 0; max-height: 280px; overflow: auto; }
+.cx-chart-folder { display: flex; align-items: center; gap: 8px; min-height: 24px; font-size: var(--cx-fs-sm); }
+.cx-chart-folder-count { margin-left: auto; color: var(--cx-text-3); font-size: var(--cx-fs-xs); }
+
+/* ── Overlay on the stage ── */
+.cx-chart-stage { position: absolute; inset: 0; pointer-events: none; }
+.cx-chart-layer { position: absolute; inset: 0; pointer-events: none; }
+.cx-chart-overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: var(--cx-z-labels); }
+.cx-chart-labels { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.cx-axis-label { position: absolute; left: 0; top: 0; padding: 0; border: 0; background: none; white-space: nowrap; font-family: var(--cx-font); font-size: 10.5px; font-weight: 300; line-height: 1.2; color: var(--cx-stage-text-3); pointer-events: none; will-change: transform; }
+/* A name that is a button (a traceable group) is as tall as the plain-text names beside it, so the declutter can space them by one line. */
+.cx-root .cx-chart-labels button.cx-axis-label { line-height: 1.2; height: auto; min-height: 0; }
+.cx-axis-label.is-muted { color: var(--cx-stage-text-3); filter: opacity(.7); }
+.cx-axis-label.is-title { color: var(--cx-stage-text-1); font-weight: 600; font-size: 11.5px; }
+.cx-axis-label.is-box { color: var(--cx-stage-text-1); padding: 1px 5px; border-radius: var(--cx-r-xs); background: rgba(10, 12, 17, .72); }
+/* A tile's name (treemap, icicle): boxed in a thin line at the tile's corner. */
+.cx-axis-label.is-tile { color: var(--cx-stage-text-1); padding: 1px 6px; border: 1px solid var(--cx-glass-line-strong, rgba(255, 255, 255, .3)); border-radius: 2px; background: rgba(0, 0, 0, .78); }
+.cx-axis-label.is-link { pointer-events: auto; cursor: pointer; }
+.cx-chart-labels.is-blink-off .cx-axis-label { visibility: hidden; }
+.cx-chart-layer.is-off .cx-axis-label.is-link { pointer-events: none; }
+/* Highlighted band labels are filled chips in their group's colour; with any highlight on, the others step back (CHART-05). */
+.cx-axis-label.is-highlighted { padding: 1px 7px; border-radius: 999px; background: var(--cx-chip, var(--cx-accent-fill)); color: var(--cx-chip-ink, var(--cx-on-accent, #fff)); font-weight: 600; text-decoration: none; }
+.cx-axis-label.is-highlighted:hover, .cx-axis-label.is-highlighted:focus-visible { color: var(--cx-chip-ink, var(--cx-on-accent, #fff)); }
+.cx-axis-label.is-dimmed { filter: opacity(.4); }
+.cx-chart-label-tip { max-width: 320px; }
+.cx-axis-label.is-link:hover, .cx-axis-label.is-link:focus-visible { color: var(--cx-stage-text-1); text-decoration: underline; }
+.cx-chart-tip { position: absolute; max-width: 280px; padding: 8px 12px; border-radius: var(--cx-r-md); background: var(--cx-glass-strong); border: 1px solid var(--cx-glass-line-strong); box-shadow: var(--cx-shadow-pop); color: var(--cx-stage-text-1); font-size: var(--cx-fs-sm); pointer-events: none; z-index: var(--cx-z-tip); }
+.cx-chart-tip-name { font-weight: 600; }
+.cx-chart-tip-line { color: var(--cx-stage-text-2); font-size: 11px; }
+.cx-chart-tip-hint { margin-top: 4px; color: var(--cx-stage-text-3); font-size: var(--cx-fs-xs); }
+
+/* Drop zones appear while a dimension chip is being dragged. */
+.cx-chart-drop { position: absolute; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--cx-accent); border-radius: var(--cx-r-md); background: var(--cx-glass); color: var(--cx-stage-text-1); font-size: var(--cx-fs-sm); pointer-events: none; z-index: var(--cx-z-overlay); }
+.cx-chart-stage.is-dragging .cx-chart-drop { pointer-events: auto; }
+.cx-chart-drop:hover { background: var(--cx-glass-strong); }
+.cx-chart-drop.is-x { left: 12%; right: 12%; bottom: 14px; height: 44px; }
+.cx-chart-drop.is-y { left: 14px; top: 18%; bottom: 18%; width: 64px; }
+.cx-chart-drop.is-colour { right: 14px; top: 14px; width: 128px; height: 44px; }
+
+/* Readings drawn on the chart: a callout (dot, leader, label) or a bracket (a bar with its label above). */
+.cx-readings { position: absolute; inset: 0; overflow: hidden; pointer-events: none; transition: opacity 250ms linear; z-index: var(--cx-z-labels); }
+.cx-reading { position: absolute; left: 0; top: 0; color: var(--cx-stage-text-1); font-size: var(--cx-fs-xs); }
+.cx-reading-dot { position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; border-radius: 50%; background: var(--cx-accent); box-shadow: 0 0 0 2px rgba(10, 12, 17, .6); }
+.cx-reading-leader { position: absolute; left: 0; top: 0; height: 1px; background: var(--cx-stage-text-2); transform-origin: 0 0; }
+.cx-reading-text { position: absolute; padding: 1px 6px; border-radius: var(--cx-r-xs); background: rgba(10, 12, 17, .78); border: 1px solid var(--cx-glass-line-strong); white-space: nowrap; transform: translate(0, -50%); }
+.cx-reading.is-bracket { height: 0; border-top: 1px solid var(--cx-stage-text-1); transform-origin: 0 0; }
+.cx-reading.is-bracket::before, .cx-reading.is-bracket::after { content: ""; position: absolute; top: -4px; width: 1px; height: 7px; background: var(--cx-stage-text-1); }
+.cx-reading.is-bracket::before { left: 0; }
+.cx-reading.is-bracket::after { right: 0; }
+.cx-reading.is-bracket .cx-reading-text { left: 50%; top: -12px; transform: translate(-50%, -50%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-readings, .cx-chart-layer { transition-duration: 120ms; }
+}
+.cx-axis-rename { position: absolute; left: 0; top: 0; margin: 0; padding: 1px 5px; width: 14em; max-width: 60%; pointer-events: auto; font: inherit; font-size: 11px; color: var(--cx-stage-text-1); background: rgba(10, 12, 17, .85); border: 1px solid var(--cx-accent, currentColor); border-radius: var(--cx-r-xs); }
+
+/* ── chart page structure: fold, switch, offer, colour key, groups ── */
+.cx-sheet.is-folded { position: absolute; right: 0; top: 0; bottom: auto; height: auto; min-height: 0; box-shadow: var(--cx-shadow-sheet-float); }
+.cx-sheet.is-full.is-folded { left: 0; }
+.cx-sheet.is-folded .cx-sheet-body { display: none; }
+.cx-sheet.is-folded .cx-sheet-header { border-bottom: 0; }
+.cx-sheet-fold .cx-icon { transform: rotate(180deg); transition: transform var(--cx-t-fast, 120ms) ease; }
+.cx-sheet-fold.is-folded .cx-icon { transform: none; }
+.cx-chart-head { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.cx-chart-offer { display: flex; align-items: center; gap: 8px; }
+.cx-chart-chip.is-offer { cursor: pointer; border-color: var(--cx-accent); color: var(--cx-accent); background: var(--cx-accent-soft); }
+.cx-chart-zone .cx-select { min-width: 0; }
+.cx-chart-key { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 8px 0 0; padding: 0; list-style: none; font-size: var(--cx-fs-xs); color: var(--cx-text-2); }
+.cx-chart-key-item { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; }
+.cx-chart-key-item > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cx-chart-key-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.cx-chart-key-more { color: var(--cx-text-3); font-family: var(--cx-font-mono); }
+/* Chart page value lists (P10): combine checklist, folder tree, saved charts */
+.cx-chart-values, .cx-chart-tree, .cx-chart-combined, .cx-chart-saved { list-style: none; margin: 0; padding: 0; }
+.cx-chart-values { max-height: 240px; overflow-y: auto; }
+.cx-chart-value { display: flex; align-items: center; gap: 8px; min-height: 24px; font-size: var(--cx-fs-sm); }
+.cx-chart-value-name { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cx-chart-value-count { margin-left: auto; color: var(--cx-text-3); font-size: var(--cx-fs-xs); }
+.cx-chart-values-footer, .cx-chart-values-note { margin: 6px 0 0; color: var(--cx-text-3); font-size: var(--cx-fs-xs); }
+.cx-chart-combine-row, .cx-chart-combine-name, .cx-chart-folders-head, .cx-chart-save { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.cx-chart-combine-row .cx-chart-values-note { margin: 0; }
+.cx-chart-combine-name .cx-input, .cx-chart-save .cx-input { flex: 1 1 auto; min-width: 0; }
+.cx-chart-combined { margin: 8px 0; display: flex; flex-direction: column; gap: 2px; }
+.cx-chart-combined li, .cx-chart-saved li { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 24px; font-size: var(--cx-fs-sm); }
+.cx-chart-folders-head { margin-top: 0; justify-content: space-between; }
+.cx-chart-folders-head .cx-segmented { flex: 1 1 auto; }
+.cx-chart-folders-note { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.cx-chart-folders-note .cx-chart-values-note { margin: 0; }
+.cx-chart-tree { margin-top: 8px; max-height: 320px; overflow: auto; white-space: nowrap; }
+.cx-chart-tree-row { display: flex; align-items: center; gap: 2px; }
+.cx-chart-tree-chevron .cx-icon { transition: transform var(--cx-t-fast, 120ms) ease; transform: rotate(-90deg); }
+.cx-chart-tree-chevron.is-open .cx-icon { transform: none; }
+.cx-chart-tree-gap { flex: none; width: 22px; }
+.cx-chart-tree .cx-chart-folder { flex: 1 1 auto; }
+.cx-chart-tree-name { padding-right: 12px; }
+.cx-chart-saved { margin-top: 8px; display: flex; flex-direction: column; gap: 2px; }
+.cx-chart-saved-actions { display: inline-flex; gap: 10px; }
+/* The Chart page as a floating left card (Appearance › Chart panel as a floating card): bordered, its own scroll, over a full-width stage. */
+.cx-sheet.is-card { position: absolute; top: 74px; bottom: auto; right: auto; min-width: 0; max-width: none; height: auto; max-height: max(320px, calc(100% - 115px)); border: 1px solid var(--cx-line); border-radius: 3px; box-shadow: var(--cx-shadow-sheet-float); overflow: hidden; animation: none; }
+/* The hint banner sits to the right of the card, so the card never hides it. */
+.cx-root.is-desktop:has(.cx-sheet.is-card) .cx-banner.is-thin-groups { left: calc(var(--cx-inset) + 256px); max-width: calc(100% - var(--cx-inset) - 256px - 140px); }
+.cx-sheet.is-card .cx-sheet-header { height: 34px; padding: 0 var(--cx-sp-3) 0 12px; }
+.cx-root .cx-sheet.is-card .cx-sheet-title { font-size: 12.5px; font-weight: 600; letter-spacing: 0; }
+.cx-sheet.is-card .cx-sheet-body { padding-inline: 12px; font-size: 11.5px; font-weight: 300; }
+/* Rows read like the recordings' table builder: the name at the left, its control to the right, an Order row of its own, hairlines between the sections. */
+.cx-sheet.is-card .cx-row, .cx-sheet.is-card .cx-chart-zone { min-height: 24px; gap: 8px; }
+.cx-sheet.is-card .cx-row-label, .cx-sheet.is-card .cx-toggle-label { font-size: 11.5px; font-weight: 300; color: var(--cx-stage-text-1); }
+.cx-sheet.is-card .cx-chart-zone { margin: 0; }
+.cx-sheet.is-card .cx-chart-zones { gap: 6px; margin-top: 8px; }
+.cx-sheet.is-card .cx-chart-zone .cx-row-label { min-width: 0; flex: 0 0 56px; }
+.cx-sheet.is-card .cx-chart-zone .cx-select { flex: 1 1 auto; min-width: 0; }
+.cx-sheet.is-card .cx-chart-swap { display: block; margin: 6px 0 0; padding: 0; border: 0; background: none; color: var(--cx-stage-text-1); font-size: 11.5px; font-weight: 300; text-align: left; cursor: pointer; }
+.cx-sheet.is-card .cx-chart-swap:hover { color: #fff; text-decoration: underline; }
+.cx-sheet.is-card .cx-section { margin: 0; padding: 0 0 10px; }
+.cx-sheet.is-card .cx-section + .cx-section { border-top: 1px solid var(--cx-hair, var(--cx-line)); }
+.cx-root .cx-sheet.is-card .cx-section-label { margin: 10px 0 8px; font-size: 9.5px; font-weight: 400; letter-spacing: .1em; color: var(--cx-stage-text-3); }
+.cx-sheet.is-card .cx-page-subtitle { font-size: 11.5px; font-weight: 300; color: var(--cx-stage-text-2); }
+.cx-sheet.is-card .cx-chart-gallery-groups { gap: 0; }
+/* A thin grey scrollbar in the card, as in the Display panel and the recordings. */
+.cx-sheet.is-card .cx-sheet-body { scrollbar-width: auto; scrollbar-color: auto; }
+.cx-sheet.is-card .cx-sheet-body::-webkit-scrollbar { width: 6px; }
+.cx-sheet.is-card .cx-sheet-body::-webkit-scrollbar-button { display: none; }
+.cx-sheet.is-card .cx-sheet-body::-webkit-scrollbar-thumb { border: 0; border-radius: 3px; background: rgba(255, 255, 255, .34); }
+.cx-sheet.is-card .cx-sheet-body::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, .55); }
+.cx-chart-swap { display: block; margin: 6px 0 0; padding: 0; border: 0; background: none; color: var(--cx-text-2); font-size: var(--cx-fs-sm); text-align: left; cursor: pointer; }
+/* The page's actions are plain text links at the card's foot, as the recordings' Export counts and Export picture are. */
+.cx-sheet.is-card .cx-row-buttons { display: flex; flex-wrap: wrap; gap: 6px 16px; padding-top: 12px; }
+.cx-root .cx-sheet.is-card .cx-row-buttons .cx-button { height: auto; padding: 0; border: 0; border-radius: 0; background: none; font-size: 11.5px; font-weight: 300; color: var(--cx-stage-text-1); }
+.cx-sheet.is-card .cx-row-buttons .cx-button .cx-icon { display: none; }
+.cx-root .cx-sheet.is-card .cx-row-buttons .cx-button:hover { color: #fff; text-decoration: underline; background: none; }
+.cx-sheet.is-card .cx-field-hint, .cx-sheet.is-card .cx-hint { font-size: 10.5px; }
+
+/* Show or hide (checklist per axis, hidden chips) and the Start from preset row */
+.cx-chart-showhide .cx-segmented { margin-bottom: 6px; }
+.cx-chart-showhide-list li { display: flex; align-items: center; gap: 8px; }
+.cx-chart-showhide-list li .cx-chart-value { flex: 1 1 auto; min-width: 0; }
+.cx-chart-showhide-list li.is-hidden .cx-chart-value-name { color: var(--cx-text-3); text-decoration: line-through; }
+.cx-chart-only { flex: 0 0 auto; font-size: var(--cx-fs-xs); }
+.cx-chart-only.is-on { color: var(--cx-accent); }
+.cx-chart-hidden-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.cx-chart-hidden-row .cx-row-label { min-width: 0; }
+.cx-chart-hidden-chips .cx-chart-chip.is-filter button { min-width: 16px; min-height: 16px; align-items: center; justify-content: center; }
+.cx-chart-preset { cursor: pointer; font-family: inherit; }
+.cx-chart-preset:hover { border-color: var(--cx-accent); }
+.cx-chart-preset.is-on { border-color: var(--cx-accent); color: var(--cx-accent); background: var(--cx-accent-soft); }
+.cx-chart-preset:focus-visible, .cx-chart-only:focus-visible { outline: 2px solid var(--cx-accent); outline-offset: 1px; }
+
+/* Chart panel order (C-01): the window sentence, the compact two-grid chooser, collapsed sections and the Filter checklist */
+.cx-chart-window { margin: 8px 0 0; font-size: var(--cx-fs-sm); line-height: 1.4; color: var(--cx-text-1, var(--cx-text-2)); }
+.cx-sheet.is-card .cx-chart-window { font-size: 11.5px; font-weight: 300; color: var(--cx-stage-text-1); }
+.cx-chart-gallery.is-four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.cx-chart-chooser { display: flex; flex-direction: column; }
+.cx-chart-tile { position: relative; }
+.cx-chart-tile[data-tip]:hover::after, .cx-chart-tile[data-tip]:focus-visible::after { content: attr(data-tip); position: absolute; z-index: 5; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); padding: 2px 8px; border-radius: 999px; background: #fff; color: #000; font-size: 10.5px; font-weight: 400; line-height: 1.4; white-space: nowrap; pointer-events: none; }
+.cx-chart-gallery.is-four .cx-chart-tile[data-tip]:nth-child(4n + 1):hover::after { left: 0; transform: none; }
+.cx-chart-gallery.is-four .cx-chart-tile[data-tip]:nth-child(4n):hover::after { left: auto; right: 0; transform: none; }
+.cx-chart-answer { margin: 8px 0 0; }
+.cx-chart-disclosure-head { display: flex; align-items: center; gap: 6px; width: 100%; padding: 8px 0; border: 0; background: none; color: var(--cx-text-3); font: inherit; text-align: left; cursor: pointer; }
+.cx-sheet.is-card .cx-chart-disclosure-head { color: var(--cx-stage-text-3); }
+.cx-chart-disclosure-head:hover { color: var(--cx-stage-text-1, var(--cx-text-1)); }
+.cx-chart-disclosure-head:focus-visible { outline: 1px solid var(--cx-accent, #fff); outline-offset: 1px; }
+.cx-chart-disclosure-title { font-size: 9.5px; font-weight: 400; letter-spacing: .1em; text-transform: uppercase; }
+.cx-chart-disclosure-summary { margin-left: auto; font-size: var(--cx-fs-xs); }
+.cx-chart-disclosure-chevron { display: inline-flex; flex: none; transition: transform var(--cx-t-fast, 120ms) ease; transform: rotate(-90deg); }
+.cx-chart-disclosure.is-open .cx-chart-disclosure-chevron { transform: none; }
+.cx-chart-disclosure-body { padding-bottom: 6px; }
+.cx-chart-disclosure-body > .cx-section, .cx-sheet.is-card .cx-chart-disclosure-body > .cx-section { border-top: 0; padding-bottom: 6px; }
+.cx-chart-filter-chips { margin-top: 8px; }
+.cx-chart-filter-list { margin-top: 8px; }
+.cx-chart-filter-values { max-height: 168px; }
+.cx-chart-filter-foot { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+.cx-chart-filter-foot .cx-chart-values-note { margin: 0; }
+.cx-chart-gallery.is-four .cx-chart-tile { font-size: 10.5px; padding: 4px 2px; }
+.cx-sheet.is-card .cx-chart-head .cx-row-hint { display: none; }
