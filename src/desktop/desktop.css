@@ -1,0 +1,953 @@
+/*
+ * Cortex Desktop: the window around the Cortex view, and the Obsidian-native surfaces the shim draws (menus,
+ * notices, modals, prompts, the Settings page, rendered markdown). Loaded before styles.css (Cortex's own,
+ * unchanged). Obsidian's variables carry the values of Obsidian 1.15's default dark theme (the vault uses it;
+ * src/styles/tokens.css lists the same values as fallbacks), and the shim's own surfaces use Cortex's glass.
+ */
+body {
+  --background-primary: #1c1c1c;
+  --background-primary-alt: #232323;
+  --background-secondary: #282828;
+  --background-secondary-alt: #333333;
+  --background-modifier-border: #333333;
+  --background-modifier-border-hover: #3f3f3f;
+  --background-modifier-border-focus: #555555;
+  --background-modifier-hover: rgba(255, 255, 255, 0.067);
+  --background-modifier-active-hover: rgba(138, 92, 245, 0.1);
+  --background-modifier-form-field: #2e2e2e;
+  --background-modifier-error: #fb464c;
+  --text-normal: #dadada;
+  --text-muted: #b3b3b3;
+  --text-faint: #666666;
+  --text-on-accent: #ffffff;
+  --text-accent: #a68af9;
+  --text-error: #fb464c;
+  --interactive-normal: #333333;
+  --interactive-hover: #3f3f3f;
+  --interactive-accent: #8a5cf5;
+  --interactive-accent-hover: #a68af9;
+  --input-shadow: inset 0 0.5px 0.5px 0.5px rgba(255, 255, 255, 0.09), 0 2px 4px 0 rgba(0, 0, 0, 0.15), 0 1px 1.5px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --input-shadow-hover: inset 0 0.5px 1px 0.5px rgba(255, 255, 255, 0.16), 0 2px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 1.5px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --font-interface: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-text: var(--font-interface);
+  --font-monospace: "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+  --icon-size: 16px;
+  --icon-stroke: 1.75px;
+  --cxd-glass: rgba(19, 22, 30, 0.95);
+  --cxd-glass-line: rgba(255, 255, 255, 0.09);
+  --cxd-glass-line-strong: rgba(255, 255, 255, 0.17);
+  --cxd-glass-hover: rgba(255, 255, 255, 0.07);
+  --cxd-glass-active: rgba(255, 255, 255, 0.11);
+  --cxd-text-1: #eceef2;
+  --cxd-text-2: #c3c8d1;
+  --cxd-text-3: #9ea5b1;
+  --cxd-shadow: 0 18px 44px rgba(0, 0, 0, 0.52), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --cxd-accent-fill: #774fd5;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #000000;
+  color: var(--text-normal);
+  font-family: var(--font-interface);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ── the host: one leaf, full window ── */
+.cxd-host {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #000000;
+}
+.cxd-host > .workspace-leaf,
+.cxd-host .workspace-leaf-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.cxd-host .view-content {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+.cxd-hidden-chrome {
+  display: none !important;
+}
+.cxd-splash {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  color: var(--cxd-text-3);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  opacity: 1;
+  transition: opacity 260ms cubic-bezier(0.16, 0.84, 0.3, 1);
+}
+.cxd-splash.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+.cxd-splash-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+  text-align: center;
+}
+.cxd-splash-mark {
+  width: 56px;
+  height: 56px;
+  fill: none;
+  stroke: #e8eaf0;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.cxd-splash-seed {
+  fill: #e8eaf0;
+  stroke: none;
+}
+.cxd-splash-word {
+  color: #f2f3f7;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.cxd-splash-open {
+  height: 28px;
+  min-width: 96px;
+  margin-top: 6px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 6px;
+  color: #0b0c10;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cxd-splash-open:focus-visible {
+  outline: 2px solid #f2f3f7;
+  outline-offset: 2px;
+}
+.cxd-splash-open:disabled {
+  cursor: default;
+  opacity: 0.85;
+}
+.cxd-splash-line {
+  min-height: 1.4em;
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cxd-splash {
+    transition: none;
+  }
+}
+.cxd-fatal {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 64px;
+  padding: 14px 16px;
+  border: 1px solid var(--cxd-glass-line-strong);
+  border-radius: 10px;
+  background: var(--cxd-glass);
+  color: var(--cxd-text-1);
+  white-space: pre-wrap;
+}
+
+/* ── the window's title bar: Cortex's header carries it; Windows draws its buttons over the right end ── */
+body.cxd-window .cx-header {
+  -webkit-app-region: drag;
+  padding-right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw) + 12px);
+}
+body.cxd-window .cx-header :is(button, input, select, textarea, a, [role="button"], [role="tab"], [role="status"], [tabindex], [title], .cx-chip, .cx-scope) {
+  -webkit-app-region: no-drag;
+}
+/* The window's drag strip (the app has no header bar: the shell's top 32 px, left of Windows' caption buttons). */
+body.cxd-window .cx-root.is-desktop::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw));
+  height: env(titlebar-area-height, 32px);
+  -webkit-app-region: drag;
+  z-index: 60;
+}
+body.cxd-window .cx-root.is-desktop.is-immersive::before { display: none; }
+body.cxd-window .cx-root.is-desktop.is-immersive { padding-top: 0; }
+body.cxd-window .cx-root.is-immersive {
+  --cxd-top-safe: env(titlebar-area-height, 0px);
+}
+/* Immersive mode hides the header, so a thin strip keeps the window movable (left of Windows' buttons), and the
+   "Leave immersive" pill moves below the buttons instead of under them. */
+body.cxd-window .cx-root.is-immersive::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: calc(100vw - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100vw));
+  height: env(titlebar-area-height, 0px);
+  -webkit-app-region: drag;
+}
+body.cxd-window .cx-root.is-immersive .cx-immersive-pill {
+  top: calc(var(--cxd-top-safe) + 8px);
+}
+
+/* ── scrollbars (thin, dark, like Obsidian's) ── */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border: 3px solid transparent;
+  border-radius: 10px;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ── icons ── */
+.svg-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  stroke-width: var(--icon-stroke);
+}
+
+/*
+ * ── Obsidian's base controls, app-wide ──
+ * Obsidian styles every button, text field and select in its window (`button`, `button:not(.clickable-icon)`,
+ * `input[type=text]`…). Cortex's stylesheet is written against those rules (its own rules are lifted to win, see
+ * liftSpecificity in scripts/build-config.mjs), so the desktop sets equivalent base rules before styles.css loads:
+ * Cortex controls then look as they do in Obsidian, including anything Cortex leaves to Obsidian's defaults.
+ */
+button {
+  -webkit-app-region: no-drag;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 5px;
+  color: var(--text-normal);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+  user-select: none;
+  outline: none;
+}
+button:not(.clickable-icon) {
+  background-color: var(--interactive-normal);
+  box-shadow: var(--input-shadow);
+}
+@media (hover: hover) {
+  button:hover {
+    background-color: var(--interactive-hover);
+    box-shadow: var(--input-shadow-hover);
+  }
+}
+button:focus-visible {
+  box-shadow: 0 0 0 3px var(--background-modifier-border-focus);
+}
+button[disabled] {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+button.mod-cta {
+  background-color: var(--interactive-accent);
+  color: var(--text-on-accent);
+}
+@media (hover: hover) {
+  button.mod-cta:hover {
+    background-color: var(--interactive-accent-hover);
+  }
+}
+button.mod-warning {
+  background-color: var(--background-modifier-error);
+  color: var(--text-on-accent);
+}
+textarea,
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"] {
+  -webkit-app-region: no-drag;
+  padding: 4px 8px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 5px;
+  background: var(--background-modifier-form-field);
+  color: var(--text-normal);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+select,
+.dropdown {
+  -webkit-app-region: no-drag;
+  height: 30px;
+  padding: 0 28px 0 10px;
+  border: 0;
+  border-radius: 5px;
+  background-color: var(--interactive-normal);
+  box-shadow: var(--input-shadow);
+  color: var(--text-normal);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+input[type="checkbox"],
+input[type="range"] {
+  accent-color: var(--interactive-accent);
+}
+:is(input, textarea, select):focus-visible {
+  box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
+}
+.cxd-layer input.slider {
+  width: 160px;
+}
+.cxd-layer .checkbox-container {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  flex: none;
+  border-radius: 999px;
+  background: #3a3a3a;
+  transition: background 120ms linear;
+}
+.cxd-layer .checkbox-container::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 120ms ease-out;
+}
+.cxd-layer .checkbox-container.is-enabled {
+  background: var(--interactive-accent);
+}
+.cxd-layer .checkbox-container.is-enabled::after {
+  transform: translateX(14px);
+}
+.cxd-layer .checkbox-container.is-disabled {
+  opacity: 0.5;
+}
+.clickable-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--text-muted);
+}
+.clickable-icon:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+/* ── menus: Cortex's glass ── */
+.menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 150px;
+  max-width: min(420px, 92vw);
+  max-height: calc(100vh - 16px);
+  padding: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--cxd-glass-line-strong);
+  border-radius: 7px;
+  background: rgba(22, 22, 24, 0.94);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px);
+  color: var(--cxd-text-1);
+  font-family: var(--font-interface);
+  font-size: 12px;
+  font-weight: 300;
+  outline: none;
+  user-select: none;
+  /* Fade in over 90 ms with a 2 px rise; Menu.retire (obsidian/ui.ts) fades it out the same length. */
+  animation: cxd-menu-in 90ms ease-out;
+  transition: opacity 90ms ease-in;
+}
+@keyframes cxd-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+.menu.is-leaving {
+  pointer-events: none;
+}
+.menu.is-closing {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    animation: none;
+    transition: none;
+  }
+}
+.menu-scroll {
+  overflow-y: auto;
+  min-height: 0;
+}
+.menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 22px;
+  padding: 2px 10px 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  outline: none;
+  white-space: nowrap;
+}
+/* The row under the pointer or the keyboard is filled in the accent; the checked row of a pick-one menu wears the same
+   fill until another row is picked up (a checklist, with several checks, shows only the marks), and the chosen row keeps it while the menu fades. */
+.menu-item.selected,
+.menu-item:hover,
+.menu:not(:has(.menu-item.selected)):not(:has(.menu-item:hover)):not(:has(.menu-item.is-chosen)):not(:has(.menu-item.mod-checked ~ .menu-item.mod-checked)) .menu-item.mod-checked,
+.menu-item.is-chosen {
+  background: var(--interactive-accent);
+  color: #fff;
+  font-weight: 400;
+}
+.menu-item.selected .menu-item-icon,
+.menu-item:hover .menu-item-icon,
+.menu:not(:has(.menu-item.selected)):not(:has(.menu-item:hover)):not(:has(.menu-item.is-chosen)):not(:has(.menu-item.mod-checked ~ .menu-item.mod-checked)) .menu-item.mod-checked .menu-item-icon,
+.menu-item.is-chosen .menu-item-icon {
+  color: inherit;
+}
+.menu-item:active {
+  background: var(--interactive-accent-hover);
+}
+.menu-item.is-disabled:hover {
+  color: inherit;
+}
+.menu-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--cxd-text-2);
+}
+.menu-item-icon:empty {
+  display: none;
+}
+.menu.cxd-has-icons:not(.mod-no-icon) .menu-item-icon:empty:not(.mod-checked):not(.mod-submenu) {
+  display: inline-flex;
+}
+.menu.mod-no-icon .menu-item-icon:not(.mod-checked):not(.mod-submenu) {
+  display: none;
+}
+.menu-item-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.menu-item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.menu-item-icon.mod-submenu {
+  margin-left: auto;
+  color: var(--cxd-text-2);
+}
+/* The check sits in a gutter at the left of the row, as in the recordings' pop-up menus; submenu arrows stay right. */
+.menu:has(.mod-checked) .menu-item {
+  padding-left: 22px;
+}
+.menu-item-icon.mod-checked {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin-top: -5.5px;
+  color: inherit;
+}
+.menu-item-icon.mod-checked svg {
+  width: 11px;
+  height: 11px;
+}
+.menu-item.is-disabled {
+  opacity: 0.45;
+  cursor: default;
+  background: none;
+}
+.menu-item.is-label {
+  min-height: 22px;
+  padding-top: 6px;
+  color: var(--cxd-text-3);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: default;
+  background: none;
+  opacity: 1;
+}
+.menu-item.is-warning {
+  color: #e6737c;
+}
+.menu-item.is-warning:hover,
+.menu-item.is-warning.selected,
+.menu-item.is-warning.is-chosen {
+  background: #e6737c;
+  color: #11131a;
+}
+.menu-separator {
+  height: 1px;
+  margin: 3px 6px;
+  background: var(--cxd-glass-line);
+}
+
+/* ── notices ── */
+.notice-container {
+  position: fixed;
+  top: 52px;
+  right: 16px;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  pointer-events: none;
+}
+.notice {
+  max-width: 380px;
+  padding: 10px 14px;
+  border: 1px solid var(--cxd-glass-line-strong);
+  border-radius: 10px;
+  background: var(--cxd-glass);
+  box-shadow: var(--cxd-shadow);
+  backdrop-filter: blur(14px);
+  color: var(--cxd-text-1);
+  font-size: 13px;
+  line-height: 1.4;
+  pointer-events: auto;
+  cursor: pointer;
+  white-space: pre-wrap;
+}
+
+/* ── modals ── */
+.modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 4, 6, 0.64);
+}
+.modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 560px;
+  max-width: 92vw;
+  max-height: 88vh;
+  padding: 20px 22px;
+  overflow: auto;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 14px;
+  background: var(--background-primary);
+  box-shadow: var(--cxd-shadow);
+  color: var(--text-normal);
+  outline: none;
+}
+.modal-close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.modal-close-button:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+.modal-close-button svg {
+  width: 16px;
+  height: 16px;
+}
+.modal-header {
+  margin: 0 32px 12px 0;
+}
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.modal-title:empty {
+  display: none;
+}
+.modal-content {
+  line-height: 1.5;
+}
+
+/* ── suggest prompts ── */
+.prompt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 640px;
+  max-width: 92vw;
+  max-height: 70vh;
+  margin-top: -18vh;
+  border: 1px solid var(--cxd-glass-line-strong);
+  border-radius: 12px;
+  background: var(--cxd-glass);
+  box-shadow: var(--cxd-shadow);
+  backdrop-filter: blur(14px);
+  overflow: hidden;
+  outline: none;
+}
+.prompt-input-container {
+  padding: 10px;
+  border-bottom: 1px solid var(--cxd-glass-line);
+}
+.prompt-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cxd-text-1);
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+.prompt-results {
+  overflow-y: auto;
+  padding: 6px;
+}
+.suggestion-item {
+  padding: 7px 10px;
+  border-radius: 6px;
+  color: var(--cxd-text-2);
+  cursor: pointer;
+}
+.suggestion-item.is-selected {
+  background: var(--cxd-glass-active);
+  color: var(--cxd-text-1);
+}
+.suggestion-highlight {
+  color: var(--cxd-text-1);
+  font-weight: 600;
+}
+.suggestion-empty {
+  padding: 10px;
+  color: var(--cxd-text-3);
+}
+.prompt-instructions {
+  display: flex;
+  gap: 14px;
+  padding: 6px 12px;
+  border-top: 1px solid var(--cxd-glass-line);
+  color: var(--cxd-text-3);
+  font-size: 11px;
+}
+.prompt-instructions:empty {
+  display: none;
+}
+.prompt-instruction-command {
+  margin-right: 4px;
+  font-weight: 600;
+}
+
+/* ── the Settings page ── */
+.modal-container.mod-settings .modal {
+  width: min(1040px, 94vw);
+  height: min(760px, 88vh);
+  max-height: none;
+  padding: 0;
+  overflow: hidden;
+}
+.vertical-tabs-container {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+.vertical-tab-header {
+  flex: none;
+  width: 200px;
+  padding: 18px 10px;
+  overflow-y: auto;
+  border-right: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+}
+.vertical-tab-header-group-title {
+  padding: 0 10px 8px;
+  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 600;
+}
+.vertical-tab-nav-item {
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  outline: none;
+}
+.vertical-tab-nav-item:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+.vertical-tab-nav-item.is-active {
+  background: var(--background-modifier-active-hover);
+  color: var(--text-normal);
+  font-weight: 600;
+}
+.vertical-tab-content-container {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+}
+.vertical-tab-content {
+  padding: 24px 32px 40px;
+}
+.setting-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--background-modifier-border);
+}
+.setting-item:first-child,
+.setting-item-heading + .setting-item {
+  border-top: 0;
+}
+.setting-item.is-disabled {
+  opacity: 0.55;
+}
+.setting-item-info {
+  flex: 1;
+  min-width: 0;
+}
+.setting-item-name {
+  color: var(--text-normal);
+}
+.setting-item-description {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.setting-item-description:empty {
+  display: none;
+}
+.setting-item-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex: none;
+  max-width: 55%;
+  flex-wrap: wrap;
+}
+.setting-item-heading {
+  margin-top: 18px;
+  padding-bottom: 6px;
+  border-top: 0;
+}
+.setting-item-heading .setting-item-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ── rendered vault notes (the note peek) ── */
+.markdown-rendered {
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+  margin: 1.1em 0 0.4em;
+  line-height: 1.3;
+}
+.markdown-rendered h1 {
+  font-size: 1.5em;
+}
+.markdown-rendered h2 {
+  font-size: 1.3em;
+}
+.markdown-rendered h3 {
+  font-size: 1.15em;
+}
+.markdown-rendered :is(p, ul, ol, blockquote, pre, table) {
+  margin: 0.55em 0;
+}
+.markdown-rendered :is(ul, ol) {
+  padding-left: 1.5em;
+}
+.markdown-rendered code {
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  font-family: var(--font-monospace);
+  font-size: 0.9em;
+}
+.markdown-rendered pre {
+  padding: 10px 12px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.markdown-rendered pre code {
+  padding: 0;
+  background: none;
+}
+.markdown-rendered blockquote {
+  margin-left: 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--interactive-accent);
+  color: var(--text-muted);
+}
+.markdown-rendered table {
+  border-collapse: collapse;
+}
+.markdown-rendered :is(th, td) {
+  padding: 4px 8px;
+  border: 1px solid var(--background-modifier-border);
+}
+.markdown-rendered a {
+  color: var(--text-accent);
+  text-decoration: none;
+}
+.markdown-rendered a:hover {
+  text-decoration: underline;
+}
+.markdown-rendered img {
+  max-width: 100%;
+}
+.markdown-rendered .cx-image-alt,
+.markdown-rendered .cx-link-blocked {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.metadata-container {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.metadata-property {
+  display: flex;
+  gap: 12px;
+  padding: 2px 0;
+}
+.metadata-property-key {
+  flex: none;
+  width: 120px;
+  color: var(--text-muted);
+}
+.metadata-property-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ── Cortex's own Settings window (settingsTab.ts draws the inside; SettingsPage frames it) ── */
+.cxd-cortex-win .modal-bg {
+  background: rgba(0, 0, 0, 0.55);
+  animation: cxd-win-fade 160ms ease-out both;
+}
+.cxd-cortex-win .modal.cxd-win-modal {
+  width: min(760px, 94vw);
+  height: min(730px, 92vh);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+  background: rgba(2, 2, 3, 0.9);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  animation: cxd-win-rise 160ms ease-out both;
+}
+.cxd-win-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.cxd-win-pane > .vertical-tab-content.cx-win {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+@keyframes cxd-win-fade {
+  from { opacity: 0; }
+}
+@keyframes cxd-win-rise {
+  from { opacity: 0; transform: translateY(6px); }
+}
+.cxd-cortex-win .cx-win {
+  --cxw-line: rgba(255, 255, 255, 0.14);
+  --cxw-hover: rgba(255, 255, 255, 0.05);
+  --cxw-active: rgba(255, 255, 255, 0.85);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cxd-cortex-win .modal-bg,
+  .cxd-cortex-win .modal.cxd-win-modal {
+    animation: none;
+  }
+}

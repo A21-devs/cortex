@@ -1,0 +1,32 @@
+/*
+ * The rail's finishing (Cortex Desktop, and the lit block in the plugin too): the wordmark's chevron and bar, the underline on
+ * a hovered or focused page link, the plain search edge, and the status block (count, what lit it, Clear). Imported from
+ * styles.css after desktop-shell.css. Not lifted by the build's specificity plugin, so every rule spells out its own weight.
+ */
+
+/* N-01: the scope menu hangs off a small chevron beside the word (and right-click); the word itself steps on click. */
+.cx-root .cx-rail-word-menu { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 16px; height: 22px; margin: 0; padding: 0; border: 0; border-radius: var(--cx-r-xs); background: none; box-shadow: none; color: var(--cx-text-3); cursor: pointer; opacity: 0.7; }
+.cx-root .cx-rail-word-menu .cx-icon { width: 12px; height: 12px; }
+.cx-root .cx-rail-word-menu:hover, .cx-root .cx-rail-word-menu:focus-visible { color: var(--cx-text-1); opacity: 1; }
+.cx-root .cx-rail-word-menu:focus-visible { outline: 2px solid var(--cx-accent); outline-offset: -2px; }
+.cx-root .cx-rail-brand-row { gap: 4px; }
+
+/* N-04: a short gradient bar directly under the wordmark at every area (the area-less word keeps it too); the search field's own edge stays plain. */
+.cx-root.is-desktop .cx-rail-brand { align-items: flex-start; gap: 7px; }
+.cx-root.is-desktop .cx-rail-brand:has(.cx-rail-word[data-scope="all"]) .cx-rail-bar { display: block; }
+.cx-root.is-desktop .cx-rail-bar { width: 26px; height: 2px; margin-left: 2px; }
+.cx-root.is-desktop .cx-rail-brand-row { align-self: stretch; justify-content: flex-start; }
+.cx-root.is-desktop .cx-rail-search-line:not(.is-loading) .cx-rail-search-fill { display: none; }
+
+/* N-03: a hovered or focused rail link is underlined (thin, 3 px off the text); the chosen one only while hovered. */
+.cx-root.is-desktop .cx-nav-item:hover, .cx-root.is-desktop .cx-nav-item:focus-visible { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.cx-root.is-desktop .cx-nav-item.is-active:not(:hover):not(:focus-visible) { text-decoration: none; }
+
+/* N-02: the lit block above the meters: bold count, one line saying what is lit, the highlighted labels, an underlined Clear. */
+.cx-root .cx-lit-block { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; min-width: 0; }
+.cx-root .cx-lit-block p { margin: 0; max-width: 100%; overflow-wrap: anywhere; }
+.cx-root .cx-lit-count { font-size: var(--cx-fs-md); font-weight: 700; line-height: 1.25; color: var(--cx-text-1); font-variant-numeric: tabular-nums; }
+.cx-root .cx-lit-where, .cx-root .cx-lit-labels-line { font-size: var(--cx-fs-xs); font-weight: 300; line-height: 1.35; color: var(--cx-text-2); }
+.cx-root .cx-lit-clear { margin: 2px 0 0; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: var(--cx-text-1); font: inherit; font-size: var(--cx-fs-xs); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.cx-root .cx-lit-clear:hover { color: var(--cx-text-1); text-decoration-thickness: 2px; }
+.cx-root .cx-lit-clear:focus-visible { outline: 2px solid var(--cx-accent); outline-offset: 2px; }
