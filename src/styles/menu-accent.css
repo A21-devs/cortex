@@ -1,0 +1,24 @@
+/*
+ * Cortex's own pop-up menus (ui/primitives/menu.tsx adds `cx-menu` to each): a solid accent bar follows the pointer
+ * or the keyboard, the chosen row keeps it for a 120 ms flash while the menu closes, and the opener that was used
+ * keeps a focus ring until it loses focus. Menus live outside .cx-root, so the theme accent is Obsidian's own
+ * variable. The desktop shim draws the same fill in desktop.css; this makes Obsidian's native menus match.
+ */
+.menu.cx-menu .menu-item.selected:not(.is-disabled):not(.is-label),
+.menu.cx-menu .menu-item:hover:not(.is-disabled):not(.is-label),
+.menu.cx-menu .menu-item.is-chosen {
+  background: var(--interactive-accent);
+  color: #fff;
+}
+.menu.cx-menu .menu-item.selected:not(.is-disabled):not(.is-label) .menu-item-icon,
+.menu.cx-menu .menu-item:hover:not(.is-disabled):not(.is-label) .menu-item-icon,
+.menu.cx-menu .menu-item.is-chosen .menu-item-icon,
+.menu.cx-menu .menu-item.selected:not(.is-disabled) .cx-menu-detail,
+.menu.cx-menu .menu-item:hover:not(.is-disabled) .cx-menu-detail,
+.menu.cx-menu .menu-item.is-chosen .cx-menu-detail {
+  color: inherit;
+}
+.cx-root .is-menu-picked:not(.cx-select):not(:focus-visible) {
+  outline: 2px solid var(--cx-accent);
+  outline-offset: 1px;
+}
