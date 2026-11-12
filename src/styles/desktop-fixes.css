@@ -1,0 +1,38 @@
+/*
+ * Fixes that must win over desktop-shell.css (this file is imported after it) and the two-host Read page layout.
+ * Not lifted by the build's specificity plugin, so each rule spells out its own weight.
+ */
+
+/* R-01: the folder column's chosen row (Everything, Pinned, a folder) is a light bar with dark text and a dark count.
+   desktop-shell.css sets `.cx-nav-row { background: none }` for the rail, which also reaches these rows. */
+.cx-root.is-desktop .cx-sheet .cx-nav-tree .cx-nav-row.is-on,
+.cx-root.is-desktop .cx-sheet .cx-nav-tree .cx-nav-row.is-on:hover { background: var(--cx-text-1); color: var(--cx-chrome); }
+.cx-root.is-desktop .cx-sheet .cx-nav-tree .cx-nav-row.is-on .cx-nav-select,
+.cx-root.is-desktop .cx-sheet .cx-nav-tree .cx-nav-row.is-on .cx-folder-name { color: var(--cx-chrome); }
+.cx-root.is-desktop .cx-sheet .cx-nav-tree .cx-nav-row.is-on .cx-folder-n,
+.cx-root.is-desktop .cx-sheet .cx-nav-tree .cx-nav-row.is-on .cx-chevron { color: var(--cx-chrome); opacity: .7; }
+.cx-root.is-desktop .cx-sheet .cx-nav-tree .cx-nav-row:not(.is-on):hover { background: var(--cx-chrome-hover); }
+
+/* The desktop rail's 10 px row gap squeezed "Everything" to "Everythi..." in the narrow folder column. */
+.cx-root.is-desktop .cx-sheet .cx-read-nav .cx-nav-row { gap: 2px; }
+
+/* R-01: Everything and Pinned stay above the scrolling Recent block and folder list. */
+.cx-root .cx-sheet .cx-read-split > .cx-read-nav { display: flex; flex-direction: column; overflow: hidden; }
+.cx-root .cx-sheet .cx-read-nav > .cx-nav-tree { flex: none; }
+.cx-root .cx-sheet .cx-read-nav > .cx-nav-tree > .cx-nav-row { flex: none; }
+.cx-root .cx-sheet .cx-read-nav > .cx-nav-scroll { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+.cx-root .cx-sheet .cx-read-nav > .cx-nav-scroll > * { flex: none; }
+.cx-root .cx-sheet .cx-read-nav > .cx-nav-scroll > .cx-recent { margin-top: 6px; }
+
+/* R-02: a list row's message count sits at the right of the title line, the age beside the date on the second line,
+   a pin glyph leads the title of a pinned row, and the section label is small caps. */
+.cx-root .cx-read-line { align-items: baseline; justify-content: flex-start; }
+.cx-root .cx-read-line > .cx-read-title { flex: 0 1 auto; }
+.cx-root .cx-read-line > .cx-read-pin { flex: none; align-self: center; margin-right: -4px; color: var(--cx-text-3); }
+.cx-root .cx-read-line > .cx-read-count { flex: none; margin-left: auto; font-size: var(--cx-fs-xs); font-variant-numeric: tabular-nums; font-family: inherit; color: var(--cx-text-3); }
+.cx-root .cx-snippet-text > .cx-read-when { display: inline; margin-right: 6px; font-family: inherit; }
+.cx-root .cx-read-pinned > .cx-read-day { font-variant-caps: all-small-caps; letter-spacing: .08em; text-transform: none; }
+
+/* R-03: Today's note reader: the loading line is a muted single line, the note scrolls inside the reader column. */
+.cx-root .cx-today-note .cx-today-loading { margin: 8px 0 0; }
+.cx-root .cx-today-note .cx-today-body { max-height: none; margin-top: 10px; }

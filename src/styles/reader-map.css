@@ -1,0 +1,59 @@
+/*
+ * Map (hub) reader, H-01: statements wrap fully inside the panel, the caption and source link under the kind line,
+ * first quotes open under each statement with a grey first-source line, and the named text actions
+ * (Flag at the title's top right, Pin and Focus in the brain near the bottom). Imported after desktop-shell.css and
+ * not lifted by the build's specificity plugin, so each rule spells out its own weight.
+ */
+
+/* Statements: a button must not keep its text on one line or let the text push past the panel. */
+.cx-root .cx-map-reader { container-type: inline-size; }
+.cx-root .cx-map-reader .cx-brief,
+.cx-root .cx-map-reader .cx-brief ul,
+.cx-root .cx-map-reader .cx-brief-item { min-width: 0; max-width: 100%; }
+.cx-root .cx-map-reader .cx-brief-head { min-width: 0; max-width: 100%; height: auto; white-space: normal; overflow: visible; font: inherit; color: inherit; cursor: pointer; }
+.cx-root .cx-map-reader .cx-brief-head .cx-evidence { flex: none; align-self: flex-start; }
+.cx-root .cx-map-reader .cx-brief-body { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.cx-root .cx-map-reader .cx-brief-text { min-width: 0; white-space: normal; overflow-wrap: anywhere; word-break: normal; }
+.cx-root .cx-map-reader .cx-brief-source { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--cx-fs-xs); color: var(--cx-text-3); }
+.cx-root .cx-map-reader .cx-quotes { min-width: 0; margin: 2px 0 4px 0; }
+.cx-root .cx-map-reader .cx-quote { min-width: 0; white-space: normal; }
+.cx-root .cx-map-reader .cx-quote-who { flex: none; font-size: var(--cx-fs-xs); color: var(--cx-text-2); }
+.cx-root .cx-map-reader .cx-quote-who::after { content: ":"; }
+.cx-root .cx-map-reader .cx-brief-more { align-self: flex-start; padding: 2px 0 2px 18px; font-size: var(--cx-fs-xs); }
+
+/* Under the kind line: the plain-words caption, the link that runs the trace, the parent. */
+.cx-root .cx-map-reader .cx-map-caption { margin: 0; font-style: italic; font-size: var(--cx-fs-sm); line-height: var(--cx-lh-read); color: var(--cx-text-2); overflow-wrap: anywhere; }
+.cx-root .cx-map-reader .cx-map-source-link,
+.cx-root .cx-map-reader .cx-map-within { margin: 0; font-size: var(--cx-fs-sm); overflow-wrap: anywhere; }
+.cx-root .cx-map-reader .cx-map-source-link { margin-top: -6px; }
+.cx-root .cx-map-reader .cx-map-within { margin-top: -6px; color: var(--cx-text-2); }
+.cx-root .cx-map-reader .cx-map-source-link .cx-text-button,
+.cx-root .cx-map-reader .cx-map-within .cx-text-button { text-align: left; white-space: normal; color: var(--cx-text-1); }
+.cx-root .cx-map-reader .cx-map-source-link .cx-text-button:disabled { color: var(--cx-text-3); cursor: default; }
+.cx-root .cx-map-reader .cx-map-range::before,
+.cx-root .cx-map-reader .cx-map-status::before { content: "\00b7\00a0"; color: var(--cx-text-3); }
+.cx-root .cx-map-reader .cx-map-status { padding: 0; background: none; text-transform: none; letter-spacing: 0; font-size: inherit; }
+.cx-root .cx-map-reader .cx-map-status::before { margin-right: 0; }
+
+/* Narrow panel: the icon row (Flag, Pin, Show in brain, More). Wide panel: named text actions instead. */
+.cx-root .cx-map-reader .cx-map-icons { display: contents; }
+.cx-root .cx-map-reader .cx-map-flag,
+.cx-root .cx-map-reader .cx-map-text-actions { display: none; }
+.cx-root .cx-map-reader .cx-map-text-actions { gap: 18px; font-size: var(--cx-fs-sm); }
+.cx-root .cx-map-reader .cx-map-text-actions .cx-text-button,
+.cx-root .cx-map-reader .cx-map-flag { color: var(--cx-text-1); font-size: var(--cx-fs-sm); }
+.cx-root .cx-map-reader .cx-map-text-actions .cx-text-button:disabled,
+.cx-root .cx-map-reader .cx-map-flag:disabled { color: var(--cx-text-3); cursor: default; }
+.cx-root .cx-map-reader .cx-map-text-actions .cx-text-button:hover:not(:disabled),
+.cx-root .cx-map-reader .cx-map-flag:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 2px; }
+.cx-root .cx-map-reader .cx-map-flag[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 2px; }
+
+@container (min-width: 340px) {
+  .cx-root .cx-map-reader .cx-map-icons { display: none; }
+  .cx-root .cx-map-reader .cx-map-text-actions { display: flex; flex-wrap: wrap; }
+  .cx-root .cx-map-reader .cx-reader-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: start; }
+  .cx-root .cx-map-reader .cx-reader-head > .cx-reader-title { order: 0; grid-column: 1; grid-row: 1; }
+  .cx-root .cx-map-reader .cx-reader-head > .cx-map-flag { display: inline-flex; grid-column: 2; grid-row: 1; justify-self: end; align-self: start; padding-top: 2px; }
+  .cx-root .cx-map-reader .cx-reader-head > .cx-chip,
+  .cx-root .cx-map-reader .cx-reader-head > .cx-reader-actions { grid-column: 1 / -1; justify-self: start; width: auto; }
+}
