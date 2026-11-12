@@ -1,0 +1,501 @@
+/*
+ * Cortex's Settings window, the inside of it: header, six icon tabs, title, body and the long list. One stylesheet for
+ * both hosts: Cortex Desktop frames it as its Settings page (`.cxd-cortex-win`, desktop.css) and the Obsidian plugin as
+ * a modal (`.cx-settings-modal`, src/plugin/settingsModal.ts). The chrome classes are Cortex's own; the colours come
+ * from Obsidian's theme variables unless the host sets the --cxw-* ones (the desktop's black glass does).
+ */
+.cx-win {
+  --cxw-line: var(--background-modifier-border, rgba(128, 128, 128, 0.35));
+  --cxw-hover: var(--background-modifier-hover, rgba(128, 128, 128, 0.12));
+  --cxw-active: var(--text-normal, #ddd);
+}
+@keyframes cx-win-body-in {
+  from { opacity: 0; }
+}
+.cx-win-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 14px 0 20px;
+}
+.cx-win-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cx-win-glyph {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+}
+.cx-win-glyph svg {
+  width: 18px;
+  height: 18px;
+}
+.cx-win-wordmark {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.cx-win-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.cx-win-count {
+  color: var(--text-muted, #8a8a8a);
+  font-family: var(--font-interface, inherit);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-link {
+  height: auto;
+  padding: 2px 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--text-normal);
+  font-size: 12px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-close {
+  width: 26px;
+  height: 26px;
+  color: var(--text-muted);
+}
+.cx-win-tabs {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  padding: 4px 20px 12px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 46px;
+  min-width: 0;
+  padding: 4px 2px;
+  border: 1px solid var(--cxw-line);
+  border-radius: 3px;
+  background: none;
+  box-shadow: none;
+  color: var(--text-muted);
+  position: relative;
+  transition: border-color 100ms linear, color 100ms linear, background-color 100ms linear;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-tab:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  background: var(--cxw-hover);
+  color: var(--text-normal);
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-tab:active {
+  background: rgba(255, 255, 255, 0.1);
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-tab.is-active {
+  border-color: var(--cxw-active);
+  background: none;
+  color: var(--text-normal);
+}
+/* the open tab wears a palette line along its lower edge */
+.cx-win-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--cx-win-grad, #888);
+}
+.cx-win-tab.is-active .cx-win-tab-label {
+  font-weight: 600;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-tab:focus-visible {
+  outline: 2px solid var(--cxw-active);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.cx-win-tab-icon {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+}
+.cx-win-tab-icon svg {
+  width: 14px;
+  height: 14px;
+}
+.cx-win-tab-label {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.cx-win-title {
+  flex: none;
+  padding: 4px 20px 10px;
+}
+.cx-win-title h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.cx-win-rule {
+  display: block;
+  width: 28px;
+  height: 1px;
+  margin: 6px 0 10px;
+  background: var(--cx-win-grad, #888);
+}
+.cx-win-sub {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+.cx-win-body {
+  flex: 1;
+  min-height: 0;
+  padding: 0 20px 24px;
+  overflow-y: auto;
+}
+.cx-win-body.is-entering {
+  animation: cx-win-body-in 120ms ease-out both;
+}
+.cx-win-body .setting-item-name {
+  font-weight: 600;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-note {
+  margin: 10px 0;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.cx-win-section {
+  padding-top: 18px;
+}
+.cx-win-section > h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.cx-win-section > .cx-win-sub {
+  margin: 2px 0 6px;
+}
+.cx-win-watching {
+  margin: 0 0 8px;
+  padding-left: 18px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+.cx-win-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+.cx-win-path {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--font-monospace, monospace);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cx-win-tag {
+  flex: none;
+  padding: 1px 7px;
+  border: 1px solid var(--cxw-line);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 10.5px;
+  white-space: nowrap;
+}
+.cx-win-warn {
+  padding: 8px 10px;
+  border: 1px solid var(--cxw-line);
+  border-radius: 8px;
+}
+.cx-win-warn.is-hidden {
+  display: none;
+}
+
+/* The plugin's window: an Obsidian modal with no header, no padding and its own close button. */
+.modal.cx-settings-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 94vw);
+  max-width: 94vw;
+  height: min(730px, 92vh);
+  padding: 0;
+  overflow: hidden;
+}
+.cx-settings-modal > .modal-close-button,
+.cx-settings-modal > .modal-header,
+.cx-settings-modal > .modal-title {
+  display: none;
+}
+.cx-settings-modal > .modal-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.cx-settings-modal .cx-win.cx-win {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cx-win-body.is-entering {
+    animation: none;
+  }
+}
+
+/* The plan caps in Settings: a meter under each row's name (the same marks as the Agents page, drawn from Obsidian's own colours because the settings window sits outside the Cortex root). */
+.setting-item-description .cx-plan-bar { position: relative; display: block; height: 6px; margin: 6px 0 4px; border-radius: 3px; background: var(--background-modifier-border, rgba(255,255,255,.14)); overflow: visible; box-shadow: none; }
+.setting-item-description .cx-plan-bar > span { display: block; height: 100%; border-radius: 3px; background: var(--interactive-accent, #7c5cff); }
+.setting-item-description .cx-plan-mark { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text-normal, #fff); pointer-events: none; }
+.setting-item-description .cx-plan-line { margin: 0; }
+
+/* Key shares in Settings > Lock (settingsSections/keySharesSection.ts): the words of one share, and its QR code. */
+.cx-share-words { margin: 4px 0 10px; padding: 10px 12px; border: 1px solid var(--background-modifier-border); border-radius: 6px; font-family: var(--font-monospace); font-size: var(--font-ui-small); line-height: 1.7; word-spacing: 0.35em; user-select: all; overflow-wrap: anywhere; }
+.cx-share-qr { margin: 4px 0 10px; }
+.cx-share-qr svg { width: 168px; height: 168px; border-radius: 4px; background: #fff; }
+
+/*
+ * The controls inside the window, drawn like the recordings' Settings: squared toggles (outlined while off, white with a
+ * dark knob while on), boxed selects with a chevron, outlined buttons, thin sliders with a square knob, and the
+ * bullet beside each toggle row. Obsidian's own control classes are restyled here so the plugin's modal and the
+ * desktop page read the same.
+ */
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .checkbox-container.checkbox-container {
+  flex: none;
+  width: 26px;
+  height: 14px;
+  border-radius: 3px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  transition: background-color 100ms linear, box-shadow 100ms linear;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .checkbox-container.checkbox-container:hover {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85);
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .checkbox-container.checkbox-container::after {
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  background: #fff;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .checkbox-container.checkbox-container.is-enabled {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .checkbox-container.checkbox-container.is-enabled::after {
+  transform: translateX(12px);
+  background: #000;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .setting-item:has(.checkbox-container) .setting-item-info {
+  position: relative;
+  padding-left: 18px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .setting-item:has(.checkbox-container) .setting-item-info::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.6em;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--text-normal);
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body select.dropdown {
+  height: 26px;
+  min-width: 110px;
+  padding: 0 24px 0 9px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 3px;
+  background-color: #000;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'><path d='M2 3.5 5 6.5 8 3.5' fill='none' stroke='%23c8c8c8' stroke-width='1.2'/></svg>");
+  background-position: right 7px center;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  color: var(--text-normal);
+  font-size: 12px;
+  font-weight: 300;
+  -webkit-appearance: none;
+  appearance: none;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body select.dropdown:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  background-color: #000;
+  box-shadow: none;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body select.dropdown:focus-visible {
+  border-color: #fff;
+  box-shadow: none;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body button:not(.clickable-icon):not(.cx-theme-card):not(.cx-palette-swatch):not(.cx-age-seg-item) {
+  height: 26px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-normal);
+  font-size: 12px;
+  font-weight: 300;
+  transition: border-color 100ms linear, background-color 100ms linear;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body button:not(.clickable-icon):not(.cx-theme-card):not(.cx-palette-swatch):not(.cx-age-seg-item):hover {
+  border-color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body button.mod-cta:not(.clickable-icon) {
+  border-color: #fff;
+  background: #fff;
+  color: #000;
+  font-weight: 500;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body button.mod-cta:not(.clickable-icon):hover {
+  background: #e6e6e6;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body :is(input[type="text"], input[type="search"], input[type="number"], input[type="password"], textarea) {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 3px;
+  background: #000;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 300;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body :is(input[type="text"], input[type="search"], input[type="number"], input[type="password"], textarea):focus {
+  border-color: #fff;
+  box-shadow: none;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body input[type="range"].slider {
+  height: 16px;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body input[type="range"].slider::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.28);
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body input[type="range"].slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 9px;
+  height: 9px;
+  margin-top: -3.5px;
+  border: 0;
+  border-radius: 1px;
+  background: #fff;
+  box-shadow: none;
+  transition: box-shadow 100ms linear;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body input[type="range"].slider:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.16);
+}
+.cx-win-body::-webkit-scrollbar {
+  width: 8px;
+}
+.cx-win-body::-webkit-scrollbar-button {
+  display: none;
+}
+.cx-win-body::-webkit-scrollbar-thumb {
+  border: 0;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.28);
+  background-clip: border-box;
+}
+.cx-win-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+.cx-win-body .setting-item {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Theme cards and data-colour swatches: square corners, a hairline frame, a white frame on the chosen one. */
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-theme-cards {
+  gap: 8px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-theme-card {
+  height: 68px;
+  border-radius: 2px;
+  border-color: rgba(255, 255, 255, 0.16);
+  transition: border-color 100ms linear;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-theme-card .cx-theme-swatch {
+  border-radius: 0;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-theme-card.is-on {
+  overflow: hidden;
+  border-color: #fff;
+  outline: 0;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-theme-card.is-on::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--cx-win-grad, #fff);
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-palette-row {
+  gap: 6px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-palette-swatch {
+  align-items: stretch;
+  gap: 5px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 300;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-palette-ramp {
+  height: 20px;
+  border-radius: 1px;
+  transition: outline-color 100ms linear;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-palette-swatch.is-on .cx-palette-ramp {
+  outline-width: 1px;
+  outline-offset: 2px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-palette-swatch:hover .cx-palette-ramp {
+  outline: 1px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-palette-swatch.is-on:hover .cx-palette-ramp {
+  outline-color: #fff;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-age-seg {
+  height: 26px;
+  border-color: rgba(255, 255, 255, 0.24);
+  border-radius: 3px;
+}
+:is(.cxd-cortex-win, .cx-settings-modal) .cx-win-body .cx-age-seg-item.is-on {
+  background: #fff;
+  color: #000;
+  font-weight: 500;
+}

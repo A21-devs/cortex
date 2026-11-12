@@ -1,0 +1,17 @@
+/*
+ * Figure colour themes (ui/stage/ThemePopover.tsx) and Showcase mode (ui/showcase). The swatch menu opens from the
+ * stage's theme button; a pick recolours only the data, the figure, the spine and the charts, and fades them over 400 ms
+ * (App.tsx adds .is-theme-fade while the colours move). The cards are drawn in the window's own glass, never in a theme's ground.
+ */
+.cx-theme-pop { width: 236px; }
+.cx-root.is-desktop .cx-popover.cx-theme-pop { left: auto; right: var(--cx-inset); top: 44px; width: 232px; }
+.cx-theme-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 4px 0 2px; }
+.cx-theme-opt { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 7px; height: auto; min-height: 54px; box-sizing: border-box; line-height: 1.25; padding: 9px 9px 11px; border: 1px solid var(--cx-glass-line-strong); border-radius: 8px; background: var(--cx-glass-strong); color: var(--cx-text-1, inherit); cursor: pointer; text-align: left; box-shadow: inset 0 -3px 0 var(--sw-accent); transition: border-color 120ms ease, transform 120ms ease; }
+.cx-theme-opt:hover { border-color: var(--sw-accent); transform: translateY(-1px); }
+.cx-theme-opt:focus-visible { outline: 2px solid var(--cx-focus); outline-offset: 2px; }
+.cx-theme-opt.is-on { border-color: var(--sw-accent); outline: 2px solid var(--sw-accent); outline-offset: 1px; }
+.cx-theme-opt-sw { display: flex; gap: 4px; }
+.cx-theme-opt-sw i { width: 12px; height: 12px; flex: 0 0 12px; border-radius: 50%; display: block; }
+.cx-theme-opt-name { font-size: var(--cx-fs-sm); font-weight: 500; }
+.cx-root.is-theme-fade, .cx-root.is-theme-fade * { transition-property: background-color, border-color, color, fill, stroke, box-shadow; transition-duration: 400ms; transition-timing-function: ease; }
+
