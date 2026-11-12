@@ -1,0 +1,29 @@
+/* Agents > Ledger: schemas you build, who made it (influence) and the packs table. Owner: lab. */
+.cx-schemas, .cx-influence { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.cx-schemas > p.cx-note, .cx-influence > p.cx-note { margin: 0; }
+.cx-schemas > .cx-section-label, .cx-influence > .cx-section-label { margin: 8px 0 0; }
+.cx-lab-table th.is-num, .cx-lab-table td.cx-mono { text-align: right; }
+.cx-lab-table th[scope="row"] { min-width: 96px; overflow-wrap: break-word; word-break: normal; }
+.cx-lab-table td.cx-mono { white-space: nowrap; }
+.cx-lab-sub { display: block; font-family: var(--cx-font); font-variant-numeric: normal; margin: 1px 0 0; font-size: var(--cx-fs-xs); font-weight: 400; line-height: 1.35; color: var(--cx-text-3); white-space: normal; text-align: inherit; overflow-wrap: anywhere; }
+.cx-lab-table th[scope="row"] .cx-lab-sub { text-align: left; }
+.cx-lab-pick { display: inline; padding: 0; border: 0; background: none; font: inherit; font-weight: 500; color: var(--cx-text-1); text-align: left; cursor: pointer; overflow-wrap: anywhere; }
+.cx-lab-pick:hover { text-decoration: underline; }
+.cx-lab-pick[aria-pressed="true"] { color: var(--cx-accent); }
+.cx-lab-sort { display: inline-flex; align-items: center; gap: 3px; padding: 0; font: inherit; font-weight: 600; color: inherit; }
+.cx-lab-arrow { font-size: var(--cx-fs-xs); line-height: 1; }
+.cx-lab-bar { display: block; height: 2px; margin-top: 3px; border-radius: 1px; background: var(--cx-line); overflow: hidden; }
+.cx-lab-bar > i { display: block; height: 100%; min-width: 1px; background: var(--cx-accent); }
+.cx-lab-sub-title { margin: 10px 0 0; font-size: var(--cx-fs-xs); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--cx-text-3); }
+.cx-lab-count { margin: 0; }
+.cx-lab-row.is-archived { opacity: .6; }
+.cx-schema-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+.cx-schema-copy { align-self: flex-start; }
+.cx-schema-packs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.cx-schema-editor { display: flex; flex-direction: column; gap: 8px; padding: 4px 0 6px; }
+.cx-schema-fields { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.cx-schema-field { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.cx-schema-field > .cx-input { flex: 1 1 120px; min-width: 0; width: auto; }
+.cx-schema-field > .cx-select { flex: 0 0 auto; min-width: 120px; }
+.cx-schema-field > .cx-schema-values { flex: 1 1 100%; order: 5; }
+.cx-lab-table .cx-lab-sub.is-nowrap { white-space: nowrap; }

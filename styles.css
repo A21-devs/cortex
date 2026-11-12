@@ -1,0 +1,25 @@
+/*
+ * Cortex stylesheet entry. esbuild bundles this file (and the @imports below) into dist/styles.css, which is
+ * what Obsidian loads. Edit the partials in src/styles/; keep everything scoped under .cx-root (the view's
+ * contentEl), except the one rule that hides Obsidian's view header for Cortex leaves.
+ */
+@import "./src/styles/tokens.css";
+@import "./src/styles/shell.css";
+@import "./src/styles/stage.css";
+@import "./src/styles/pages.css";
+@import "./src/styles/ask.css";
+@import "./src/styles/charts.css";
+@import "./src/styles/time-page.css";
+@import "./src/styles/lab.css";
+@import "./src/styles/tour.css";
+@import "./src/styles/menu-accent.css";
+@import "./src/styles/guide.css";
+@import "./src/styles/themes.css";
+@import "./src/styles/settings-window.css";
+@import "./src/styles/desktop-shell.css";
+@import "./src/styles/desktop-fixes.css";
+@import "./src/styles/reader-map.css";
+@import "./src/styles/reader-entry.css";
+@import "./src/styles/desktop-rail.css";
+@import "./src/styles/desktop-display.css";
+@import "./src/styles/desktop-legend.css";

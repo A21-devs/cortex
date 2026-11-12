@@ -1,0 +1,51 @@
+/* Entry and conversation readers: text actions, the related list, conversation sections (H-02). */
+.cx-root .cx-entry-reader,
+.cx-root .cx-conversation-reader { container-type: inline-size; }
+
+/* Edit and History at the title's top-right; the icon pair stays below 340 px of reader width. */
+.cx-root .cx-head-links { display: flex; gap: 12px; font-size: var(--cx-fs-sm); }
+.cx-root .cx-head-links .cx-text-button { color: var(--cx-text-1); font-size: var(--cx-fs-sm); }
+.cx-root .cx-head-links .cx-text-button:disabled { color: var(--cx-text-3); cursor: default; }
+.cx-root .cx-head-links .cx-text-button:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 2px; }
+.cx-root .cx-text-icons { display: contents; }
+.cx-root .cx-text-actions { display: none; gap: 18px; flex-wrap: wrap; font-size: var(--cx-fs-sm); }
+.cx-root .cx-text-actions .cx-text-button { color: var(--cx-text-1); font-size: var(--cx-fs-sm); }
+.cx-root .cx-text-actions .cx-text-button:disabled { color: var(--cx-text-3); cursor: default; }
+.cx-root .cx-text-actions .cx-text-button:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 2px; }
+.cx-root .cx-entry-foot { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.cx-root .cx-entry-foot .cx-text-button,
+.cx-root .cx-conv-readfull { color: var(--cx-text-1); font-size: var(--cx-fs-sm); }
+.cx-root .cx-entry-foot .cx-text-button:hover,
+.cx-root .cx-conv-readfull:hover { text-decoration: underline; text-underline-offset: 2px; }
+.cx-root .cx-entry-foot:empty { display: none; }
+
+@container (min-width: 340px) {
+  .cx-root .cx-text-icons { display: none; }
+  .cx-root .cx-text-actions { display: flex; }
+  .cx-root .cx-entry-reader .cx-reader-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; align-items: start; }
+  .cx-root .cx-entry-reader .cx-reader-head > .cx-reader-title { order: 0; grid-column: 1; grid-row: 1; }
+  .cx-root .cx-entry-reader .cx-reader-head > .cx-head-links { grid-column: 2; grid-row: 1; justify-self: end; padding-top: 2px; }
+  .cx-root .cx-entry-reader .cx-reader-head > .cx-kind-line,
+  .cx-root .cx-entry-reader .cx-reader-head > .cx-source-folder,
+  .cx-root .cx-entry-reader .cx-reader-head > .cx-part-note,
+  .cx-root .cx-entry-reader .cx-reader-head > .cx-reader-actions { grid-column: 1 / -1; }
+}
+.cx-root .cx-entry-reader .cx-reader-head > .cx-head-links { order: 0; }
+
+/* Related: chips filter, rows carry the shared words under the title. */
+.cx-root .cx-chip-row .cx-term { border: 1px solid var(--cx-line); border-radius: 999px; padding: 1px 9px; background: none; color: var(--cx-text-2); font-size: var(--cx-fs-sm); cursor: pointer; }
+.cx-root .cx-chip-row .cx-term:hover { background: var(--cx-chrome-hover); }
+.cx-root .cx-chip-row .cx-term.is-on { background: var(--cx-chrome-active); border-color: var(--cx-line-strong); color: var(--cx-text-1); }
+.cx-root .cx-related-rows .cx-row { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 8px; row-gap: 1px; align-items: baseline; height: auto; }
+.cx-root .cx-related-rows .cx-row > .cx-row-title { grid-column: 2; }
+.cx-root .cx-related-rows .cx-row > .cx-row-meta { grid-column: 2; max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+
+/* Conversation sections. */
+.cx-root .cx-conv-block { display: flex; flex-direction: column; gap: 6px; }
+.cx-root .cx-conv-tagged { margin: 0; font-size: var(--cx-fs-xs); font-style: italic; color: var(--cx-text-3); }
+.cx-root .cx-part-chips { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 6px; }
+.cx-root .cx-part-chips .cx-chip { height: auto; min-height: 20px; font-size: var(--cx-fs-xs); }
+.cx-root .cx-note-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.cx-root .cx-conv-readfull { align-self: flex-start; }
+.cx-root .cx-conv-caption { margin: 4px 0 0; font-size: var(--cx-fs-xs); color: var(--cx-text-3); }
+.cx-root .cx-conv-caption .cx-text-button { font-size: var(--cx-fs-xs); }
