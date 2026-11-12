@@ -1,0 +1,33 @@
+/*
+ * Guide figures (ui/pages/guide/RecordFigure.tsx, RecordLayers.tsx): Figure 1, the pipeline drawn with the person's
+ * own record, keys and ledger, and Figure 2, the by-year dot plot. Fixed category colours, never the figure's colour
+ * theme. The svg keeps its drawn proportions and scrolls sideways inside its frame on a narrow window.
+ */
+.cx-rec-figure { margin: 8px 0 12px; }
+.cx-fig-scroll { overflow-x: auto; }
+.cx-fig-scroll::-webkit-scrollbar { height: 0; }
+.cx-fig { display: block; width: 100%; max-width: 560px; margin: 0 auto; height: auto; font-family: var(--cx-font-ui, inherit); }
+.cx-fig-box rect, .cx-fig-host rect { fill: none; stroke: var(--cx-line-strong); stroke-width: 1; }
+.cx-fig-box.is-dashed rect { stroke-dasharray: 5 4; }
+.cx-fig-host rect { stroke-width: 1.5; }
+.cx-fig-title { font-size: 11.5px; font-weight: 600; fill: var(--cx-text-1); }
+.cx-fig-line { font-size: 10.5px; fill: var(--cx-text-2); }
+.cx-fig-line.is-end { text-anchor: end; }
+.cx-fig-tiny { font-size: 9.5px; fill: var(--cx-text-3); }
+.cx-fig-tiny.is-mid { text-anchor: middle; }
+.cx-fig-tiny.is-end { text-anchor: end; }
+.cx-fig-built { fill: var(--cx-text-1); stroke: var(--cx-text-1); stroke-width: 1.5; }
+.cx-fig-hollow { fill: none; stroke: var(--cx-text-2); stroke-width: 1.5; }
+.cx-fig-arrow { fill: none; stroke: var(--cx-line-strong); stroke-width: 1.4; }
+.cx-fig-arrow.is-dashed { stroke-dasharray: 4 4; }
+.cx-fig-arrow.is-accent { stroke: var(--cx-accent); stroke-width: 1.8; }
+.cx-fig-head { fill: var(--cx-line-strong); }
+.cx-fig-head.is-accent { fill: var(--cx-accent); }
+.cx-fig-link { stroke: var(--cx-text-3); stroke-width: 0.8; opacity: 0.7; }
+.cx-fig-const.is-empty .cx-fig-hollow { stroke: var(--cx-text-3); stroke-dasharray: 2 2; }
+.cx-fig-empty-block { fill: none; stroke: var(--cx-line-strong); stroke-dasharray: 3 3; }
+.cx-fig-band { fill: var(--cx-chrome-hover); opacity: 0.5; }
+.cx-fig-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 6px 0 4px; padding: 0; list-style: none; font-size: var(--cx-fs-xs); color: var(--cx-text-2); }
+.cx-fig-key { display: inline-flex; align-items: center; gap: 6px; }
+.cx-fig-swatch { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.cx-rec-figure figcaption { margin: 4px 0 0; }
