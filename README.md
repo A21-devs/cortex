@@ -108,12 +108,25 @@ npm run desktop                           # build dist-desktop/ and open the app
 npm run desktop -- --no-background        # view only: no imports, no agents, settings changes are not saved
 npm run desktop -- --vault="D:/Other vault"   # or Settings > Cortex Desktop > Choose folder…
 npm run desktop:build                     # bundles only (dist-desktop/; dist/ is not touched)
-node scripts/desktop-shot.mjs --out=.tmp/shots [--steps=steps.json] [--size=1512x982] [--dpr=2]
+node scripts/desktop-shot.mjs --out=.tmp/shots [--steps=steps.json] [--agents-status=status.json] [--size=1512x982] [--dpr=2]
 ```
 
 `desktop-shot.mjs` opens the app in a window that is never shown (offscreen rendering at 60 frames a second, view
 only, a throw-away profile), waits until the index is loaded and the figure has points, runs the steps (`wait`,
-`click`, `eval`, `size`, `capture`; see `src/desktop/shotSteps.ts`) and writes PNGs plus `shot-report.json`.
+`click`, `eval`, `size`, `agentsStatus`, `capture`; see `src/desktop/shotSteps.ts`) and writes PNGs plus
+`shot-report.json`.
+
+A screenshot run starts no agents, so the Agents page has no status of its own. `--agents-status=<file.json>`
+(applied once the app is ready) or an `agentsStatus` step (applied at its place in the steps) gives it a stand-in: an
+`agents.status` result as JSON (`AgentsStatusResult` in `src/shared/protocol/runner.ts`). It is checked before the run
+starts (a malformed one stops the run with the reason) and applied as the runner's own status is, so the status card
+shows the count and what is waiting; it changes nothing else. To capture the Agents page with the synthetic status in
+`scripts/shots/agents-status.json`:
+
+```bash
+npm run sample                            # prints the sample vault's folder
+npm run desktop:shot -- --vault="<sample vault>" --steps=scripts/shots/agents-waiting.json --out=.tmp/shots
+```
 
 Licences of bundled third-party code: three.js (MIT), Preact and @preact/signals (MIT); see
 `dist/THIRD-PARTY-NOTICES.txt` and the legal comments at the end of each bundle.

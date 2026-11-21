@@ -1,0 +1,24 @@
+{
+  "day": "2026-11-21",
+  "tokensToday": 0,
+  "tokensReserved": 0,
+  "usdToday": 0,
+  "plan": {
+    "fiveHour": { "window": "fiveHour", "pct": null, "capPct": null, "resetsAt": null, "stale": false, "atCap": false },
+    "weekly": { "window": "weekly", "pct": null, "capPct": null, "resetsAt": null, "stale": false, "atCap": false }
+  },
+  "capped": false,
+  "paused": false,
+  "engine": "ok",
+  "pending": { "label": 412, "gist": 6, "hub": 2, "filing": 0, "name-check": 0, "answer": 0, "directions": 0 },
+  "groups": [
+    { "what": "notes", "where": "Projects", "inside": ["Website", "Garden"], "insideTotal": 9, "n": 268 },
+    { "what": "notes", "where": "Inbox", "n": 97 },
+    { "what": "notes", "where": "docs", "inside": ["guides"], "insideTotal": 1, "n": 31 },
+    { "what": "chats", "n": 9 },
+    { "what": "notes", "where": "Vault", "n": 7 },
+    { "what": "summaries", "n": 6 },
+    { "what": "maps", "n": 2 }
+  ],
+  "checks": 14
+}

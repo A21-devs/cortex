@@ -249,8 +249,11 @@ export function noticeForEvent(ev: RunnerEvent, before: { capped: boolean; engin
   }
 }
 
-/** Apply an agents.status result to the shared store. */
-function applyStatus(shared: SharedStore, r: { tokensToday: number; usdToday: number; plan: ActivityState["plan"]; capped: boolean; engine: CortexSettings extends never ? never : import("../shared/protocol/runner").EngineState; resumeAt?: string; pending: Record<string, number>; groups?: PendingGroup[]; checks: number }): void {
+/**
+ * Apply an agents.status result to the shared store (the activity and the queues the Agents page reads). Cortex
+ * Desktop's screenshot harness applies its stand-in status through this too (src/desktop/shotSteps.ts, agentsStatus).
+ */
+export function applyStatus(shared: SharedStore, r: { tokensToday: number; usdToday: number; plan: ActivityState["plan"]; capped: boolean; engine: CortexSettings extends never ? never : import("../shared/protocol/runner").EngineState; resumeAt?: string; pending: Record<string, number>; groups?: PendingGroup[]; checks: number }): void {
   shared.batch(() => {
     shared.update("activity", (a) => {
       const next = { ...a, tokensToday: r.tokensToday, usdToday: r.usdToday, plan: r.plan, capped: r.capped, engine: r.engine };

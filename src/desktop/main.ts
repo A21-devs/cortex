@@ -18,16 +18,19 @@
  * one frame a second); timers are never throttled and the page always counts as visible (renderer.ts), so the
  * figure keeps animating. Wait until the index is loaded and the figure has points, let the growth settle, run
  * the steps, capturePage() to PNGs (DOM and WebGL together), write shot-report.json, exit 0 (or 1 with the reason).
+ * A stand-in agents status (--agents-status, or an agentsStatus step) is read and checked before the app is waited
+ * for and handed to the page, which applies it as the runner's own status (renderer.ts); the runner is not asked.
  */
 import { app, BrowserWindow, dialog, ipcMain, Menu, safeStorage, screen, session, shell, type MenuItemConstructorOptions, type Rectangle } from "electron";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
 import { vaultKey } from "../shared/ids";
+import type { AgentsStatusResult } from "../shared/protocol/runner";
 import { DEFAULT_VAULT_NAME, parseLaunchArgs, type DesktopConfig, type LaunchOptions, type ShotOptions } from "./config";
 import { HostShell } from "./hostShell";
 import { desktopMenu, type MenuNode } from "./menu";
-import { parseStepsText, StepError, type ShotStep } from "./shotSteps";
+import { loadStatusFiles, parseStepsText, readAgentsStatus, StepError, type ShotStep } from "./shotSteps";
 
 const APP_DIR = __dirname;
 const CORTEX_HOME = path.join(app.getPath("appData"), "Cortex");
@@ -483,6 +486,23 @@ async function click(win: BrowserWindow, selector: string, timeoutMs: number): P
   }
 }
 
+/** The steps file, with the status file of every agentsStatus step read and checked now (names are relative to the steps file). */
+function loadSteps(file: string): ShotStep[] {
+  const dir = path.dirname(path.resolve(file));
+  return loadStatusFiles(parseStepsText(readFileSync(file, "utf8")), (name) => readFileSync(path.resolve(dir, name), "utf8"));
+}
+
+/**
+ * Hand a stand-in agents status to the page, which checks it and applies it to the shared store as the runner's own
+ * status (renderer.ts applyAgentsStatus); the queues it set come back for the report.
+ */
+async function applyAgentsStatus(win: BrowserWindow, status: AgentsStatusResult): Promise<unknown> {
+  const r = (await win.webContents.executeJavaScript(`window.cortexDesktop.applyAgentsStatus(${JSON.stringify(status)})`, true)) as { ok?: boolean; error?: string; queues?: unknown } | null;
+  if (!r?.ok) throw new Error(`the agents status was not applied: ${r?.error ?? "the page did not answer"}`);
+  await sleep(150);
+  return r.queues ?? null;
+}
+
 async function runShot(win: BrowserWindow, shot: ShotOptions): Promise<number> {
   const t0 = Date.now();
   const out = path.resolve(shot.out);
@@ -497,9 +517,11 @@ async function runShot(win: BrowserWindow, shot: ShotOptions): Promise<number> {
   try {
     mkdirSync(out, { recursive: true });
     if (insideFolder(out, currentVault)) throw new StepError("--out must be outside the vault");
-    const steps: ShotStep[] = shot.steps ? parseStepsText(readFileSync(shot.steps, "utf8")) : [];
+    const status = shot.agentsStatus ? readAgentsStatus(shot.agentsStatus, (name) => readFileSync(path.resolve(name), "utf8"), "--agents-status") : null;
+    const steps: ShotStep[] = shot.steps ? loadSteps(shot.steps) : [];
     const ready = await waitReady(win, shot.timeoutMs);
     report.ready = { ...ready, afterMs: Date.now() - t0 };
+    if (status) report.agentsStatus = { file: shot.agentsStatus, queues: await applyAgentsStatus(win, status) };
     await sleep(shot.settleMs);
     let captured = false;
     for (const [i, step] of steps.entries()) {
@@ -517,6 +539,11 @@ async function runShot(win: BrowserWindow, shot: ShotOptions): Promise<number> {
         case "size":
           win.setContentSize(step.width, step.height);
           await sleep(500);
+          break;
+        case "agentsStatus":
+          if (!step.status) throw new StepError(`step ${i + 1}: the agents status was not read`);
+          if (step.file) entry.file = step.file;
+          entry.result = await applyAgentsStatus(win, step.status);
           break;
         case "capture": {
           const file = path.isAbsolute(step.path) ? step.path : path.join(out, step.path);
