@@ -1,0 +1,8 @@
+# Check out every text file with LF line endings, on every platform.
+# The browser add-on is embedded in Cortex byte for byte (src/shared/captureAddon.ts), and tests compare the
+# two, so a CRLF checkout (the Git for Windows default) would break them.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
