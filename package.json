@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Cortex: an Obsidian desktop plugin that grows a living 3D particle nervous system from your whole record.",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": {
     "node": ">=20.11"
   },
