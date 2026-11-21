@@ -1,0 +1,63 @@
+# Publishes a GitHub release when a version tag is pushed (for example 0.1.0, the same as manifest.json's version).
+# Builds on Windows from the tagged code after npm run check passes, then attaches the Obsidian plugin (zipped, and as
+# loose files for tools that install plugins from releases) and Cortex Desktop for Windows (zipped).
+name: Release
+
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - name: Check the tag matches manifest.json
+        shell: bash
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match manifest.json version $version"
+            exit 1
+          fi
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm run desktop:package
+      - name: Zip the plugin and the app
+        shell: pwsh
+        run: |
+          $v = $env:GITHUB_REF_NAME
+          New-Item -ItemType Directory -Force -Path out/cortex | Out-Null
+          Copy-Item dist/main.js, dist/manifest.json, dist/styles.css, dist/cortex-runner.js, dist/THIRD-PARTY-NOTICES.txt, LICENSE -Destination out/cortex/
+          Compress-Archive -Path out/cortex -DestinationPath "out/cortex-$v.zip"
+          Compress-Archive -Path release/Cortex-win32-x64 -DestinationPath "out/Cortex-Desktop-$v-win-x64.zip"
+      - name: Publish the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v="$GITHUB_REF_NAME"
+          cat > out/notes.md <<'EOF'
+          Cortex grows a living 3D brain and nervous system from your Obsidian notes, source documents and AI chats, with charts, and background agents (through the Claude Code CLI) that organise them.
+
+          ### Downloads
+          - **cortex-VERSION.zip**: the Obsidian plugin. Unzip it into your vault's `.obsidian/plugins/` folder (it makes `.obsidian/plugins/cortex/`), reload Obsidian, then turn Cortex on under Settings › Community plugins.
+          - **Cortex-Desktop-VERSION-win-x64.zip**: Cortex Desktop for Windows. Unzip it anywhere and run `Cortex.exe`. It opens the "Obsidian Vault" folder in your Documents when that is a vault, and otherwise asks you to choose your vault folder. The app is not code-signed yet, so Windows SmartScreen may warn the first time (More info › Run anyway).
+          - **main.js**, **manifest.json**, **styles.css**: the plugin files on their own, for tools that install Obsidian plugins from GitHub releases. The background agents also need `cortex-runner.js`, which is in the zip.
+
+          Cortex never rewrites or deletes your notes; see the README for its ground rules and the one network request it makes by itself.
+
+          Built by the Release workflow from this tag after `npm run check` passed.
+          EOF
+          sed -i "s/VERSION/$v/g" out/notes.md
+          gh release create "$v" --verify-tag --title "Cortex $v" --notes-file out/notes.md \
+            "out/cortex-$v.zip" "out/Cortex-Desktop-$v-win-x64.zip" dist/main.js dist/manifest.json dist/styles.css
