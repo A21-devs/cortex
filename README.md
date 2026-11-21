@@ -12,6 +12,23 @@ surface, control, page, chart, Ask action and setting, with exact copy). Then
 and disjoint files, contracts, protocols, on-disk formats, budgets, security, testing, phasing and the review
 responses.
 
+## What it looks like
+
+Cortex Desktop on a real vault of about 27,000 notes.
+
+![The whole Cortex figure: each speck in the brain is a note, coloured by its area, and the spine is coloured by age](docs/screenshots/cortex-figure.png)
+
+![Close-up of the brain, each speck a note coloured by its area](docs/screenshots/cortex-brain.png)
+
+| | |
+|---|---|
+| ![Groups: the same notes pulled into labelled clouds](docs/screenshots/cortex-groups.png) | ![Flows chart drawn with the figure's own particles](docs/screenshots/cortex-chart-flows.png) |
+| **Groups:** the same notes pulled into labelled clouds, one per area. | **Flows:** a chart drawn with the figure's own particles, from each area to how recently it was active. |
+| ![Clock chart: activity by hour, one ring per area](docs/screenshots/cortex-chart-clock.png) | ![The figure lying on its side](docs/screenshots/cortex-side-view.png) |
+| **Clock:** activity by hour of the day, one ring per area, with the peak hour marked. | **Side view:** the spine runs from oldest, by the brain, to newest. |
+| ![The Time page beside the figure](docs/screenshots/cortex-time-page.png) | ![The brain in a different colour theme](docs/screenshots/cortex-colour-theme.png) |
+| **Time page:** monthly activity by area, and decisions, open questions, plans and abandoned ideas over time. | **Colour themes** recolour only the figure; the key keeps the area colours. |
+
 ## Quick start
 
 ```bash
