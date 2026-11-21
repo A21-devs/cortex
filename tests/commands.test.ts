@@ -103,6 +103,7 @@ describe("update check", () => {
     expect(releasesRepo({ authorUrl: "https://example.com/someone/cortex" }, "")).toBeNull();
     expect(releasesRepo({}, "")).toBeNull();
     expect(releasesRepo({}, "owner/repo")).toBe("owner/repo");
+    expect(releasesRepo({})).toBe("A21-devs/cortex");
     expect(releasesRepo({ authorUrl: "https://github.com/a b/c" }, "")).toBeNull();
     expect(latestReleaseUrl("a/b")).toBe("https://api.github.com/repos/a/b/releases/latest");
   });
@@ -298,7 +299,7 @@ describe("/not-mine", () => {
 describe("About, agreement and connect", () => {
   it("links the documentation and changelog only when a repository is known", () => {
     expect(aboutLinks({ authorUrl: "https://github.com/someone/cortex" })).toEqual({ docs: "https://github.com/someone/cortex#readme", changelog: "https://github.com/someone/cortex/releases" });
-    expect(aboutLinks({})).toBeNull();
+    expect(aboutLinks({})).toEqual({ docs: "https://github.com/A21-devs/cortex#readme", changelog: "https://github.com/A21-devs/cortex/releases" });
   });
 
   it("shows the current choice and what is removed before sending", () => {

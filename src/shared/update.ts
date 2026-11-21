@@ -6,10 +6,10 @@
  */
 
 /**
- * "owner/repo" whose releases are checked when the manifest carries no GitHub `authorUrl`. Empty until the plugin
- * has a public repository: with neither, the check says it cannot tell and sends nothing.
+ * "owner/repo" whose releases are checked when the manifest carries no GitHub `authorUrl`: the public repository.
+ * With an empty value and no `authorUrl`, the check would say it cannot tell and send nothing.
  */
-export const RELEASES_REPO = "";
+export const RELEASES_REPO = "A21-devs/cortex";
 
 const REPO_PART = /^[A-Za-z0-9_.-]+$/;
 
