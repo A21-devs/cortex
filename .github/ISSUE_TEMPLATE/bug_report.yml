@@ -1,0 +1,47 @@
+name: Bug report
+description: Something in Cortex does not work as it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to see it
+      placeholder: |
+        1. Open …
+        2. Click …
+        3. …
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      options:
+        - Obsidian plugin
+        - Cortex Desktop
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Cortex version
+      description: Shown in Obsidian's Community plugins list, or in manifest.json.
+      placeholder: 0.1.0
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console or log lines
+      description: Leave out note titles, file paths and anything else personal.
+      render: text
