@@ -7,10 +7,17 @@
  *   --no-background       view only: no imports, no agents, settings changes kept in memory
  *   --devtools            open the developer tools at start
  * Screenshot runs (scripts/desktop-shot.mjs passes these; the window is never shown):
- *   --shot --out=<dir> [--steps=<file.json>] [--size=1512x982] [--dpr=1] [--timeout=120000]
- *   [--settle=4500] [--device=returning|fresh] [--mode=offscreen|hidden] [--profile=<dir>]
+ *   --shot --out=<dir> [--steps=<file.json>] [--agents-status=<file.json>] [--size=1512x982] [--dpr=1]
+ *   [--timeout=120000] [--settle=4500] [--device=returning|fresh] [--mode=offscreen|hidden] [--profile=<dir>]
+ *   --steps          the steps to run (shotSteps.ts: wait, click, eval, size, agentsStatus, capture)
+ *   --agents-status  a stand-in agents status (an AgentsStatusResult as JSON), checked before the run and applied
+ *                    once the app is ready, as the runner's own status is: while agents are on, the Agents page
+ *                    shows its counts and what is waiting. The sample vault has them off, so this flag alone shows
+ *                    none of it; the steps in scripts/shots/agents-waiting.json turn them on for the run with
+ *                    settings.preview, which is never saved. Screenshot runs only; it changes what the page shows
+ *                    and nothing else (the runner is not asked, no agent runs, nothing is saved).
  */
-import { parseSize, StepError } from "./shotSteps";
+import { parseSize, statusFilePath, StepError } from "./shotSteps";
 
 /**
  * The vault Cortex Desktop opens when nothing else was chosen: this folder in the user's Documents (main.ts joins it
@@ -21,6 +28,8 @@ export const DEFAULT_VAULT_NAME = "Obsidian Vault";
 export interface ShotOptions {
   out: string;
   steps: string | null;
+  /** A stand-in agents status file, applied once the app is ready (before the steps). */
+  agentsStatus: string | null;
   width: number;
   height: number;
   dpr: number;
@@ -66,6 +75,17 @@ function num(text: string | undefined, fallback: number, lo: number, hi: number,
   return n;
 }
 
+/** --agents-status=<file.json>, or null without it. */
+function statusFlag(argv: readonly string[]): string | null {
+  const v = flagValue(argv, "agents-status");
+  if (v === undefined) return null;
+  try {
+    return statusFilePath(v);
+  } catch (e) {
+    throw new StepError(`--agents-status: ${e instanceof Error ? e.message : String(e)}`);
+  }
+}
+
 /** Parse Electron's argv (Chromium switches are ignored). Throws StepError on a bad screenshot option. */
 export function parseLaunchArgs(argv: readonly string[]): LaunchOptions {
   const vault = flagValue(argv, "vault") ?? null;
@@ -82,6 +102,7 @@ export function parseLaunchArgs(argv: readonly string[]): LaunchOptions {
     shot = {
       out,
       steps: flagValue(argv, "steps") ?? null,
+      agentsStatus: statusFlag(argv),
       ...size,
       dpr: num(flagValue(argv, "dpr"), SHOT_DEFAULTS.dpr, 0.5, 4, "dpr"),
       timeoutMs: num(flagValue(argv, "timeout"), SHOT_DEFAULTS.timeoutMs, 1000, 3_600_000, "timeout"),

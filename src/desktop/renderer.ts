@@ -7,7 +7,8 @@
  * Same cache folder (%LOCALAPPDATA%\cortex\<vaultKey>), runner, ledgers and settings schema as the plugin, so the
  * user's imports show up. Overrides two host hooks of the plugin class: the runner comes from this bundle's folder
  * (same build id as this UI), and view-only runs (--no-background, the screenshot harness) start no background work.
- * `window.cortexDesktop.probe()` reports readiness to the harness.
+ * `window.cortexDesktop.probe()` reports readiness to the harness; `applyAgentsStatus()` takes its stand-in agents
+ * status (screenshot runs only).
  */
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import * as nodePath from "node:path";
@@ -15,6 +16,7 @@ import { ipcRenderer, shell } from "electron";
 import type { App as ObsidianApp, PluginManifest as ObsidianManifest } from "obsidian";
 import type { CortexServices } from "../plugin/services";
 import CortexPlugin from "../main";
+import { lazyContainer } from "../lazy";
 import { bucketCss } from "../shared/palette";
 import { hasPassphrase } from "../shared/lock";
 import { DEFAULT_SETTINGS } from "../shared/settings";
@@ -27,6 +29,7 @@ import type { DesktopConfig } from "./config";
 import { hostSettingsSection, startHostLink } from "./hostLink";
 import { motionHostDefault } from "./motionDefault";
 import { installOsKeyBridge } from "./osKey";
+import { parseAgentsStatus } from "./shotSteps";
 import { App } from "./obsidian/app";
 import { installDomHelpers } from "./obsidian/dom";
 import { Notice } from "./obsidian/ui";
@@ -38,12 +41,14 @@ const VIEW_TYPE = "cortex-view";
 interface DesktopState {
   booted: boolean;
   error: string | null;
+  /** A screenshot run (the only kind that takes a stand-in agents status). */
+  shot: boolean;
   app: App | null;
   plugin: CortexPlugin | null;
   services: CortexServices | null;
 }
 
-const state: DesktopState = { booted: false, error: null, app: null, plugin: null, services: null };
+const state: DesktopState = { booted: false, error: null, shot: false, app: null, plugin: null, services: null };
 
 /** `require("electron").remote` for Cortex's Save and Open dialogs (removed from Electron; served over IPC here). */
 function installRemoteDialogs(): void {
@@ -266,6 +271,7 @@ async function boot(): Promise<void> {
   installDomHelpers();
   installRemoteDialogs();
   const cfg = ipcRenderer.sendSync("cortex:config") as DesktopConfig;
+  state.shot = cfg.shot;
   if (cfg.shot) {
     keepVisible();
     keepActive();
@@ -394,8 +400,31 @@ function probe(): ProbeResult {
   return { booted: state.booted, phase, points, dataPoints, fps, error: state.error, visibility: document.visibilityState, vault: ls ? { files: ls.files, notes: ls.markdown, readMs: ls.ms } : null };
 }
 
+type StatusApplied = { ok: true; queues: { label: number; summaries: number; maps: number; checks: number; groups: number } } | { ok: false; error: string };
+
+/**
+ * Screenshot runs: a stand-in agents status (--agents-status, an agentsStatus step), checked and applied to the shared
+ * store by the same function as the runner's own agents.status result, so the Agents page shows it as it would for
+ * real. Only the in-memory store changes: the runner is not asked, no agent runs, nothing is saved. Refused in other
+ * runs.
+ */
+async function applyAgentsStatus(raw: unknown): Promise<StatusApplied> {
+  try {
+    if (!state.shot) throw new Error("a stand-in agents status is for screenshot runs only");
+    const services = state.services;
+    if (!services) throw new Error("Cortex is not open yet");
+    const status = parseAgentsStatus(raw);
+    (await lazyContainer()).applyStatus(services.shared, status);
+    const q = services.shared.get("queues");
+    return { ok: true, queues: { label: q.label, summaries: q.summaries, maps: q.maps, checks: q.checks, groups: q.groups?.length ?? 0 } };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 (window as unknown as { cortexDesktop: unknown }).cortexDesktop = {
   probe,
+  applyAgentsStatus,
   /** Screenshot runs: draw the cold-open card again (and dismiss it with the returned function). */
   previewSplash(line = "Reading the vault…"): () => void {
     const card = splash(document.querySelector<HTMLElement>(".cxd-host") ?? document.body, false);

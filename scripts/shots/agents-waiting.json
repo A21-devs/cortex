@@ -1,0 +1,10 @@
+{
+  "about": "Screenshot steps for scripts/desktop-shot.mjs: the Agents page with the stand-in agents status in agents-status.json (synthetic numbers). The second step shows agents as on for this run only (a settings preview, never saved), because the synthetic sample vault keeps them off. The stand-in status changes only what the page shows: the runner is not asked and no agent runs.",
+  "steps": [
+    { "agentsStatus": "agents-status.json" },
+    { "eval": "window.cortexDesktop.plugin.getServices().then((s) => { s.settings.preview((x) => { x.agents.enabled = true; }); return s.settings.value.agents.enabled; })" },
+    { "eval": "window.cortexDesktop.app.commands.executeCommandById('cortex:open-agents')" },
+    { "wait": 1500 },
+    { "capture": "agents-waiting.png" }
+  ]
+}

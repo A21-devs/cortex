@@ -1,10 +1,43 @@
 /**
- * Cortex Desktop's screenshot harness: the steps parser (src/desktop/shotSteps.ts) and the launch options the
- * Electron main process reads (src/desktop/config.ts). Pure: no Electron.
+ * Cortex Desktop's screenshot harness: the steps parser (src/desktop/shotSteps.ts), its stand-in agents status, and
+ * the launch options the Electron main process reads (src/desktop/config.ts). Pure: no Electron.
  */
 import { describe, expect, it } from "vitest";
 import { parseLaunchArgs, SHOT_DEFAULTS } from "../src/desktop/config";
-import { capturePath, parseSize, parseStep, parseSteps, parseStepsText, StepError, STEP_LIMITS } from "../src/desktop/shotSteps";
+import { capturePath, loadStatusFiles, parseAgentsStatus, parseAgentsStatusText, parseSize, parseStep, parseSteps, parseStepsText, readAgentsStatus, StepError, STEP_LIMITS } from "../src/desktop/shotSteps";
+import type { AgentsStatusResult } from "../src/shared/protocol/runner";
+
+/** A small, valid agents.status result: 12 label targets, 2 summaries and 1 map, in four groups. */
+function status(patch: Record<string, unknown> = {}): AgentsStatusResult {
+  return {
+    day: "2026-11-21",
+    tokensToday: 1200,
+    tokensReserved: 0,
+    usdToday: 0.02,
+    plan: {
+      fiveHour: { window: "fiveHour", pct: 12.5, capPct: 70, resetsAt: 1_795_255_200_000, stale: false, atCap: false },
+      weekly: { window: "weekly", pct: null, capPct: null, resetsAt: null, stale: false, atCap: false },
+    },
+    capped: false,
+    paused: false,
+    engine: "ok",
+    pending: { label: 12, gist: 2, hub: 1, filing: 0, "name-check": 0, answer: 0, directions: 0 },
+    groups: [
+      { what: "notes", where: "Projects", inside: ["Website"], insideTotal: 3, n: 10 },
+      { what: "chats", n: 2 },
+      { what: "summaries", n: 2 },
+      { what: "maps", n: 1 },
+    ],
+    checks: 3,
+    ...patch,
+  } as AgentsStatusResult;
+}
+
+/** The same status before the planner described its work (no groups; the field is optional). */
+function withoutGroups(patch: Record<string, unknown> = {}): AgentsStatusResult {
+  const { groups: _groups, ...rest } = status(patch);
+  return rest;
+}
 
 describe("desktop harness: steps", () => {
   it("reads the short form of every action", () => {
@@ -78,6 +111,7 @@ describe("desktop harness: launch options", () => {
     expect(o.shot).toEqual({
       out: "C:\\shots",
       steps: null,
+      agentsStatus: null,
       width: SHOT_DEFAULTS.width,
       height: SHOT_DEFAULTS.height,
       dpr: 1,
@@ -87,8 +121,14 @@ describe("desktop harness: launch options", () => {
       mode: "offscreen",
       profile: "C:\\tmp\\p",
     });
-    const p = parseLaunchArgs(["--shot", "--out=o", "--steps=s.json", "--size=1280x800", "--dpr=2", "--timeout=5000", "--settle=0", "--device=fresh", "--mode=hidden"]).shot;
-    expect(p).toMatchObject({ steps: "s.json", width: 1280, height: 800, dpr: 2, timeoutMs: 5000, settleMs: 0, device: "fresh", mode: "hidden" });
+    const p = parseLaunchArgs(["--shot", "--out=o", "--steps=s.json", "--agents-status=C:\\shots\\status.json", "--size=1280x800", "--dpr=2", "--timeout=5000", "--settle=0", "--device=fresh", "--mode=hidden"]).shot;
+    expect(p).toMatchObject({ steps: "s.json", agentsStatus: "C:\\shots\\status.json", width: 1280, height: 800, dpr: 2, timeoutMs: 5000, settleMs: 0, device: "fresh", mode: "hidden" });
+  });
+
+  it("takes a stand-in agents status in screenshot runs only", () => {
+    expect(parseLaunchArgs(["--vault=D:\\Vault", "--agents-status=status.json"])).toEqual({ vault: "D:\\Vault", viewOnly: false, devtools: false, shot: null });
+    expect(() => parseLaunchArgs(["--shot", "--out=o", "--agents-status=status.txt"])).toThrow(/--agents-status: .*must end in \.json/);
+    expect(() => parseLaunchArgs(["--shot", "--out=o", "--agents-status="])).toThrow(/--agents-status: agents status file must be a non-empty string/);
   });
 
   it("refuses bad screenshot options", () => {
@@ -97,5 +137,90 @@ describe("desktop harness: launch options", () => {
     expect(() => parseLaunchArgs(["--shot", "--out=o", "--mode=visible"])).toThrow(/--mode/);
     expect(() => parseLaunchArgs(["--shot", "--out=o", "--device=old"])).toThrow(/--device/);
     expect(() => parseLaunchArgs(["--shot", "--out=o", "--size=10x10"])).toThrow(StepError);
+  });
+});
+
+describe("desktop harness: a stand-in agents status", () => {
+  it("reads the step with a file name or the status itself, in the short and the canonical form", () => {
+    expect(parseSteps([{ agentsStatus: "status.json" }, { type: "agentsStatus", file: "shots\\other.JSON" }])).toEqual([
+      { kind: "agentsStatus", file: "status.json", status: null },
+      { kind: "agentsStatus", file: "shots\\other.JSON", status: null },
+    ]);
+    expect(parseStep({ agentsStatus: status() })).toEqual({ kind: "agentsStatus", file: null, status: status() });
+    expect(parseStep({ type: "agentsStatus", status: withoutGroups() })).toEqual({ kind: "agentsStatus", file: null, status: withoutGroups() });
+  });
+
+  it("refuses a malformed step with the step number and the reason", () => {
+    const bad: [unknown, RegExp][] = [
+      [[{ wait: 1 }, { agentsStatus: "status.txt" }], /step 2: agents status file "status.txt" must end in \.json/],
+      [[{ agentsStatus: "a?.json" }], /cannot hold/],
+      [[{ agentsStatus: 3 }], /step 1: agentsStatus needs a status file name \(\.json\) or the status itself/],
+      [[{ agentsStatus: [status()] }], /agentsStatus needs/],
+      [[{ type: "agentsStatus" }], /agentsStatus needs/],
+      [[{ agentsStatus: "status.json", capture: "a.png" }], /more than one action/],
+      [[{ wait: 1 }, { agentsStatus: status({ group: [] }) }], /step 2: agents status: \$\.group is not allowed/],
+    ];
+    for (const [input, re] of bad) expect(() => parseSteps(input), JSON.stringify(input)).toThrow(re);
+  });
+
+  it("checks the status against AgentsStatusResult and names every problem", () => {
+    expect(parseAgentsStatus(status())).toEqual(status());
+    expect(parseAgentsStatus(withoutGroups({ resumeAt: "2026-11-21T18:30:00.000Z", lastRun: { runId: "r_0abc", job: "label", status: "finished", finishedAt: "2026-11-21T09:00:00+01:00" } }))).toMatchObject({ lastRun: { job: "label" } });
+    const bad: [unknown, RegExp][] = [
+      [null, /agents status: \$ expected object, got null/],
+      [[status()], /\$ expected object, got array/],
+      [status({ pending: { label: 12, gist: 2, hub: 1 } }), /\$\.pending\.filing is required; \$\.pending\.name-check is required/],
+      [status({ pending: { ...status().pending, review: 1 } }), /\$\.pending\.review is not allowed/],
+      [status({ tokensToday: -1 }), /\$\.tokensToday below 0/],
+      [status({ checks: 2.5 }), /\$\.checks expected integer, got number/],
+      [status({ engine: "sleeping" }), /\$\.engine must be one of "ok"/],
+      [status({ capped: "no" }), /\$\.capped expected boolean, got string/],
+      [status({ day: "21/11/2026" }), /\$\.day does not match/],
+      [status({ day: "2026-02-30" }), /\$\.day is not a real day/],
+      [status({ resumeAt: "2026-11-21T25:00Z" }), /\$\.resumeAt is not a real time/],
+      [status({ plan: { fiveHour: status().plan.fiveHour } }), /\$\.plan\.weekly is required/],
+      [status({ plan: { ...status().plan, weekly: { ...status().plan.fiveHour } } }), /\$\.plan\.weekly\.window must equal "weekly"/],
+      [status({ groups: [{ what: "notes", n: 15 }] }), /\$\.groups\[0\]\.where is required for notes/],
+      [status({ groups: [{ what: "notes", where: "Projects", n: 0 }, { what: "chats", n: 15 }] }), /\$\.groups\[0\]\.n below 1/],
+      [status({ groups: [{ what: "notes", where: "Projects", n: 15, inside: ["a", "b", "c"] }] }), /\$\.groups\[0\]\.inside more than 2 items/],
+      [status({ groups: [{ what: "notes", where: "Projects", n: 15, inside: ["a", "b"], insideTotal: 1 }] }), /\$\.groups\[0\]\.insideTotal is below the 2 names/],
+      [status({ groups: [{ what: "tasks", n: 15 }] }), /\$\.groups\[0\]\.what must be one of/],
+      [status({ groups: [{ what: "notes", where: "Projects", n: 9 }] }), /\$\.groups add up to 9, but \$\.pending label \+ gist \+ hub is 15/],
+      [status({ lastRun: { runId: "run-1", job: "label", status: "finished" } }), /\$\.lastRun\.runId does not match/],
+    ];
+    for (const [input, re] of bad) {
+      expect(() => parseAgentsStatus(input), JSON.stringify(input)).toThrow(StepError);
+      expect(() => parseAgentsStatus(input), JSON.stringify(input)).toThrow(re);
+    }
+  });
+
+  it("reads status text (with a byte-order mark) and refuses text that is not JSON or too long", () => {
+    expect(parseAgentsStatusText(`${String.fromCharCode(0xfeff)}${JSON.stringify(status())}`)).toEqual(status());
+    expect(() => parseAgentsStatusText("{ day: 1 }")).toThrow(/agents status is not valid JSON/);
+    expect(() => parseAgentsStatusText(" ".repeat(STEP_LIMITS.maxStatusText + 1))).toThrow(/too long/);
+  });
+
+  it("reads each step's status file before the run, naming the step and the file when one is missing or malformed", () => {
+    const files: Record<string, string> = { "status.json": JSON.stringify(status()), "bad.json": "{", "wrong.json": JSON.stringify(status({ checks: -2 })) };
+    const asked: string[] = [];
+    const read = (name: string): string => {
+      asked.push(name);
+      const text = files[name];
+      if (text === undefined) throw new Error(`ENOENT: no such file, open '${name}'`);
+      return text;
+    };
+    const steps = loadStatusFiles(parseSteps([{ wait: 1 }, { agentsStatus: "status.json" }, { agentsStatus: status({ checks: 9 }) }, { capture: "a.png" }]), read);
+    expect(asked).toEqual(["status.json"]);
+    expect(steps).toEqual([
+      { kind: "wait", ms: 1 },
+      { kind: "agentsStatus", file: "status.json", status: status() },
+      { kind: "agentsStatus", file: null, status: status({ checks: 9 }) },
+      { kind: "capture", path: "a.png" },
+    ]);
+    expect(() => loadStatusFiles(parseSteps([{ agentsStatus: "missing.json" }]), read)).toThrow(/step 1: could not read the agents status file missing\.json \(ENOENT/);
+    expect(() => loadStatusFiles(parseSteps([{ wait: 1 }, { agentsStatus: "bad.json" }]), read)).toThrow(/step 2: bad\.json: agents status is not valid JSON/);
+    expect(() => loadStatusFiles(parseSteps([{ agentsStatus: "wrong.json" }]), read)).toThrow(/step 1: wrong\.json: agents status: \$\.checks below 0/);
+    expect(readAgentsStatus("status.json", read, "--agents-status")).toEqual(status());
+    expect(() => readAgentsStatus("wrong.json", read, "--agents-status")).toThrow(/^--agents-status: wrong\.json: agents status: /);
   });
 });

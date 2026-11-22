@@ -2,13 +2,21 @@
 // loaded and the figure has points, runs optional steps, and saves PNGs (webContents.capturePage, so the DOM chrome
 // and the WebGL canvas are both in the picture). No human at the screen is needed.
 //
-// Usage: node scripts/desktop-shot.mjs [--out=<dir>] [--steps=<file.json>] [--size=1512x982] [--vault=<folder>]
-//          [--dpr=1] [--timeout=120000] [--settle=4500] [--device=returning|fresh] [--mode=offscreen|hidden]
-//          [--no-build]
+// Usage: node scripts/desktop-shot.mjs [--out=<dir>] [--steps=<file.json>] [--agents-status=<file.json>]
+//          [--size=1512x982] [--vault=<folder>] [--dpr=1] [--timeout=120000] [--settle=4500]
+//          [--device=returning|fresh] [--mode=offscreen|hidden] [--no-build]
 //   --out      where PNGs and shot-report.json go (default .tmp/desktop-shots); never inside the vault
 //   --steps    a JSON list of steps, see src/desktop/shotSteps.ts:
-//              [{ "wait": 1000 }, { "click": "selector" }, { "eval": "js" }, { "size": "1280x800" }, { "capture": "a.png" }]
+//              [{ "wait": 1000 }, { "click": "selector" }, { "eval": "js" }, { "size": "1280x800" },
+//               { "agentsStatus": "status.json" }, { "capture": "a.png" }]
 //              Without steps (or without a capture step) one picture is saved as cortex.png.
+//   --agents-status  a stand-in agents status (an AgentsStatusResult as JSON, src/shared/protocol/runner.ts),
+//              applied once the app is ready, as the runner's own status is, so while agents are on the Agents page
+//              shows its counts and what is waiting; an agentsStatus step does the same at its place in the steps (a
+//              file name there is relative to the steps file). Checked first: a malformed status stops the run with
+//              the reason. The sample vault has agents off, so the flag alone shows none of the waiting work there;
+//              --steps=scripts/shots/agents-waiting.json applies scripts/shots/agents-status.json, turns agents on
+//              for the run with settings.preview (never saved) and captures the Agents page.
 //   --size     the window's content size in CSS pixels (default 1512x982, the reference recordings' screen)
 //   --dpr      device pixel ratio of the captures (default 1; 2 for a Retina-like picture)
 //   --settle   ms to wait after the figure has points, so the growth animation finishes (default 4500)
@@ -16,7 +24,8 @@
 //   --mode     "offscreen" (default): Electron's offscreen rendering, driven at 60 frames a second, so the figure
 //              animates as on screen; "hidden": a never-shown window (Chromium paints it, but at about 1 frame a second)
 // The app runs view only: nothing is imported, no agent runs, settings changes stay in memory, and the browser
-// profile is a throw-away folder. Exit code 0 when every capture was written.
+// profile is a throw-away folder. A stand-in agents status changes only what the page shows: it asks the runner for
+// nothing and runs no agent. Exit code 0 when every capture was written.
 import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import os from "node:os";
@@ -30,7 +39,7 @@ const opt = (name) => {
   const hit = [...argv].reverse().find((a) => a.startsWith(`--${name}=`));
   return hit === undefined ? undefined : hit.slice(name.length + 3);
 };
-const KNOWN = new Set(["out", "steps", "size", "vault", "dpr", "timeout", "settle", "device", "mode", "no-build", "help"]);
+const KNOWN = new Set(["out", "steps", "agents-status", "size", "vault", "dpr", "timeout", "settle", "device", "mode", "no-build", "help"]);
 for (const a of argv) {
   const name = /^--([a-z-]+)/.exec(a)?.[1];
   if (!name || !KNOWN.has(name)) {
@@ -39,12 +48,13 @@ for (const a of argv) {
   }
 }
 if (argv.includes("--help")) {
-  console.log("node scripts/desktop-shot.mjs [--out=<dir>] [--steps=<file.json>] [--size=1512x982] [--vault=<folder>] [--dpr=1] [--timeout=ms] [--settle=ms] [--device=returning|fresh] [--mode=offscreen|hidden] [--no-build]");
+  console.log("node scripts/desktop-shot.mjs [--out=<dir>] [--steps=<file.json>] [--agents-status=<file.json>] [--size=1512x982] [--vault=<folder>] [--dpr=1] [--timeout=ms] [--settle=ms] [--device=returning|fresh] [--mode=offscreen|hidden] [--no-build]");
   process.exit(0);
 }
 
 const out = path.resolve(opt("out") ?? path.join(root, ".tmp", "desktop-shots"));
 const steps = opt("steps");
+const agentsStatus = opt("agents-status");
 const timeout = Number(opt("timeout") ?? 120_000);
 
 if (!argv.includes("--no-build")) await buildDesktop();
@@ -56,6 +66,7 @@ for (const name of ["size", "vault", "dpr", "timeout", "settle", "device", "mode
   if (v !== undefined) args.push(`--${name}=${v}`);
 }
 if (steps) args.push(`--steps=${path.resolve(steps)}`);
+if (agentsStatus) args.push(`--agents-status=${path.resolve(agentsStatus)}`);
 
 const env = { ...process.env };
 delete env.ELECTRON_RUN_AS_NODE; // would start Electron as plain Node
