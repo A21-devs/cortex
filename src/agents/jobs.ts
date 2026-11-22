@@ -805,7 +805,8 @@ async function wikiNotesAll(ctx: JobContext): Promise<WikiNoteLite[]> {
           continue;
         }
         const layer = Number(fm.layer);
-        const n: WikiNoteLite = { id: wikiNoteId(f.path), path: f.path, mtimeMs: f.mtimeMs, title: fm.title || path.posix.basename(f.path, ".md"), space: spaceOfWikiPath(f.path.slice("wiki/".length)) };
+        // The same area the figure shows: your wiki folders (this request's settings) first, then the default table.
+        const n: WikiNoteLite = { id: wikiNoteId(f.path), path: f.path, mtimeMs: f.mtimeMs, title: fm.title || path.posix.basename(f.path, ".md"), space: spaceOfWikiPath(f.path.slice("wiki/".length), ctx.settings.wikiAreas) };
         if (fm.status) n.status = fm.status.toLowerCase();
         if (fm.type) n.type = fm.type.toLowerCase();
         if (Number.isInteger(layer)) n.layer = layer;

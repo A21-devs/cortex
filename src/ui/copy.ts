@@ -3720,6 +3720,23 @@ export const SETTINGS_COPY = {
     projectPlaceholder: "Project folder name",
     area: "Area",
   },
+  /** Settings › Sources › This vault's notes: your wiki folders and the area each belongs to (plugin/settingsSections/wikiAreasSection.ts). */
+  wikiAreas: {
+    heading: "Wiki folders and their areas",
+    headingDesc: "Notes in a folder inside wiki/, and in every folder inside it, join the area you choose here. These come before the areas Cortex finds on its own, and when a note sits in two of your folders, the one deeper down wins.",
+    empty: "No folders yet: each note takes the area Cortex finds from its folders.",
+    rowLabel: "Folder {n} of {total}",
+    folder: "Folder inside wiki/",
+    folderPlaceholder: "notes/recipes",
+    area: "Area",
+    remove: "Remove",
+    add: "Add a folder",
+    addDesc: "Type a path inside wiki/, choose its area, then Add.",
+    addButton: "Add",
+    missing: "Type a folder inside wiki/ first.",
+    taken: "{folder} already has an area. Change it in its row.",
+    limit: "Up to {n} folders.",
+  },
   agents: {
     organise: "Organise automatically",
     organiseDesc: "Agents label and summarise new material in the background, stopping at your plan caps, and suggest where things belong.",

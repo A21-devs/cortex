@@ -26,6 +26,7 @@ import { obsidianHttp } from "./localHttp";
 import { COPY, SETTINGS_COPY } from "../ui/copy";
 import { renderExtraRows } from "./settingsSections";
 import { whoRender } from "./settingsSections/privacySection";
+import { renderWikiAreas } from "./settingsSections/wikiAreasSection";
 import { sourceLabel } from "../ui/valueLabels";
 import { isDesktopHost } from "../ui/host";
 import type { CortexServices, SettingsHandle } from "./services";
@@ -656,6 +657,7 @@ export class CortexSettingTab extends PluginSettingTab {
     this.toggle(c.enabled, undefined, src.vault.enabled, (x, v) => void (x.sources.vault.enabled = v));
     this.toggle(c.includeReference, c.includeReferenceDesc, s.general.showReference, (x, v) => void (x.general.showReference = v));
     this.list(c.skipFolders, c.skipFoldersDesc, src.vault.excludeFolders, c.folderPlaceholder, (x, v) => void x.sources.vault.excludeFolders.push(v), (x, i) => void x.sources.vault.excludeFolders.splice(i, 1));
+    renderWikiAreas(this, s);
 
     this.heading(c.raw, c.rawDesc);
     this.toggle(c.enabled, undefined, src.raw.enabled, (x, v) => void (x.sources.raw.enabled = v));

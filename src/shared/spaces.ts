@@ -1,11 +1,14 @@
 /**
  * Areas (code identifier: spaces): the ten top-level areas in their fixed order, plus the "No area" bucket.
- * The wiki folder → space mapping is a default area table for kb/-style vaults (longest prefix wins, prefix + "/");
- * Cortex never runs the vault's generator scripts.
+ * A wiki note's area comes from `spaceOfWikiPath` alone: first your own wiki folders (Settings › Sources, stored as
+ * `wikiAreas` and validated by `sanitiseWikiAreas`), then the default area table for kb/-style vaults (in both the
+ * longest matching folder wins, folder + "/"), then the area words of the note's folder names. Cortex never runs the
+ * vault's generator scripts.
  * The sample record (M13) reuses six of the area ids under six invented names; `spaceName(id, { sample })`
  * gives the name to show while the sample is open.
  * Owner: E7 (index & state).
  */
+import type { SettingsIssue } from "./settings";
 import type { SpaceId } from "./types";
 
 export interface SpaceDef {
@@ -53,6 +56,16 @@ export const SPACES: readonly SpaceDef[] = [
 /** The bucket for items without an area; shown as "No area" (never "Unsorted"). */
 export const NO_AREA: SpaceDef = { id: "none", name: "No area", area: "No area", wikiPrefixes: [] };
 
+/** One of the ten fixed areas (never the "No area" bucket). */
+export type AreaId = Exclude<SpaceId, "none">;
+
+/** The ten fixed area ids in their fixed order. */
+export const AREA_IDS: readonly AreaId[] = SPACES.map((s) => s.id).filter((id): id is AreaId => id !== "none");
+
+export function isAreaId(v: unknown): v is AreaId {
+  return typeof v === "string" && (AREA_IDS as readonly string[]).includes(v);
+}
+
 /**
  * Words in a folder's name that name an area, for folders the area table does not list: a vault grows new folders
  * (kb/library/ai, kb/code-library/python…) and their notes belong in the area their name says, not in Vault. Only whole
@@ -86,26 +99,96 @@ export function spaceOfFolderNames(folders: readonly string[]): SpaceId | null {
   return null;
 }
 
-/** Bump when the folder → area rules change, so a cached vault part built under the old rules is rebuilt. */
+/**
+ * Bump when the built-in folder → area rules change, so a cached vault part built under the old rules is rebuilt (your
+ * own wiki folders are part of that cache's key themselves).
+ */
 export const AREA_RULES_VERSION = 2;
 
+// ───────────────────────────── your wiki folders' areas ─────────────────────────────
+
 /**
- * Space of a wiki note from its path relative to `wiki/` (e.g. "kb/deep/roblox/x.md"): the area table first (longest
- * prefix wins), else the area its folders' names say, else Vault.
+ * One of your rows (Settings › Sources › Wiki folders and their areas): a folder inside wiki/ and the area its notes,
+ * and the notes of every folder inside it, belong to.
  */
-export function spaceOfWikiPath(relToWiki: string): SpaceId {
+export interface WikiAreaRow {
+  /** Path relative to `wiki/` ("notes/recipes"): forward slashes, no leading or trailing slash, matched as written. */
+  folder: string;
+  area: AreaId;
+}
+
+export const WIKI_AREA_LIMITS = { rows: 100, folder: 200 } as const;
+
+/** " \\notes\\ recipes/ " -> "notes/recipes": forward slashes, parts trimmed, no empty, "." or ".." parts. "" when nothing is left. */
+export function normaliseWikiFolder(raw: string): string {
+  return raw
+    .replace(/\\/g, "/")
+    .split("/")
+    .map((p) => p.trim())
+    .filter((p) => p !== "" && p !== "." && p !== "..")
+    .join("/");
+}
+
+/**
+ * The stored rows, validated on every load (like the other typed settings blocks): absent = none; a wrong-typed value =
+ * none (reported); folders are normalised without a report; a row without a folder, with a folder longer than the limit
+ * or with an area that is not one of the ten is dropped, a folder already listed keeps its first row, and rows past the
+ * limit are dropped. Any drop is reported once.
+ */
+export function sanitiseWikiAreas(raw: unknown, issues: SettingsIssue[]): WikiAreaRow[] {
+  if (raw === undefined) return [];
+  if (!Array.isArray(raw)) {
+    issues.push({ path: "wikiAreas", problem: "wrong-type", action: "used-default" });
+    return [];
+  }
+  const out: WikiAreaRow[] = [];
+  const seen = new Set<string>();
+  let dropped = false;
+  for (const item of raw) {
+    const o = typeof item === "object" && item !== null && !Array.isArray(item) ? (item as Record<string, unknown>) : {};
+    const folder = typeof o.folder === "string" ? normaliseWikiFolder(o.folder) : "";
+    const area = o.area;
+    if (folder === "" || folder.length > WIKI_AREA_LIMITS.folder || !isAreaId(area) || seen.has(folder) || out.length >= WIKI_AREA_LIMITS.rows) {
+      dropped = true;
+      continue;
+    }
+    seen.add(folder);
+    out.push({ folder, area });
+  }
+  if (dropped) issues.push({ path: "wikiAreas", problem: "malformed-list", action: "used-default" });
+  return out;
+}
+
+// ───────────────────────────── a wiki note's area ─────────────────────────────
+
+interface FolderArea {
+  folder: string;
+  area: SpaceId;
+}
+
+/** The default area table for kb/-style vaults, as rows. */
+const DEFAULT_WIKI_TABLE: readonly FolderArea[] = SPACES.flatMap((s) => s.wikiPrefixes.map((folder) => ({ folder, area: s.id })));
+
+/** The area of the longest folder of `rows` that the path sits inside (folder + "/"), or null when none does. */
+function longestFolder(relToWiki: string, rows: readonly FolderArea[]): SpaceId | null {
   let best = -1;
   let id: SpaceId | null = null;
-  for (const s of SPACES) {
-    for (const pre of s.wikiPrefixes) {
-      if (pre.length > best && relToWiki.startsWith(pre + "/")) {
-        best = pre.length;
-        id = s.id;
-      }
+  for (const r of rows) {
+    if (r.folder.length > best && relToWiki.startsWith(`${r.folder}/`)) {
+      best = r.folder.length;
+      id = r.area;
     }
   }
-  if (id !== null) return id;
-  return spaceOfFolderNames(relToWiki.split("/").slice(0, -1)) ?? "vault";
+  return id;
+}
+
+/**
+ * Space of a wiki note from its path relative to `wiki/` (e.g. "kb/deep/roblox/x.md"). The one place that decides it:
+ * your own wiki folders first (`wikiAreas` from settings; the longest matching folder wins), then the default area
+ * table for kb/ vaults (longest prefix wins), then the area its folders' names say, else Vault.
+ */
+export function spaceOfWikiPath(relToWiki: string, yours: readonly WikiAreaRow[]): SpaceId {
+  return longestFolder(relToWiki, yours) ?? longestFolder(relToWiki, DEFAULT_WIKI_TABLE) ?? spaceOfFolderNames(relToWiki.split("/").slice(0, -1)) ?? "vault";
 }
 
 /**

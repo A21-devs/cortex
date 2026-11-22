@@ -94,7 +94,11 @@ export interface IndexIo {
   /** A freshly built vault part (and cached) to diff against what is loaded; null when vault notes are off. */
   rebuildVault(): Promise<ArrayBuffer | null>;
   watchCache(onSignal: (sig: SignalLite, changed: readonly string[]) => void, onError: (e: unknown) => void): () => void;
-  /** Vault edits, batched; the callback may run often. */
+  /**
+   * Vault edits, and changes of your wiki folders' areas (the settings the vault part's areas come from), batched; the
+   * callback may run often. Each call rebuilds the vault part and applies the difference (a note that changed area
+   * reloads the index).
+   */
   watchVault(onChange: () => void): () => void;
 }
 

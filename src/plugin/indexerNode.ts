@@ -5,6 +5,7 @@
  */
 import fsp from "node:fs/promises";
 import path from "node:path";
+import type { ReadonlySignal } from "@preact/signals-core";
 import type { CortexSettings } from "../shared/settings";
 import { readIndexHeader } from "../shared/indexCodec";
 import { readCacheBuffer } from "../store/indexBuilder";
@@ -12,7 +13,7 @@ import { cacheLayout } from "../store/layout";
 import { readLedgerSeq } from "../store/ledger";
 import { readSignal, watchSignal } from "../store/signal";
 import { createIndexService, type IndexDeps, type IndexIo, type IndexServiceExt } from "./indexer";
-import { buildVaultIndex, readVaultCache, vaultCacheKey, watchVault, writeVaultCache, type VaultApp } from "./vaultSource";
+import { buildVaultIndex, readVaultCache, vaultCacheKey, watchVault, watchWikiAreas, writeVaultCache, type VaultApp } from "./vaultSource";
 
 /** Changes after the last build that make the record index out of date. */
 const STALE_KINDS = ["entries", "staged", "labels", "notes", "corrections"] as const;
@@ -23,7 +24,10 @@ export interface NodeIndexIoDeps {
   cacheDir: string;
   owner: string;
   lockStaleMs?: number;
-  settings: { readonly value: CortexSettings };
+  /** The settings handle: `value` is read at every build; `signal` (when there is one) rebuilds when your wiki folders' areas change. */
+  settings: { readonly value: CortexSettings; readonly signal?: ReadonlySignal<CortexSettings> };
+  /** How long vault edits and settings changes settle before the vault part is rebuilt (default 2 s; tests shorten it). */
+  watchDebounceMs?: number;
 }
 
 export function createNodeIndexIo(nd: NodeIndexIoDeps): IndexIo {
@@ -83,13 +87,21 @@ export function createNodeIndexIo(nd: NodeIndexIoDeps): IndexIo {
       const w = watchSignal(nd.cacheDir, (sig, changed) => onSignal(sig, changed), { onError });
       return () => w.close();
     },
-    watchVault: (onChange) => watchVault(nd.app, () => onChange()),
+    // Vault edits, and a change of your wiki folders' areas: both mean the vault part must be built again.
+    watchVault: (onChange) => {
+      const stopFiles = watchVault(nd.app, () => onChange(), nd.watchDebounceMs);
+      const stopAreas = watchWikiAreas(nd.settings, onChange, nd.watchDebounceMs);
+      return () => {
+        stopFiles();
+        stopAreas();
+      };
+    },
   };
 }
 
 export interface NodeIndexDeps extends Omit<IndexDeps, "io">, NodeIndexIoDeps {}
 
 export function createNodeIndexService(nd: NodeIndexDeps): IndexServiceExt {
-  const { app, vaultRoot, cacheDir, owner, lockStaleMs, settings, ...rest } = nd;
-  return createIndexService({ ...rest, io: createNodeIndexIo({ app, vaultRoot, cacheDir, owner, settings, ...(lockStaleMs !== undefined ? { lockStaleMs } : {}) }) });
+  const { app, vaultRoot, cacheDir, owner, lockStaleMs, settings, watchDebounceMs, ...rest } = nd;
+  return createIndexService({ ...rest, io: createNodeIndexIo({ app, vaultRoot, cacheDir, owner, settings, ...(lockStaleMs !== undefined ? { lockStaleMs } : {}), ...(watchDebounceMs !== undefined ? { watchDebounceMs } : {}) }) });
 }

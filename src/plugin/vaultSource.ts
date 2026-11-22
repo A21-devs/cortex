@@ -13,11 +13,13 @@
  *  - `status: reference` → ItemFlag.Reference (hidden unless Layers › Reference); `layer` → the layer column (the
  *    depth key for vault notes); created/updated/date → the note's date (medium evidence, day level); `related`
  *    and resolvedLinks → noteLinks (undirected, each pair stored in both directions, deduplicated);
- *  - space = spaceOfWikiPath (longest-prefix area table); words are estimated from the file size (the text is not
- *    read here);
+ *  - space = spaceOfWikiPath (your wiki folders from settings first, then the longest-prefix area table, then folder
+ *    names); words are estimated from the file size (the text is not read here);
  *  - built in time slices (≤ 8 ms, then yield to the host) and cached to <cache>/vault.cxi keyed by (file count,
- *    newest mtime, settings); refreshed on metadataCache "changed"/"resolved" and vault "create"/"rename"/"delete".
+ *    newest mtime, settings, area rules); refreshed on metadataCache "changed"/"resolved", vault
+ *    "create"/"rename"/"delete" and a change of your wiki folders' areas (watchWikiAreas).
  */
+import type { ReadonlySignal } from "@preact/signals-core";
 import type { App, EventRef, TAbstractFile, TFile } from "obsidian";
 import { ItemFlag, ItemKind, Population, type ConversationRow } from "../shared/index-format";
 import { encodeIndex, type IndexItemInput } from "../shared/indexCodec";
@@ -128,13 +130,14 @@ function ignoreFiltersOf(app: VaultApp): string[] {
   return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 }
 
-/** What a rebuild of vault.cxi depends on: the file set and its newest change, plus the settings that filter it. */
-export function vaultCacheKey(app: VaultApp, settings: Pick<CortexSettings, "sources">): string {
+/** What a rebuild of vault.cxi depends on: the file set and its newest change, plus the settings that filter and place it. */
+export function vaultCacheKey(app: VaultApp, settings: Pick<CortexSettings, "sources" | "wikiAreas">): string {
   const files = listVaultNotes(app, settings);
   let newest = 0;
   for (const f of files) newest = Math.max(newest, f.stat.mtime);
-  // The area rules' version too: a part built when a folder fell into Vault is rebuilt once its folder has an area.
-  return JSON.stringify([files.length, newest, settings.sources.vault.enabled, settings.sources.vault.excludeFolders, ignoreFiltersOf(app), AREA_RULES_VERSION]);
+  // The area rules too (their version and your wiki folders' areas): a part built when a folder fell into Vault, or
+  // into another area, is rebuilt once its folder has an area of its own.
+  return JSON.stringify([files.length, newest, settings.sources.vault.enabled, settings.sources.vault.excludeFolders, ignoreFiltersOf(app), AREA_RULES_VERSION, settings.wikiAreas]);
 }
 
 export interface VaultBuildOptions {
@@ -194,7 +197,7 @@ export async function buildVaultIndex(app: VaultApp, settings: CortexSettings, o
     const kind: NoteKind = vaultNoteKind(fm.type, fm.status);
     const t = dayTime(fm.created) ?? dayTime(fm.date) ?? dayTime(fm.updated);
     const slash = rel.lastIndexOf("/");
-    const space = spaceOfWikiPath(rel);
+    const space = spaceOfWikiPath(rel, settings.wikiAreas);
     let flags = 0;
     if (t === undefined) flags |= ItemFlag.Undated;
     if (kind === "reference" || asString(fm.status)?.toLowerCase() === "reference") flags |= ItemFlag.Reference;
@@ -351,5 +354,37 @@ export function watchVault(app: VaultApp, onChange: (files: TFile[]) => void, de
     timer = null;
     touched.clear();
     for (const r of refs.splice(0)) r.off();
+  };
+}
+
+/**
+ * Your wiki folders' areas (settings `wikiAreas`) changed: the vault part must be built again, as after a vault edit,
+ * because the notes' areas come from them. Calls `onChange` once the rows have stopped changing for `debounceMs` (typing a
+ * folder saves on every key); any other settings change, and the value the part was built with, call nothing. Settings
+ * without a signal (a plain object in tests) are not watched. Returns an unsubscribe function.
+ */
+export function watchWikiAreas(settings: { readonly signal?: ReadonlySignal<Pick<CortexSettings, "wikiAreas">> }, onChange: () => void, debounceMs = WATCH_DEBOUNCE_MS): () => void {
+  const sig = settings.signal;
+  if (!sig) return () => undefined;
+  let last = JSON.stringify(sig.peek().wikiAreas);
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const stop = sig.subscribe((s) => {
+    const next = JSON.stringify(s.wikiAreas);
+    if (next === last) return;
+    last = next;
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      try {
+        onChange();
+      } catch {
+        // a throwing listener never stops the watch
+      }
+    }, debounceMs);
+  });
+  return () => {
+    if (timer !== null) clearTimeout(timer);
+    timer = null;
+    stop();
   };
 }
