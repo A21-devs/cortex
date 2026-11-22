@@ -735,6 +735,53 @@ describe("vault source", () => {
     expect(listVaultNotes(fake.app, settings)).toEqual([]);
   });
 
+  it("places wiki notes by your own wiki folders first, and a change of them makes a new cache key", async () => {
+    const w = await world();
+    const settings = migrateSettingsChecked(undefined).settings;
+    const fake = fakeVaultApp([{ path: "wiki/notes/recipes/Bread.md" }, { path: "wiki/notes/Plain.md" }, { path: "wiki/kb/deep/roblox/Parts.md" }, { path: "wiki/kb/library/ai/Agents.md" }]);
+    const store = { cacheDir: w.cache, owner: "test", lockStaleMs: 60_000 };
+    const areas = async (s: typeof settings): Promise<Record<string, string | undefined>> => {
+      const idx = decodeIndex(await buildVaultIndex(fake.app, s, { store, yieldNow: async () => undefined }));
+      return Object.fromEntries(fake.files.map((f) => [f.path, SPACE_ORDER[idx.cols.space[idx.ordinalOf(wikiNoteId(f.path))]!]]));
+    };
+    expect(await areas(settings)).toEqual({ "wiki/notes/recipes/Bread.md": "vault", "wiki/notes/Plain.md": "vault", "wiki/kb/deep/roblox/Parts.md": "roblox", "wiki/kb/library/ai/Agents.md": "ai" });
+    const mine = { ...settings, wikiAreas: [{ folder: "notes", area: "life" as const }, { folder: "kb/deep", area: "code" as const }] };
+    // Your rows first (even over the default table's longer kb/deep/roblox), the default table and folder names after.
+    expect(await areas(mine)).toEqual({ "wiki/notes/recipes/Bread.md": "life", "wiki/notes/Plain.md": "life", "wiki/kb/deep/roblox/Parts.md": "code", "wiki/kb/library/ai/Agents.md": "ai" });
+    expect(vaultCacheKey(fake.app, mine)).not.toBe(vaultCacheKey(fake.app, settings));
+  });
+
+  it("asks for a vault rebuild when your wiki folders' areas change, once they settle, and for nothing else", () => {
+    vi.useFakeTimers();
+    try {
+      const sig = signal(migrateSettingsChecked(undefined).settings);
+      const io = createNodeIndexIo({ app: fakeVaultApp([]).app, vaultRoot: tmpdir(), cacheDir: tmpdir(), owner: "test", settings: { get value() { return sig.value; }, signal: sig } });
+      let n = 0;
+      const stop = io.watchVault(() => void n++);
+      sig.value = { ...sig.value, general: { ...sig.value.general, openOnStartup: true } };
+      vi.advanceTimersByTime(10_000);
+      expect(n).toBe(0);
+      // Typing a folder saves on every key: one rebuild once the rows stop changing.
+      sig.value = { ...sig.value, wikiAreas: [{ folder: "n", area: "life" }] };
+      vi.advanceTimersByTime(500);
+      sig.value = { ...sig.value, wikiAreas: [{ folder: "notes", area: "life" }] };
+      vi.advanceTimersByTime(1999);
+      expect(n).toBe(0);
+      vi.advanceTimersByTime(1);
+      expect(n).toBe(1);
+      // The same rows again (a settings object rebuilt around them) are no change.
+      sig.value = JSON.parse(JSON.stringify(sig.value)) as typeof sig.value;
+      vi.advanceTimersByTime(10_000);
+      expect(n).toBe(1);
+      stop();
+      sig.value = { ...sig.value, wikiAreas: [] };
+      vi.advanceTimersByTime(10_000);
+      expect(n).toBe(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("batches vault changes for the watcher and stops cleanly", () => {
     vi.useFakeTimers();
     try {
@@ -1023,6 +1070,51 @@ describe("index service", () => {
     // the main-thread copy is not the buffer the worker got
     expect((loadCall.params.record as ArrayBuffer).byteLength).toBeGreaterThan(0);
     svc.dispose();
+  });
+
+  it("takes a change of your wiki folders' areas into the loaded index without a restart", async () => {
+    const w = await world();
+    await w.ledger.append("entries", [entryRec(0, "alpha beta")]);
+    await w.ledger.append("conversations", [conversationRec()]);
+    await buildRecordIndex({ store: w.ctx, ledger: w.ledger, token: NEVER_CANCELLED, progress: () => undefined, yield: async () => undefined }, { full: false });
+    const sig = signal(migrateSettingsChecked(undefined).settings);
+    const methods: string[] = [];
+    const svc = createNodeIndexService({
+      app: fakeVaultApp([{ path: "wiki/notes/recipes/Bread.md" }, { path: "wiki/kb/deep/roblox/Parts.md" }]).app,
+      vaultRoot: w.vault,
+      cacheDir: w.cache,
+      owner: "test",
+      settings: {
+        get value() {
+          return sig.value;
+        },
+        signal: sig,
+      },
+      log: nullLogger,
+      bus: new EventBus(),
+      shared: fakeShared(),
+      runner: { request: vi.fn(async () => ({}) as never) },
+      worker: { call: (async (_v: string, method: string) => void methods.push(method)) as never },
+      watchDebounceMs: 10,
+    });
+    try {
+      await svc.load();
+      const areaOf = (p: string): string | undefined => svc.meta(svc.ordinalOf(wikiNoteId(p)))?.space;
+      const both = (): (string | undefined)[] => [areaOf("wiki/notes/recipes/Bread.md"), areaOf("wiki/kb/deep/roblox/Parts.md")];
+      expect(both()).toEqual(["vault", "roblox"]);
+      const loads = (): number => methods.filter((m) => m === "loadIndex").length;
+      const first = loads();
+      // Another setting changing rebuilds nothing.
+      sig.value = { ...sig.value, general: { ...sig.value.general, openOnStartup: true } };
+      await new Promise((r) => setTimeout(r, 80));
+      expect(loads()).toBe(first);
+      sig.value = { ...sig.value, wikiAreas: [{ folder: "notes", area: "life" }, { folder: "kb/deep", area: "code" }] };
+      await vi.waitFor(() => expect(both()).toEqual(["life", "code"]), { timeout: 5000, interval: 20 });
+      // The worker was given the index again, so the figure is placed with the new areas.
+      expect(loads()).toBeGreaterThan(first);
+    } finally {
+      svc.dispose();
+    }
   });
 
   it("rebuilds after imports: a committed batch is signalled, and commits the signal never heard of still count as stale", async () => {

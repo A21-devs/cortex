@@ -15,6 +15,7 @@
  */
 import type { SettingsIssue } from "./settings";
 import { sanitiseSchemas, type SchemaDraft } from "./schemas";
+import { sanitiseWikiAreas, type WikiAreaRow } from "./spaces";
 import { sanitiseUserSpaces, type UserSpace } from "./userSpaces";
 
 /** A person the user trusts with one share of the vault key. Names and contact lines are typed by the user. */
@@ -107,9 +108,14 @@ export interface SettingsExt {
   userSpaces: UserSpace[];
   /** Label schemas you built (shared/schemas.ts; Agents > Ledger > Your schemas). */
   schemas: SchemaDraft[];
+  /**
+   * Your wiki folders and the fixed area each belongs to (Settings › Sources; shared/spaces.ts). They come before the
+   * default kb/ table when a wiki note's area is decided. Empty by default.
+   */
+  wikiAreas: WikiAreaRow[];
 }
 
-export const EXT_KEYS = ["record", "consent", "launcher", "captureWeb", "userSpaces", "schemas"] as const;
+export const EXT_KEYS = ["record", "consent", "launcher", "captureWeb", "userSpaces", "schemas", "wikiAreas"] as const;
 
 /** The most the current consent text for the browser add-on is at; raise it when the text changes. */
 export const CAPTURE_CONSENT_VERSION = 1;
@@ -143,6 +149,7 @@ export function extDefaults(): SettingsExt {
     captureWeb: { enabled: false, consentVersion: 0, consentAt: "", sites: [...DEFAULT_CAPTURE_SITES], port: 0 },
     userSpaces: [],
     schemas: [],
+    wikiAreas: [],
   };
 }
 
@@ -419,5 +426,6 @@ export function mergeExt(source: Record<string, unknown>, issues: SettingsIssue[
     captureWeb: captureWebBlock(source.captureWeb, issues),
     userSpaces: sanitiseUserSpaces(source.userSpaces, issues),
     schemas: sanitiseSchemas(source.schemas, issues),
+    wikiAreas: sanitiseWikiAreas(source.wikiAreas, issues),
   };
 }
