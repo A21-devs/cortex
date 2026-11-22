@@ -1,7 +1,8 @@
 /**
  * Settings › Sources › This vault's notes › Wiki folders and their areas: your rows that put a folder inside wiki/ (and
  * every folder inside it) into one of the ten fixed areas (settings `wikiAreas`, read by shared/spaces.ts
- * `spaceOfWikiPath`). One row per folder (its path, its area, Remove), then a row to add one.
+ * `spaceOfWikiPath`). One row per folder (its path, its area, Remove), then a row to add one. A row's area is saved as
+ * soon as it is chosen, its folder when the field is left or Enter is pressed, with the same checks as Add.
  *
  * Drawn by the settings tab inside the vault's own rows, right after Folders to skip (CORTEX-UX §5.27 Sources), rather
  * than through the extra-rows hook, which draws after a whole tab. The rows only edit settings: the vault part is built
@@ -35,12 +36,20 @@ export function addWikiArea(s: CortexSettings, folder: string, area: AreaId): Ad
   return "added";
 }
 
-/** Change row `i`'s folder. An empty path is one being retyped, and a folder another row has would repeat it: both keep the row as it was. */
-export function setWikiAreaFolder(s: CortexSettings, i: number, folder: string): void {
+export type SetWikiAreaFolder = "set" | "missing" | "taken" | "gone";
+
+/**
+ * Change row `i`'s folder (any slashes, trimmed), with the checks Add makes. Nothing changes for an empty or overlong
+ * folder, a folder another row has, or a row that is no longer there.
+ */
+export function setWikiAreaFolder(s: CortexSettings, i: number, folder: string): SetWikiAreaFolder {
   const row = s.wikiAreas[i];
+  if (!row) return "gone";
   const f = normaliseWikiFolder(folder);
-  if (!row || f === "" || f.length > WIKI_AREA_LIMITS.folder || s.wikiAreas.some((r, j) => j !== i && r.folder === f)) return;
+  if (f === "" || f.length > WIKI_AREA_LIMITS.folder) return "missing";
+  if (s.wikiAreas.some((r, j) => j !== i && r.folder === f)) return "taken";
   row.folder = f;
+  return "set";
 }
 
 export function setWikiAreaArea(s: CortexSettings, i: number, area: string): void {
@@ -50,6 +59,21 @@ export function setWikiAreaArea(s: CortexSettings, i: number, area: string): voi
 
 export function removeWikiArea(s: CortexSettings, i: number): void {
   if (i >= 0 && i < s.wikiAreas.length) s.wikiAreas.splice(i, 1);
+}
+
+/**
+ * Save row `i`'s folder as typed. Checked against the saved rows, like Add: another row's folder may have been edited
+ * since these were drawn. A refused folder gets the reason, and the field then shows the folder as saved (tidied, or the
+ * row's own again when refused).
+ */
+function commitFolder(host: SectionHost, i: number, typed: string, show: (saved: string) => void): void {
+  host.set((x) => {
+    const done = setWikiAreaFolder(x, i, typed);
+    if (done === "missing") host.notify(c.missing);
+    else if (done === "taken") host.notify(fill(c.taken, { folder: normaliseWikiFolder(typed) }));
+    const saved = x.wikiAreas[i]?.folder;
+    if (saved !== undefined) show(saved);
+  });
 }
 
 /** The heading, one row per folder, then the row that adds one (or the limit once the list is full). */
@@ -63,9 +87,10 @@ export function renderWikiAreas(host: SectionHost, s: CortexSettings): void {
       .row(fill(c.rowLabel, { n: i + 1, total: rows.length }))
       .addText((tx) => {
         tx.inputEl?.setAttribute?.("aria-label", c.folder);
-        tx.setValue(r.folder)
-          .setPlaceholder(c.folderPlaceholder)
-          .onChange((v) => host.set((x) => setWikiAreaFolder(x, i, v)));
+        tx.setValue(r.folder).setPlaceholder(c.folderPlaceholder);
+        // Saved when the field is left or Enter is pressed (the input's change event), never key by key: a half-typed
+        // folder is neither saved nor placed in the figure.
+        tx.inputEl?.addEventListener?.("change", () => commitFolder(host, i, tx.getValue(), (saved) => tx.setValue(saved)));
       })
       .addDropdown((d) => {
         d.selectEl?.setAttribute?.("aria-label", c.area);

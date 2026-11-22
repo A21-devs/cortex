@@ -1,6 +1,7 @@
 /**
  * Settings › Sources › Wiki folders and their areas: the pure edits, the rows drawn from a fake settings host with the copy
- * from copy.ts, and where the settings tab draws them (inside This vault's notes, after Folders to skip).
+ * from copy.ts (a row's folder is saved only when its field is left, with Add's checks), and where the settings tab draws
+ * them (inside This vault's notes, after Folders to skip).
  */
 import { Setting } from "obsidian";
 import { describe, expect, it } from "vitest";
@@ -39,20 +40,25 @@ describe("the edits", () => {
     const s = draft();
     addWikiArea(s, "notes", "life");
     addWikiArea(s, "work", "money");
-    setWikiAreaFolder(s, 0, " notes/baking/ ");
+    expect(setWikiAreaFolder(s, 0, " notes/baking/ ")).toBe("set");
     setWikiAreaArea(s, 0, "games");
+    expect(s.wikiAreas[0]).toEqual({ folder: "notes/baking", area: "games" });
+    // The row's own folder, tidied differently, is no clash.
+    expect(setWikiAreaFolder(s, 0, "\\notes\\baking\\")).toBe("set");
     expect(s.wikiAreas[0]).toEqual({ folder: "notes/baking", area: "games" });
   });
 
-  it("keep a row as it was while its folder is retyped, would repeat another row's, or names no area", () => {
+  it("refuse a row's folder with Add's checks (empty, too long, another row's), an area that is not one of the ten, and a row that is gone", () => {
     const s = draft();
     addWikiArea(s, "notes", "life");
     addWikiArea(s, "work", "money");
-    setWikiAreaFolder(s, 0, "");
-    setWikiAreaFolder(s, 0, "/work/");
+    expect(setWikiAreaFolder(s, 0, "")).toBe("missing");
+    expect(setWikiAreaFolder(s, 0, " / ")).toBe("missing");
+    expect(setWikiAreaFolder(s, 0, "x".repeat(WIKI_AREA_LIMITS.folder + 1))).toBe("missing");
+    expect(setWikiAreaFolder(s, 0, "/work/")).toBe("taken");
     setWikiAreaArea(s, 0, "none");
     setWikiAreaArea(s, 0, "Money");
-    setWikiAreaFolder(s, 7, "x");
+    expect(setWikiAreaFolder(s, 7, "x")).toBe("gone");
     setWikiAreaArea(s, 7, "web");
     expect(s.wikiAreas).toEqual([
       { folder: "notes", area: "life" },
@@ -101,8 +107,24 @@ interface Ctl {
   placeholder?: string;
   options?: Record<string, string>;
   aria?: string;
+  /** The component's onChange: called on every key. */
   change: (v: string) => void;
+  /** The input element's own listeners by event ("change": the field was left, or Enter was pressed, after an edit). */
+  on: Record<string, (() => void)[]>;
 }
+
+/** Type into a field as a person does, key by key: each value in turn, each one reported to onChange. */
+const typeIn = (ctl: Ctl, ...values: string[]): void => {
+  for (const v of values) {
+    ctl.value = v;
+    ctl.change(v);
+  }
+};
+
+/** Leave the field (or press Enter): the input's change event. */
+const leave = (ctl: Ctl): void => {
+  for (const f of ctl.on.change ?? []) f();
+};
 interface Row {
   name: string;
   desc?: string;
@@ -131,10 +153,14 @@ function fakeHost() {
       rows.push(row);
       const chain: Record<string, unknown> = {};
       chain.addText = (cb: (t: unknown) => void) => {
-        const ctl: Ctl = { value: "", change: () => undefined };
+        const ctl: Ctl = { value: "", change: () => undefined, on: {} };
         row.texts.push(ctl);
         const t: Record<string, unknown> = {
-          inputEl: { setAttribute: (_k: string, v: string) => void (ctl.aria = v) },
+          inputEl: {
+            setAttribute: (_k: string, v: string) => void (ctl.aria = v),
+            addEventListener: (type: string, f: () => void) => void (ctl.on[type] = [...(ctl.on[type] ?? []), f]),
+          },
+          getValue: () => ctl.value,
           setValue: (v: string) => ((ctl.value = v), t),
           setPlaceholder: (p: string) => ((ctl.placeholder = p), t),
           onChange: (f: (v: string) => void) => ((ctl.change = f), t),
@@ -143,7 +169,7 @@ function fakeHost() {
         return chain;
       };
       chain.addDropdown = (cb: (d: unknown) => void) => {
-        const ctl: Ctl = { value: "", options: {}, change: () => undefined };
+        const ctl: Ctl = { value: "", options: {}, change: () => undefined, on: {} };
         row.dropdowns.push(ctl);
         const d: Record<string, unknown> = {
           selectEl: { setAttribute: (_k: string, v: string) => void (ctl.aria = v) },
@@ -224,17 +250,69 @@ describe("the rows", () => {
     expect(first!.texts[0]).toMatchObject({ value: "notes", placeholder: c.folderPlaceholder, aria: c.folder });
     expect(first!.dropdowns[0]).toMatchObject({ value: "life", options: areaOptions(), aria: c.area });
     expect(second!.removes.map((r) => r.tooltip)).toEqual([c.remove]);
-    second!.texts[0]!.change("work/clients/");
+    typeIn(second!.texts[0]!, "work/", "work/clients/");
+    leave(second!.texts[0]!);
     first!.dropdowns[0]!.change("design");
     expect(f.applied(base).wikiAreas).toEqual([
       { folder: "notes", area: "design" },
       { folder: "work/clients", area: "money" },
     ]);
-    // Typing and choosing save the change without redrawing (the field keeps its focus).
+    // The field shows the folder as saved, tidied.
+    expect(second!.texts[0]!.value).toBe("work/clients");
+    // Leaving the field and choosing save the change without redrawing.
     expect(f.refreshes()).toBe(0);
     first!.removes[0]!.click();
     expect(f.applied(base).wikiAreas).toEqual([{ folder: "work/clients", area: "money" }]);
     expect(f.refreshes()).toBe(1);
+  });
+
+  it("a row's folder is saved when its field is left, never key by key: retyping it as another row's folder saves nothing", () => {
+    const base = withRows(["notes", "life"], ["work", "money"]);
+    const f = fakeHost();
+    renderWikiAreas(f.host, base);
+    const field = f.rows[0]!.texts[0]!;
+    typeIn(field, "note", "not", "no", "n", "", "w", "wo", "wor", "work");
+    // Nothing half-typed is saved, so nothing half-typed reaches the figure either.
+    expect(f.patches).toEqual([]);
+    leave(field);
+    // The saved rows decide: "work" is the second row's, so the first keeps its folder, says why and shows it again.
+    expect(f.applied(base).wikiAreas).toEqual(base.wikiAreas);
+    expect(f.notices).toEqual([c.taken.replace("{folder}", "work")]);
+    expect(field.value).toBe("notes");
+    expect(f.refreshes()).toBe(0);
+  });
+
+  it("a row's folder emptied and left is refused the same way: the reason, and the saved folder again", () => {
+    const base = withRows(["notes", "life"], ["work", "money"]);
+    const f = fakeHost();
+    renderWikiAreas(f.host, base);
+    const field = f.rows[0]!.texts[0]!;
+    typeIn(field, "note", "not", "no", "n", "", " / ");
+    leave(field);
+    expect(f.applied(base).wikiAreas).toEqual(base.wikiAreas);
+    expect(f.notices).toEqual([c.missing]);
+    expect(field.value).toBe("notes");
+  });
+
+  it("a row's folder is checked against the saved rows, not the ones drawn", () => {
+    const base = withRows(["notes", "life"], ["work", "money"]);
+    const f = fakeHost();
+    renderWikiAreas(f.host, base);
+    const first = f.rows[0]!.texts[0]!;
+    const second = f.rows[1]!.texts[0]!;
+    // The second row moves to garden/: the first may then take work/, but not garden/.
+    typeIn(second, "garden");
+    leave(second);
+    typeIn(first, "garden");
+    leave(first);
+    typeIn(first, "work");
+    leave(first);
+    expect(f.applied(base).wikiAreas).toEqual([
+      { folder: "work", area: "life" },
+      { folder: "garden", area: "money" },
+    ]);
+    expect(f.notices).toEqual([c.taken.replace("{folder}", "garden")]);
+    expect([first.value, second.value]).toEqual(["work", "garden"]);
   });
 
   it("Add takes the typed folder and the chosen area", () => {
@@ -272,7 +350,8 @@ describe("the rows", () => {
     const base = withRows(["notes", "life"]);
     const f = fakeHost();
     renderWikiAreas(f.host, base);
-    f.rows[0]!.texts[0]!.change("work");
+    typeIn(f.rows[0]!.texts[0]!, "work");
+    leave(f.rows[0]!.texts[0]!);
     const add = f.rows.find((r) => r.name === c.add)!;
     add.texts[0]!.change("notes");
     add.dropdowns[0]!.change("code");
