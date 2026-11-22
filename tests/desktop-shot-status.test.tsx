@@ -12,6 +12,7 @@ import { loadStatusFiles, parseAgentsStatusText, parseStepsText } from "../src/d
 import { applyStatus } from "../src/plugin/container";
 import { createSharedStore } from "../src/state/store";
 import { LeafContext, ServicesContext } from "../src/ui/context";
+import { t } from "../src/ui/copy";
 import { SHEET_PAGES } from "../src/ui/pages";
 import { fakeServices, type FakeHarness } from "./helpers/fakeServices";
 
@@ -69,9 +70,13 @@ describe("applying a stand-in status", () => {
     expect(html).toContain("The other 55: 38 notes in docs and Vault, 9 chats, 6 chat summaries and 2 area maps.");
   });
 
-  it("keeps the lines off while agents are switched off, as for a real status", () => {
+  it("keeps the count and the lines off while agents are switched off, as for a real status", () => {
+    // The sample vault has agents off: a stand-in status alone shows this, so agents-waiting.json turns them on.
     const h = fakeServices((s) => void (s.agents.enabled = false));
     applyStatus(h.services.shared, sample);
-    expect(agentsPage(h)).not.toContain('aria-label="What is waiting"');
+    const html = agentsPage(h);
+    expect(html).toContain(t("agents.off"));
+    expect(html).not.toContain(t("agents.waitingSoon", { n: "420" }));
+    expect(html).not.toContain('aria-label="What is waiting"');
   });
 });

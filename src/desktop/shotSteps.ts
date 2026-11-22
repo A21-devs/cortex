@@ -10,8 +10,11 @@
  *   { "agentsStatus": "agents-status.json" }  /  { "agentsStatus": { …an agents.status result… } }
  *                                                      a stand-in agents status: an AgentsStatusResult
  *                                                      (src/shared/protocol/runner.ts), checked here and applied to
- *                                                      the shared store as the runner's own status is, so the Agents
- *                                                      page shows its counts and what is waiting. A file name is
+ *                                                      the shared store as the runner's own status is, so while
+ *                                                      agents are on the Agents page shows its counts and what is
+ *                                                      waiting (the sample vault has them off; the steps in
+ *                                                      scripts/shots/agents-waiting.json turn them on for the run
+ *                                                      with settings.preview, never saved). A file name is
  *                                                      read relative to the steps file, before the app is waited
  *                                                      for. Only the page's in-memory store changes: the runner
  *                                                      is not asked, no agent runs, nothing is saved.

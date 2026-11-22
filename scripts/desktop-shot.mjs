@@ -11,10 +11,12 @@
 //               { "agentsStatus": "status.json" }, { "capture": "a.png" }]
 //              Without steps (or without a capture step) one picture is saved as cortex.png.
 //   --agents-status  a stand-in agents status (an AgentsStatusResult as JSON, src/shared/protocol/runner.ts),
-//              applied once the app is ready, as the runner's own status is, so the Agents page shows its counts and
-//              what is waiting; an agentsStatus step does the same at its place in the steps (a file name there is
-//              relative to the steps file). Checked first: a malformed status stops the run with the reason.
-//              Example: --steps=scripts/shots/agents-waiting.json (the Agents page with scripts/shots/agents-status.json)
+//              applied once the app is ready, as the runner's own status is, so while agents are on the Agents page
+//              shows its counts and what is waiting; an agentsStatus step does the same at its place in the steps (a
+//              file name there is relative to the steps file). Checked first: a malformed status stops the run with
+//              the reason. The sample vault has agents off, so the flag alone shows none of the waiting work there;
+//              --steps=scripts/shots/agents-waiting.json applies scripts/shots/agents-status.json, turns agents on
+//              for the run with settings.preview (never saved) and captures the Agents page.
 //   --size     the window's content size in CSS pixels (default 1512x982, the reference recordings' screen)
 //   --dpr      device pixel ratio of the captures (default 1; 2 for a Retina-like picture)
 //   --settle   ms to wait after the figure has points, so the growth animation finishes (default 4500)

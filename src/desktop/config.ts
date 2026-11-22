@@ -11,9 +11,11 @@
  *   [--timeout=120000] [--settle=4500] [--device=returning|fresh] [--mode=offscreen|hidden] [--profile=<dir>]
  *   --steps          the steps to run (shotSteps.ts: wait, click, eval, size, agentsStatus, capture)
  *   --agents-status  a stand-in agents status (an AgentsStatusResult as JSON), checked before the run and applied
- *                    once the app is ready, as the runner's own status is: the Agents page shows its counts and
- *                    what is waiting. Screenshot runs only; it changes what the page shows and nothing else (the
- *                    runner is not asked, no agent runs, nothing is saved).
+ *                    once the app is ready, as the runner's own status is: while agents are on, the Agents page
+ *                    shows its counts and what is waiting. The sample vault has them off, so this flag alone shows
+ *                    none of it; the steps in scripts/shots/agents-waiting.json turn them on for the run with
+ *                    settings.preview, which is never saved. Screenshot runs only; it changes what the page shows
+ *                    and nothing else (the runner is not asked, no agent runs, nothing is saved).
  */
 import { parseSize, statusFilePath, StepError } from "./shotSteps";
 

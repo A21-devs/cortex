@@ -119,9 +119,12 @@ only, a throw-away profile), waits until the index is loaded and the figure has 
 A screenshot run starts no agents, so the Agents page has no status of its own. `--agents-status=<file.json>`
 (applied once the app is ready) or an `agentsStatus` step (applied at its place in the steps) gives it a stand-in: an
 `agents.status` result as JSON (`AgentsStatusResult` in `src/shared/protocol/runner.ts`). It is checked before the run
-starts (a malformed one stops the run with the reason) and applied as the runner's own status is, so the status card
-shows the count and what is waiting; it changes nothing else. To capture the Agents page with the synthetic status in
-`scripts/shots/agents-status.json`:
+starts (a malformed one stops the run with the reason) and applied as the runner's own status is; it changes nothing
+else. The status card shows the count and what is waiting only while agents are on in the opened vault (while they are
+off it says so and shows neither). The sample vault has them off, so a stand-in status alone captures none of the
+waiting work there: `scripts/shots/agents-waiting.json` applies the synthetic status in
+`scripts/shots/agents-status.json`, turns agents on for the run with `settings.preview` (never saved) and captures the
+Agents page:
 
 ```bash
 npm run sample                            # prints the sample vault's folder
