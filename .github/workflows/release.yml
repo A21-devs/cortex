@@ -1,6 +1,6 @@
 # Publishes a GitHub release when a version tag is pushed (for example 0.1.0, the same as manifest.json's version).
 # Builds on Windows from the tagged code after npm run check passes, then attaches the Obsidian plugin (zipped, and as
-# loose files for tools that install plugins from releases) and Cortex Desktop for Windows (zipped).
+# loose files for tools that install plugins from releases) and Cortex Desktop for Windows (installer and zipped).
 name: Release
 
 on:
@@ -32,6 +32,8 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: npm run desktop:package
+      - name: Build the Windows installer from the packaged app
+        run: npx electron-builder --win nsis --prepackaged release/Cortex-win32-x64 --publish never
       - name: Zip the plugin and the app
         shell: pwsh
         run: |
@@ -51,7 +53,8 @@ jobs:
 
           ### Downloads
           - **cortex-VERSION.zip**: the Obsidian plugin. Unzip it into your vault's `.obsidian/plugins/` folder (it makes `.obsidian/plugins/cortex/`), reload Obsidian, then turn Cortex on under Settings › Community plugins.
-          - **Cortex-Desktop-VERSION-win-x64.zip**: Cortex Desktop for Windows. Unzip it anywhere and run `Cortex.exe`. It opens the "Obsidian Vault" folder in your Documents when that is a vault, and otherwise asks you to choose your vault folder. The app is not code-signed yet, so Windows SmartScreen may warn the first time (More info › Run anyway).
+          - **Cortex-Setup-VERSION.exe**: Cortex Desktop for Windows, the easy way. Run it, pick where to install, and open Cortex from the Start menu or desktop.
+          - **Cortex-Desktop-VERSION-win-x64.zip**: the same app without installing. Unzip it anywhere and run `Cortex.exe` from the `Cortex-win32-x64` folder. It opens the "Obsidian Vault" folder in your Documents when that is a vault, and otherwise asks you to choose your vault folder. The app is not code-signed yet, so Windows SmartScreen may warn the first time (More info › Run anyway).
           - **main.js**, **manifest.json**, **styles.css**: the plugin files on their own, for tools that install Obsidian plugins from GitHub releases. The background agents also need `cortex-runner.js`, which is in the zip.
 
           Cortex never rewrites or deletes your notes; see the README's Privacy section for what it reads and when it goes online.
@@ -60,4 +63,4 @@ jobs:
           EOF
           sed -i "s/VERSION/$v/g" out/notes.md
           gh release create "$v" --verify-tag --title "Cortex $v" --notes-file out/notes.md \
-            "out/cortex-$v.zip" "out/Cortex-Desktop-$v-win-x64.zip" dist/main.js dist/manifest.json dist/styles.css
+            "out/cortex-$v.zip" "release/Cortex-Setup-$v.exe" "out/Cortex-Desktop-$v-win-x64.zip" dist/main.js dist/manifest.json dist/styles.css

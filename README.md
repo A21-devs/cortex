@@ -51,7 +51,11 @@ Cortex isn't in Obsidian's Community plugins browser yet, so updates are install
 
 **Cortex Desktop** (Windows 10 or 11, x64)
 
-A standalone window that runs the same code outside Obsidian. Download `Cortex-Desktop-<version>-win-x64.zip` (about 165 MB), unzip it anywhere and run `Cortex.exe` from the `Cortex-win32-x64` folder inside (Extract All puts that in one more folder named after the zip). It opens the `Obsidian Vault` folder in your Documents if that is a vault, and otherwise asks you to pick your vault folder.
+A standalone window that runs the same code outside Obsidian. Download `Cortex-Setup-<version>.exe` (about 120 MB) and run it. It installs for your Windows user only (no admin), lets you pick the folder, and adds Cortex to the Start menu and desktop. Uninstall it from Settings › Apps; your vault and settings are left alone.
+
+Rather not install anything? `Cortex-Desktop-<version>-win-x64.zip` (about 165 MB) is the same app: unzip it anywhere and run `Cortex.exe` from the `Cortex-win32-x64` folder inside (Extract All puts that in one more folder named after the zip).
+
+Either way, it opens the `Obsidian Vault` folder in your Documents if that is a vault, and otherwise asks you to pick your vault folder.
 
 The app isn't code-signed yet, so Windows SmartScreen may warn the first time. Click **More info › Run anyway**.
 
