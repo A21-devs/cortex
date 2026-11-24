@@ -58,7 +58,7 @@ The app isn't code-signed yet, so Windows SmartScreen may warn the first time. C
 - A model server on your own computer, such as Ollama or LM Studio (Settings › Agents).
 - The Codex CLI, signed in with your own OpenAI account.
 
-Without any of them, Cortex still imports and draws everything. It just doesn't label or summarise.
+Or choose **No model (plain rules)**: Cortex still imports and draws everything, and files your record with simple rules on your computer (project from the folder, topic words, a list of titles per project). No summaries and no Ask, and nothing is sent anywhere.
 
 ## How it works
 
