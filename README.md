@@ -70,9 +70,9 @@ Without any of them, Cortex still imports and draws everything. It just doesn't 
 ## Privacy
 
 - **Your notes are never edited.** Cortex never rewrites or deletes existing notes, never runs git in your vault, and never touches other plugins' folders.
-- **No internet requests on its own.** Cortex only goes online when you press a button for it:
+- **No internet requests on its own.** Cortex only goes online when you press a button for it, or for the weekly timestamp if you turn that on:
   - **Check for updates** sends one request to this repository's GitHub releases API.
-  - **Public timestamp** of a date seal (optional, Settings › Advanced) sends a hash of a seal block to the OpenTimestamps calendar at alice.btc.calendar.opentimestamps.org. **Ask for the finished timestamps** asks that calendar again and sends only a Bitcoin block number to blockstream.info. No text or names are sent.
+  - **Timestamp publicly…** (optional, Settings › Advanced › Date seals) sends a hash of your newest seal block to the OpenTimestamps calendar at alice.btc.calendar.opentimestamps.org. **Check the timestamps** asks that calendar again and sends only a Bitcoin block number to blockstream.info. Weekly timestamps (off by default) send the same hash once a week. No text or names are sent.
 - **You can see what models read.** **Cortex: Show what is sent** lists the text that goes to a model. The Access log on the Agents page records every model call and what it read.
 - **Assistant replies from ChatGPT and Gemini are never sent to a model.** Only what you typed there is.
 - **Some files are never read:** browser profiles, mail and password stores, `.env`, key and certificate files, `.ssh`, `.git` and `node_modules`, plus any folder you add in Settings › Privacy.
