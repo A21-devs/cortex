@@ -56,7 +56,7 @@ The app isn't code-signed yet, so Windows SmartScreen may warn the first time. C
 
 - [Claude Code](https://claude.com/claude-code) installed and signed in (the default). Cortex runs it headless with no tools and stores no key.
 - A model server on your own computer, such as Ollama or LM Studio (Settings › Agents).
-- The Codex CLI, or an Anthropic API key.
+- The Codex CLI, signed in with your own OpenAI account.
 
 Without any of them, Cortex still imports and draws everything. It just doesn't label or summarise.
 
