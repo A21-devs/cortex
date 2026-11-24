@@ -22,6 +22,7 @@
     "desktop:build": "node scripts/build-desktop.mjs",
     "desktop:shot": "node scripts/desktop-shot.mjs",
     "desktop:package": "node scripts/package-desktop.mjs",
+    "desktop:installer": "node scripts/package-desktop.mjs && electron-builder --win nsis --prepackaged release/Cortex-win32-x64 --publish never",
     "check": "npm run typecheck && npm run test && npm run build"
   },
   "dependencies": {
@@ -35,6 +36,7 @@
     "@types/node": "22.20.5",
     "@types/three": "0.186.0",
     "electron": "44.9.3",
+    "electron-builder": "26.18.0",
     "esbuild": "0.28.2",
     "lucide-static": "1.61.0",
     "marked": "18.1.1",

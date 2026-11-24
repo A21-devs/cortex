@@ -1,0 +1,25 @@
+# Wraps the folder from `npm run desktop:package` (release/Cortex-win32-x64) in a Windows installer:
+# release/Cortex-Setup-<version>.exe. Used by `npm run desktop:installer`, which passes --prepackaged,
+# so electron-builder doesn't repackage the app itself. Not signed yet.
+appId: io.github.a21devs.cortex
+productName: Cortex
+directories:
+  output: release
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  icon: src/desktop/assets/cortex.ico
+  artifactName: Cortex-Setup-${version}.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Cortex
+  installerIcon: src/desktop/assets/cortex.ico
+  uninstallerIcon: src/desktop/assets/cortex.ico
+  # Cortex keeps its settings in %APPDATA%\Cortex and never writes into the vault; uninstalling leaves both alone.
+  deleteAppDataOnUninstall: false
+publish: null
