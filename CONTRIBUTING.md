@@ -26,9 +26,10 @@ npm run desktop   # build and open Cortex Desktop
 
 - Cortex's look, names and wording are its own: `tests/originality.test.ts` fails on borrowed phrasing.
 - Cortex never rewrites or deletes existing notes, never runs git in a vault and never touches other plugins' folders
-  (see the README's ground rules).
-- The only request Cortex makes by itself is **Check for updates**. Anything sent to a model is listed by
-  **Show what is sent**.
+  (see the ground rules in [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md#ground-rules)).
+- Cortex goes online only when the person asks: **Check for updates**, and the optional public timestamp of a date
+  seal (see the README's Privacy section). A new network request needs the same treatment. Anything sent to a model
+  is listed by **Show what is sent**.
 
 ## Keep personal data out
 

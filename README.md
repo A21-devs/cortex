@@ -1,24 +1,28 @@
 # Cortex
 
-An Obsidian desktop plugin that grows a living 3D particle nervous system — brain, brainstem, spinal cord
-and nerves — from the whole record: vault notes, `.raw/` source documents, Claude Code sessions, Claude.ai,
-ChatGPT and Gemini exports and chosen folders. Agents running through the Claude Code CLI label, sort and
-summarise; the user's own words are never edited and every machine interpretation is stored separately and
-marked as machine-written.
+See everything you've written as one living 3D brain: your Obsidian notes, source documents and AI chats, sorted and summarised in the background.
 
-Read **[docs/CORTEX-UX.md](docs/CORTEX-UX.md)** first: it is the binding product and interaction design (every
-surface, control, page, chart, Ask action and setting, with exact copy). Then
-**[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**: decisions, verified environment, the module map with owners
-and disjoint files, contracts, protocols, on-disk formats, budgets, security, testing, phasing and the review
-responses.
-
-## What it looks like
-
-Cortex Desktop on a real vault of about 27,000 notes.
+[![Check](https://img.shields.io/github/actions/workflow/status/A21-devs/cortex/check.yml?branch=main&label=check)](https://github.com/A21-devs/cortex/actions/workflows/check.yml)
+[![Latest release](https://img.shields.io/github/v/release/A21-devs/cortex?label=release)](https://github.com/A21-devs/cortex/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/A21-devs/cortex/total)](https://github.com/A21-devs/cortex/releases)
+[![Obsidian plugin](https://img.shields.io/badge/Obsidian-desktop%20plugin-7c3aed?logo=obsidian&logoColor=white)](https://obsidian.md)
+[![Platform](https://img.shields.io/badge/platform-Windows-0078d4)](#download-and-install)
+[![License: MIT](https://img.shields.io/github/license/A21-devs/cortex)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/A21-devs/cortex?style=flat)](https://github.com/A21-devs/cortex/stargazers)
 
 ![The whole Cortex figure: each speck in the brain is a note, coloured by its area, and the spine is coloured by age](docs/screenshots/cortex-figure.png)
 
-![Close-up of the brain, each speck a note coloured by its area](docs/screenshots/cortex-brain.png)
+Cortex Desktop on a real vault of about 27,000 notes. Every speck is one note or one message.
+
+## What it does
+
+- **Draws your whole record as a figure.** Notes sit in the brain, grouped by area. The spinal cord is time, oldest by the brain and newest at the bottom. Each conversation grows a nerve off the spine where it started.
+- **Reads more than your vault.** Obsidian notes, documents in `.raw/`, Claude Code sessions, Claude.ai, ChatGPT and Gemini exports, folders you choose, and exports from WhatsApp, Telegram, Discord, Slack, Notion, Google Docs, Google Keep, Evernote, Roam, Kindle and Zoom. Codex CLI, Gemini CLI and Cursor sessions are opt-in.
+- **Keeps your words as they are.** Cortex copies text into its own files and never rewrites or deletes your notes. Anything a model wrote is stored separately and always looks different (dotted rule, hollow marker), with a link back to the passage it came from.
+- **Organises in the background.** Agents label conversations, write summaries and build maps of projects and topics, within limits you set. By default they stop at 70% of your Claude plan's 5-hour and weekly windows. Every decision lands in **Checks** where you confirm, change or reject it, and your answer wins.
+- **Turns the same points into charts.** One slider moves every particle from the body into groups or into one of 20 charts: ranked bars, treemap, stream graph, calendar heatmap, radial clock, alluvial, chord and more.
+- **Finds and asks from one bar.** Press Ctrl K to find anything. Press Tab to ask a question about your record. Answers quote your own entries, and every quote is checked against the text before it's shown.
+- **Lets you undo everything.** Corrections, merges and exclusions are logged as changes with an Undo button. Nothing is ever deleted.
 
 | | |
 |---|---|
@@ -29,107 +33,76 @@ Cortex Desktop on a real vault of about 27,000 notes.
 | ![The Time page beside the figure](docs/screenshots/cortex-time-page.png) | ![The brain in a different colour theme](docs/screenshots/cortex-colour-theme.png) |
 | **Time page:** monthly activity by area, and decisions, open questions, plans and abandoned ideas over time. | **Colour themes** recolour only the figure; the key keeps the area colours. |
 
-## Quick start
+## Download and install
 
-```bash
-npm install            # inside this repo only (never inside the vault or a cloud-synced folder)
-npm run check          # typecheck + module boundaries, unit tests (incl. the originality and palette checks), build
-npm run dev            # rebuild dist/ on every change
-npm run sample         # write a synthetic sample vault + transcripts to %TEMP%
-npm run deploy:dry     # show what would be copied into the vault's plugin folder
-npm run deploy         # copy dist/* into <vault>/.obsidian/plugins/cortex/ (nothing else is touched)
-```
+Get both from the [latest release](https://github.com/A21-devs/cortex/releases/latest).
 
-Reload in the running Obsidian after a deploy:
+**Obsidian plugin** (Obsidian 1.12 or newer, desktop only)
 
-```bash
-"%LOCALAPPDATA%/Programs/Obsidian/Obsidian.com" plugin:reload id=cortex vault=<vault name>
-"%LOCALAPPDATA%/Programs/Obsidian/Obsidian.com" dev:errors vault=<vault name>
-```
+1. Download `cortex-<version>.zip`.
+2. Unzip it into your vault's `.obsidian/plugins/` folder. You should end up with `.obsidian/plugins/cortex/main.js`.
+3. Reload Obsidian and open **Settings › Community plugins**. If it asks, choose **Turn on community plugins** first, then switch Cortex on.
+4. Click the Cortex icon in the left ribbon (Open Cortex).
 
-The runner can also be used on its own (this is what the `/cortex-organise` skill does):
+Cortex isn't in Obsidian's Community plugins browser yet, so updates are installed the same way: download the new zip and unzip it over the old folder. **Cortex: Check for updates** tells you when there is one.
 
-```bash
-node dist/cortex-runner.js doctor --vault <vault> --json
-node dist/cortex-runner.js import --vault <vault> --max-seconds 90 --json
-node dist/cortex-runner.js agents run --dry-run --vault <vault> --json
-```
+**Cortex Desktop** (Windows 10 or 11, x64)
 
-## Layout
+A standalone window that runs the same code outside Obsidian. Download `Cortex-Desktop-<version>-win-x64.zip`, unzip it anywhere and run `Cortex.exe`. It opens the `Obsidian Vault` folder in your Documents if that is a vault, and otherwise asks you to pick your vault folder.
 
-| Path | What |
-|---|---|
-| `src/main.ts` | plugin entry (eager core; everything heavy is lazy) |
-| `src/shared/` | contracts and pure utilities (frozen contracts listed in ARCHITECTURE §3) |
-| `src/node/`, `src/store/` | safe file system, locks, spawn; ledgers, segments, cursors, notes writer |
-| `src/importers/` | Claude Code, `.raw/`, folders, written, Claude.ai, ChatGPT, Gemini |
-| `src/agents/`, `src/runner/` | Claude Code CLI engine, jobs, budget, privacy; the `cortex-runner.js` process |
-| `src/plugin/`, `src/state/` | Obsidian-side services; UI state and event bus |
-| `src/worker/` | layout worker: anatomy, placement, grouping, arrangements, charts, search, stats |
-| `src/render/` | three.js renderer, shaders, camera, picking |
-| `src/ui/`, `src/styles/`, `styles.css` | Preact UI: header, stage, sheet, command line, pages, readers, modals; tokens from CORTEX-UX §4 |
-| `src/desktop/` | Cortex Desktop: Electron main and renderer, the `obsidian` shim (`src/desktop/obsidian/`), screenshot steps |
-| `tests/` | vitest suites, fixtures, Obsidian stub, browser smoke page |
-| `skill/cortex-organise/` | Claude Code skill (installing it is the user's decision) |
+The app isn't code-signed yet, so Windows SmartScreen may warn the first time. Click **More info › Run anyway**.
 
-## Ground rules
+**For the agents and Ask** you need one of these:
 
-- Build outside any cloud-synced folder (OneDrive, Dropbox, iCloud); deploy copies only `main.js`,
-  `manifest.json`, `styles.css`, `cortex-runner.js` and `THIRD-PARTY-NOTICES.txt` into `.obsidian/plugins/cortex/`
-  (plus a create-only `.gitignore` with `*`). No font is bundled: Cortex uses Obsidian's interface and monospace
-  fonts.
-- Never rewrite or delete existing notes, never run git commands in the vault, never touch other plugins'
-  folders, `graph.json`, the vault's own scripts, Claude Code's settings or the vault's root `.gitignore`.
-- Cortex's look, names and copy are its own (CORTEX-UX §0.1; enforced by `tests/originality.test.ts`).
+- [Claude Code](https://claude.com/claude-code) installed and signed in (the default). Cortex runs it headless with no tools and stores no key.
+- A model server on your own computer, such as Ollama or LM Studio (Settings › Agents).
+- The Codex CLI, signed in with your own OpenAI account.
 
-## Network use
+Or choose **No model (plain rules)**: Cortex still imports and draws everything, and files your record with simple rules on your computer (project from the folder, topic words, a list of titles per project). No summaries and no Ask, and nothing is sent anywhere.
 
-Cortex makes no request of its own to the internet except one: **Cortex: Check for updates** (palette, header More
-menu or the command bar) sends a single request to the GitHub releases API of the plugin's repository, only when you
-run it, and compares the newest release tag with the installed version. Nothing is downloaded or installed by it;
-updates come from Obsidian's Community plugins. Text sent to a model is described by **Cortex: Show what is sent**.
+## How it works
 
-## Lock
+1. **First run.** Cortex shows what it would read, where the text goes and what models will see. Nothing is imported or sent until you press Start.
+2. **Import.** A background process (`cortex-runner.js`) copies text from each source into `.raw/` in your vault as plain files, screens out secrets, and keeps watching Claude Code for new sessions.
+3. **Organise.** Agents label, summarise and file conversations in the background, within your limits. Their output goes to `wiki/derived/`, marked as machine-written.
+4. **Draw.** A layout worker places every entry and note on the figure, and the renderer draws it with three.js. The tab opens to a silhouette straight away and fills in as indexing finishes.
 
-**Cortex: Lock** (default hotkey Ctrl+Shift+L) blanks every Cortex view and stops the 3D rendering. Set a passphrase in
-Settings > Cortex > Privacy > Lock (stored as a salted PBKDF2 hash, never as text); with none set, a click lifts the
-lock. The same section sets an idle auto-lock.
+## Privacy
 
-## Cortex Desktop
+- **Your notes are never edited.** Cortex never rewrites or deletes existing notes, never runs git in your vault, and never touches other plugins' folders.
+- **No internet requests on its own.** Cortex only goes online when you press a button for it, or for the weekly timestamp if you turn that on:
+  - **Check for updates** sends one request to this repository's GitHub releases API.
+  - **Timestamp publicly…** (optional, Settings › Advanced) sends a hash of your newest seal block to the OpenTimestamps calendar at alice.btc.calendar.opentimestamps.org. **Check the timestamps** asks that calendar again and sends only a Bitcoin block number to blockstream.info. Weekly timestamps (off by default) send the same hash once a week. No text or names are sent.
+- **You can see what models read.** **Cortex: Show what is sent** lists the text that goes to a model. The Access log on the Agents page records every model call and what it read.
+- **Assistant replies from ChatGPT and Gemini are never sent to a model.** Only what you typed there is.
+- **Some files are never read:** browser profiles, mail and password stores, `.env`, key and certificate files, `.ssh`, `.git` and `node_modules`, plus any folder you add in Settings › Privacy.
+- **Lock.** **Cortex: Lock** (Ctrl+Shift+L) blanks every Cortex view. You can set a passphrase (stored as a salted PBKDF2 hash) and an idle auto-lock in Settings › Cortex › Privacy.
 
-A standalone, full-window app (Electron) that runs the same plugin code outside Obsidian on a small `obsidian`
-shim (`src/desktop/obsidian/`: the vault and its metadata read straight from the folder, menus, notices, modals,
-settings, Lucide icons). Same cache folder, runner, ledgers and settings schema as the plugin, so the existing
-record shows up. It never writes into the vault except Cortex's own runtime files; its settings live in
-`%APPDATA%\Cortex\vaults\<vaultKey>\data.json`, first copied from the vault's plugin `data.json` (only read).
+## FAQ
 
-```bash
-npm run desktop                           # build dist-desktop/ and open the app (imports and agents run as in Obsidian)
-npm run desktop -- --no-background        # view only: no imports, no agents, settings changes are not saved
-npm run desktop -- --vault="D:/Other vault"   # or Settings > Cortex Desktop > Choose folder…
-npm run desktop:build                     # bundles only (dist-desktop/; dist/ is not touched)
-node scripts/desktop-shot.mjs --out=.tmp/shots [--steps=steps.json] [--agents-status=status.json] [--size=1512x982] [--dpr=2]
-```
+**Does it work on macOS or Linux?**
+The plugin is desktop-only and is built and tested on Windows. Cortex Desktop is Windows only for now.
 
-`desktop-shot.mjs` opens the app in a window that is never shown (offscreen rendering at 60 frames a second, view
-only, a throw-away profile), waits until the index is loaded and the figure has points, runs the steps (`wait`,
-`click`, `eval`, `size`, `agentsStatus`, `capture`; see `src/desktop/shotSteps.ts`) and writes PNGs plus
-`shot-report.json`.
+**Will it slow Obsidian down?**
+Loading the plugin only registers its view and commands. Indexing runs in idle time, and the 3D part loads when you first open the Cortex tab. Imports run in a separate Node process when Node 20 or newer is installed, and inside Obsidian (slower) when it isn't.
 
-A screenshot run starts no agents, so the Agents page has no status of its own. `--agents-status=<file.json>`
-(applied once the app is ready) or an `agentsStatus` step (applied at its place in the steps) gives it a stand-in: an
-`agents.status` result as JSON (`AgentsStatusResult` in `src/shared/protocol/runner.ts`). It is checked before the run
-starts (a malformed one stops the run with the reason) and applied as the runner's own status is; it changes nothing
-else. The status card shows the count and what is waiting only while agents are on in the opened vault (while they are
-off it says so and shows neither). The sample vault has them off, so a stand-in status alone captures none of the
-waiting work there: `scripts/shots/agents-waiting.json` applies the synthetic status in
-`scripts/shots/agents-status.json`, turns agents on for the run with `settings.preview` (never saved) and captures the
-Agents page:
+**How much does organising cost?**
+With Claude Code it runs on your existing Claude plan, nothing extra. By default the agents stop at 70% of the plan's 5-hour and weekly windows so you keep room for your own work, and the Agents page shows what was used and how much is waiting. A local model costs nothing.
 
-```bash
-npm run sample                            # prints the sample vault's folder
-npm run desktop:shot -- --vault="<sample vault>" --steps=scripts/shots/agents-waiting.json --out=.tmp/shots
-```
+**Can I try it without my own notes?**
+Yes. Choose **Explore the sample record** on the empty Cortex tab, or **Sample record** in the More menu. Both use a made-up record and change nothing.
 
-Licences of bundled third-party code: three.js (MIT), Preact and @preact/signals (MIT); see
-`dist/THIRD-PARTY-NOTICES.txt` and the legal comments at the end of each bundle.
+**Can I undo something an agent did?**
+Yes. Every label, summary and filing is a check you can reject, and every change has Undo in Change history.
+
+## Contributing
+
+Bug reports and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), then [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for building from source, the project layout and the ground rules the checks enforce. Issues marked [good first issue](https://github.com/A21-devs/cortex/labels/good%20first%20issue) are small and self-contained.
+
+## Credits
+
+Built by me, with help from [Claude](https://claude.ai) (Anthropic) as a coding assistant. Bundles three.js and Preact (both MIT).
+
+## License
+
+[MIT](LICENSE)
