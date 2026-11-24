@@ -1,1 +1,8 @@
 blank_issues_enabled: true
+contact_links:
+  - name: User guide
+    url: https://github.com/A21-devs/cortex/wiki
+    about: Installing, using Cortex, sources, agents and privacy. Many questions are answered here.
+  - name: Download the latest release
+    url: https://github.com/A21-devs/cortex/releases/latest
+    about: The Obsidian plugin zip and Cortex Desktop for Windows.
