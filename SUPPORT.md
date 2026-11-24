@@ -14,10 +14,10 @@ See what's planned on the [roadmap](https://github.com/A21-devs/cortex/wiki/Road
 
 ## What to include
 
-- Cortex version (Settings › Community plugins, or `manifest.json`) and whether it's the plugin or Cortex Desktop
+- Cortex version (**About Cortex** in the header's More menu shows it) and whether it's the plugin or Cortex Desktop
 - Windows version and Obsidian version
 - What you did, what you expected, and what happened instead
-- Console lines if there are any (Ctrl+Shift+I in Obsidian)
+- Console lines if there are any: Ctrl+Shift+I opens the developer tools in both Obsidian and Cortex Desktop, then copy from the Console tab
 
 Leave out note titles, file paths, chat text and anything else personal. If a screenshot would show your notes, try to reproduce it with the sample record instead (More menu › Sample record).
 
