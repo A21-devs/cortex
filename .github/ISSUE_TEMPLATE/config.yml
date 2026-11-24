@@ -1,8 +1,17 @@
 blank_issues_enabled: true
 contact_links:
+  - name: Ask a question
+    url: https://github.com/A21-devs/cortex/discussions/categories/q-a
+    about: Questions and help when something is confusing go to Discussions, not issues. See SUPPORT.md for where else to look.
+  - name: Suggest an idea
+    url: https://github.com/A21-devs/cortex/discussions/categories/ideas
+    about: Ideas that aren't on the roadmap yet. Others can vote on them there.
   - name: User guide
     url: https://github.com/A21-devs/cortex/wiki
     about: How to install, add sources, set up the agents, and what Cortex reads and sends. Check here before asking a how-to question.
+  - name: Report a security problem
+    url: https://github.com/A21-devs/cortex/security/advisories/new
+    about: Privately, so it isn't public before it's fixed. Please don't open an issue for it.
   - name: Download the latest release
     url: https://github.com/A21-devs/cortex/releases/latest
     about: The Obsidian plugin zip and Cortex Desktop for Windows.
