@@ -2,6 +2,9 @@
 
 Cortex is an Obsidian plugin, plus Cortex Desktop: an Electron app around the same code.
 
+Everyone taking part agrees to the [code of conduct](CODE_OF_CONDUCT.md). Questions go to
+[Discussions](https://github.com/A21-devs/cortex/discussions), see [SUPPORT.md](SUPPORT.md).
+
 ## Set up
 
 Use Node 20.11 or newer (the GitHub check uses Node 24). Clone outside any cloud-synced folder (OneDrive, Dropbox,
