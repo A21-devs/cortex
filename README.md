@@ -41,7 +41,7 @@ Get both from the [latest release](https://github.com/A21-devs/cortex/releases/l
 
 1. Download `cortex-<version>.zip`.
 2. Unzip it into your vault's `.obsidian/plugins/` folder. You should end up with `.obsidian/plugins/cortex/main.js`.
-3. Reload Obsidian, then turn Cortex on under **Settings › Community plugins**.
+3. Reload Obsidian and open **Settings › Community plugins**. If it asks, choose **Turn on community plugins** first, then switch Cortex on.
 4. Click the Cortex icon in the left ribbon (Open Cortex).
 
 Cortex isn't in Obsidian's Community plugins browser yet, so updates are installed the same way: download the new zip and unzip it over the old folder. **Cortex: Check for updates** tells you when there is one.
@@ -72,7 +72,7 @@ Without any of them, Cortex still imports and draws everything. It just doesn't 
 - **Your notes are never edited.** Cortex never rewrites or deletes existing notes, never runs git in your vault, and never touches other plugins' folders.
 - **No internet requests on its own.** Cortex only goes online when you press a button for it:
   - **Check for updates** sends one request to this repository's GitHub releases API.
-  - **Public timestamp** of a date seal (optional, Settings › Advanced) sends a hash of a seal block to an OpenTimestamps calendar, never any text.
+  - **Public timestamp** of a date seal (optional, Settings › Advanced) sends a hash of a seal block to the OpenTimestamps calendar at alice.btc.calendar.opentimestamps.org. **Ask for the finished timestamps** asks that calendar again and sends only a Bitcoin block number to blockstream.info. No text or names are sent.
 - **You can see what models read.** **Cortex: Show what is sent** lists the text that goes to a model. The Access log on the Agents page records every model call and what it read.
 - **Assistant replies from ChatGPT and Gemini are never sent to a model.** Only what you typed there is.
 - **Some files are never read:** browser profiles, mail and password stores, `.env`, key and certificate files, `.ssh`, `.git` and `node_modules`, plus any folder you add in Settings › Privacy.
