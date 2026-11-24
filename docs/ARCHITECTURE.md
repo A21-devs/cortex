@@ -149,7 +149,7 @@ Runtime import rules (`scripts/check-boundaries.mjs`; type-only imports are exem
 | `plugin` | `shared`, `node`, `store`, `state`, `plugin`, `ui`, `render`, `obsidian`, `node:*`, `@preact/signals-core` |
 | `ui` | `shared`, `state`, `ui`, `render`, `plugin`, `preact`, `@preact/signals`, `obsidian` |
 | root (`main.ts`) | `shared`, `state`, `plugin`, `ui`, `node`, `obsidian`, `node:*` |
-| `desktop` (Cortex Desktop: Electron app + `obsidian` shim, README › Cortex Desktop) | `desktop`, root, `shared`, `state`, `plugin`, `ui`, `node`, `node:*`, `electron`, `marked`, `yaml`, `lucide-static`; nothing imports `desktop`, and `electron` is banned in browser layers |
+| `desktop` (Cortex Desktop: Electron app + `obsidian` shim, DEVELOPMENT.md › Cortex Desktop) | `desktop`, root, `shared`, `state`, `plugin`, `ui`, `node`, `node:*`, `electron`, `marked`, `yaml`, `lucide-static`; nothing imports `desktop`, and `electron` is banned in browser layers |
 
 Extra bans: runner-side layers may not `fork` `process.execPath`; browser layers (`shared`, `worker`, `state`,
 `render`, `ui`) may not touch `process.*` or `require("node:…")`. `tsconfig.browser.json` (LAYER-TYPES)
