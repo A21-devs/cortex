@@ -1,1 +1,8 @@
 blank_issues_enabled: true
+contact_links:
+  - name: User guide
+    url: https://github.com/A21-devs/cortex/wiki
+    about: How to install, add sources, set up the agents, and what Cortex reads and sends. Check here before asking a how-to question.
+  - name: Download the latest release
+    url: https://github.com/A21-devs/cortex/releases/latest
+    about: The Obsidian plugin zip and Cortex Desktop for Windows.
