@@ -43,7 +43,7 @@ Get both from the [latest release](https://github.com/A21-devs/cortex/releases/l
 **Obsidian plugin** (Obsidian 1.12 or newer, desktop only)
 
 1. Download `cortex-<version>.zip` (about 1 MB).
-2. Unzip it into your vault's `.obsidian/plugins/` folder. The zip already has a `cortex` folder inside, so you should end up with `.obsidian/plugins/cortex/main.js`. Windows' **Extract All** suggests an extra `cortex-<version>` folder; remove that part of the path, or Obsidian won't find the plugin.
+2. Unzip it into your vault's `.obsidian/plugins/` folder. The zip already has a `cortex` folder inside, so you should end up with `.obsidian/plugins/cortex/main.js`. If you use Windows' **Extract All**, change the destination box so it ends in `.obsidian\plugins`; by default it adds a `cortex-<version>` folder and Obsidian won't find the plugin. Check that `.obsidian/plugins/cortex/manifest.json` exists.
 3. Reload Obsidian and open **Settings › Community plugins**. If it asks, choose **Turn on community plugins** first, then switch Cortex on.
 4. Click the Cortex icon in the left ribbon (Open Cortex).
 
@@ -51,7 +51,7 @@ Cortex isn't in Obsidian's Community plugins browser yet, so updates are install
 
 **Cortex Desktop** (Windows 10 or 11, x64)
 
-A standalone window that runs the same code outside Obsidian. Download `Cortex-Desktop-<version>-win-x64.zip` (about 165 MB), unzip it anywhere and run `Cortex.exe` from the `Cortex-win32-x64` folder inside. It opens the `Obsidian Vault` folder in your Documents if that is a vault, and otherwise asks you to pick your vault folder.
+A standalone window that runs the same code outside Obsidian. Download `Cortex-Desktop-<version>-win-x64.zip` (about 165 MB), unzip it anywhere and run `Cortex.exe` from the `Cortex-win32-x64` folder inside (Extract All puts that in one more folder named after the zip). It opens the `Obsidian Vault` folder in your Documents if that is a vault, and otherwise asks you to pick your vault folder.
 
 The app isn't code-signed yet, so Windows SmartScreen may warn the first time. Click **More info › Run anyway**.
 
