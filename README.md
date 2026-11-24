@@ -1,6 +1,7 @@
 # Cortex
 
-See everything you've written as one living 3D brain: your Obsidian notes, source documents and AI chats, sorted and summarised in the background.
+An Obsidian plugin and Windows app that draws everything you've written (notes, documents and AI chats) as one living 3D brain.
+Use it to see what you've been working on and find what you decided months ago, while agents sort and summarise it without ever editing your notes.
 
 [![Check](https://img.shields.io/github/actions/workflow/status/A21-devs/cortex/check.yml?branch=main&label=check)](https://github.com/A21-devs/cortex/actions/workflows/check.yml)
 [![Latest release](https://img.shields.io/github/v/release/A21-devs/cortex?label=release)](https://github.com/A21-devs/cortex/releases/latest)
@@ -9,6 +10,8 @@ See everything you've written as one living 3D brain: your Obsidian notes, sourc
 [![Platform](https://img.shields.io/badge/platform-Windows-0078d4)](#download-and-install)
 [![License: MIT](https://img.shields.io/github/license/A21-devs/cortex)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/A21-devs/cortex?style=flat)](https://github.com/A21-devs/cortex/stargazers)
+
+**[Download](https://github.com/A21-devs/cortex/releases/latest)** · [User guide](https://github.com/A21-devs/cortex/wiki) · [Roadmap](https://github.com/A21-devs/cortex/wiki/Roadmap) · [Ask a question](https://github.com/A21-devs/cortex/discussions/categories/q-a) · [Report a bug](https://github.com/A21-devs/cortex/issues/new/choose)
 
 ![The whole Cortex figure: each speck in the brain is a note, coloured by its area, and the spine is coloured by age](docs/screenshots/cortex-figure.png)
 
@@ -39,8 +42,8 @@ Get both from the [latest release](https://github.com/A21-devs/cortex/releases/l
 
 **Obsidian plugin** (Obsidian 1.12 or newer, desktop only)
 
-1. Download `cortex-<version>.zip`.
-2. Unzip it into your vault's `.obsidian/plugins/` folder. You should end up with `.obsidian/plugins/cortex/main.js`.
+1. Download `cortex-<version>.zip` (about 1 MB).
+2. Unzip it into your vault's `.obsidian/plugins/` folder. The zip already has a `cortex` folder inside, so you should end up with `.obsidian/plugins/cortex/main.js`. If you use Windows' **Extract All**, change the destination box so it ends in `.obsidian\plugins`; by default it adds a `cortex-<version>` folder and Obsidian won't find the plugin. Check that `.obsidian/plugins/cortex/manifest.json` exists.
 3. Reload Obsidian and open **Settings › Community plugins**. If it asks, choose **Turn on community plugins** first, then switch Cortex on.
 4. Click the Cortex icon in the left ribbon (Open Cortex).
 
@@ -48,7 +51,7 @@ Cortex isn't in Obsidian's Community plugins browser yet, so updates are install
 
 **Cortex Desktop** (Windows 10 or 11, x64)
 
-A standalone window that runs the same code outside Obsidian. Download `Cortex-Desktop-<version>-win-x64.zip`, unzip it anywhere and run `Cortex.exe`. It opens the `Obsidian Vault` folder in your Documents if that is a vault, and otherwise asks you to pick your vault folder.
+A standalone window that runs the same code outside Obsidian. Download `Cortex-Desktop-<version>-win-x64.zip` (about 165 MB), unzip it anywhere and run `Cortex.exe` from the `Cortex-win32-x64` folder inside (Extract All puts that in one more folder named after the zip). It opens the `Obsidian Vault` folder in your Documents if that is a vault, and otherwise asks you to pick your vault folder.
 
 The app isn't code-signed yet, so Windows SmartScreen may warn the first time. Click **More info › Run anyway**.
 
@@ -96,6 +99,8 @@ Yes. Choose **Explore the sample record** on the empty Cortex tab, or **Sample r
 Yes. Every label, summary and filing is a check you can reject, and every change has Undo in Change history.
 
 ## Contributing
+
+Questions go to [Discussions](https://github.com/A21-devs/cortex/discussions), and [SUPPORT.md](SUPPORT.md) says where everything else goes. Security problems are reported privately, see [SECURITY.md](SECURITY.md). What's planned is on the [roadmap](https://github.com/A21-devs/cortex/wiki/Roadmap).
 
 Bug reports and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), then [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for building from source, the project layout and the ground rules the checks enforce. Issues marked [good first issue](https://github.com/A21-devs/cortex/labels/good%20first%20issue) are small and self-contained.
 
