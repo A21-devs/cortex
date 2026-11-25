@@ -43,7 +43,7 @@ export type MotionPref = "system" | "reduced" | "full";
 export type AgeColours = "hue" | "lightness";
 export type ModelRole = "labels" | "summaries" | "maps" | "ask";
 /** Only the Claude Code CLI is built; the other two are listed as "later" and disabled (§5.27). */
-export type AgentEngineSetting = "claude-cli" | "anthropic-api" | "local" | "codex-cli" | "none";
+export type AgentEngineSetting = "claude-cli" | "local" | "codex-cli" | "none";
 
 /** The Codex CLI engine (agents/codexCli.ts): the person's own OpenAI sign-in, run headless in a read-only sandbox. */
 export interface CodexEngineSettings {
@@ -513,6 +513,10 @@ function listIsWellFormed(path: string, raw: readonly unknown[]): boolean {
 
 function mergeAt(def: unknown, raw: unknown, path: string, issues: SettingsIssue[]): unknown {
   if (raw === undefined) return structuredCloneSafe(def);
+  if (path === "agents.engine" && raw === "anthropic-api") {
+    issues.push({ path, problem: "unknown-value", action: "used-default" });
+    return "claude-cli";
+  }
   if (isPlainObject(def)) {
     if (!isPlainObject(raw)) return fallback(def, path, issues);
     const out: Record<string, unknown> = {};

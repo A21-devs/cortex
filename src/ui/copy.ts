@@ -3742,7 +3742,7 @@ export const SETTINGS_COPY = {
     organiseDesc: "Agents label and summarise new material in the background, stopping at your plan caps, and suggest where things belong.",
     engine: "Engine",
     engineCli: "Claude Code CLI",
-    engineApi: "Anthropic API (later)",
+    engineApiMigrated: "Your earlier Anthropic API setting was loaded as Claude Code.",
     engineLocal: "A model on this computer",
     engineCodex: "Codex CLI (your OpenAI sign-in)",
     engineNone: "No model (plain rules)",
