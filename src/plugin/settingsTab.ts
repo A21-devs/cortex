@@ -747,7 +747,10 @@ export class CortexSettingTab extends PluginSettingTab {
     const c = SETTINGS_COPY.agents;
     const a = s.agents;
     this.toggle(c.organise, c.organiseDesc, a.enabled, (x, v) => void (x.agents.enabled = v));
-    this.dropdown(c.engine, a.engine === "none" ? c.engineNoneDesc : undefined, { "claude-cli": c.engineCli, "codex-cli": c.engineCodex, "anthropic-api": c.engineApi, local: c.engineLocal, none: c.engineNone }, a.engine, (x, v) => void (x.agents.engine = v), true);
+    this.dropdown(c.engine, a.engine === "none" ? c.engineNoneDesc : undefined, { "claude-cli": c.engineCli, "codex-cli": c.engineCodex, local: c.engineLocal, none: c.engineNone }, a.engine, (x, v) => void (x.agents.engine = v), true);
+    if (a.engine === "claude-cli" && this.host.settings().issues.some((issue) => issue.path === "agents.engine" && issue.problem === "unknown-value")) {
+      this.mount.createEl("p", { cls: "cx-note", text: c.engineApiMigrated });
+    }
     if (a.engine === "local") this.localRows(a.local);
     else if (a.engine === "codex-cli") this.codexRows(a);
     else if (a.engine !== "none") this.claudeRows(a);

@@ -283,6 +283,13 @@ describe("plugin/notices + statusBar (§5.11)", () => {
 });
 
 describe("shared/settings fail-safe migration (SAFE-08, §12.10)", () => {
+  it("loads the retired Anthropic API engine as Claude Code and reports the migration", () => {
+    const migrated = migrateSettingsChecked({ agents: { engine: "anthropic-api" } });
+    expect(migrated.settings.agents.engine).toBe("claude-cli");
+    expect(migrated.issues).toContainEqual({ path: "agents.engine", problem: "unknown-value", action: "used-default" });
+    expect(migrated.corrupt).toBe(false);
+    expect(migrateSettingsChecked(migrated.settings).issues).toEqual([]);
+  });
   it("defaults follow CORTEX-UX §5.27", () => {
     const s = DEFAULT_SETTINGS;
     expect(s.agents.planCaps).toEqual({ fiveHour: { on: true, pct: 70 }, weekly: { on: true, pct: 70 } });
