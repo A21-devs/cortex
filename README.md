@@ -106,7 +106,7 @@ Yes. Every label, summary and filing is a check you can reject, and every change
 
 Questions go to [Discussions](https://github.com/A21-devs/cortex/discussions), and [SUPPORT.md](SUPPORT.md) says where everything else goes. Security problems are reported privately, see [SECURITY.md](SECURITY.md). What's planned is on the [roadmap](https://github.com/A21-devs/cortex/wiki/Roadmap).
 
-Bug reports and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), then [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for building from source, the project layout and the ground rules the checks enforce. Issues marked [good first issue](https://github.com/A21-devs/cortex/labels/good%20first%20issue) are small and self-contained.
+Bug reports and pull requests are welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), then [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for building from source, the project layout and the ground rules the checks enforce. Issues marked [first issue](https://github.com/A21-devs/cortex/labels/first%20issue) are small and self-contained.
 
 ## Credits
 
