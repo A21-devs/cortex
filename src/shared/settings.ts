@@ -42,7 +42,7 @@ export type LinesMode = "off" | "selection" | "all";
 export type MotionPref = "system" | "reduced" | "full";
 export type AgeColours = "hue" | "lightness";
 export type ModelRole = "labels" | "summaries" | "maps" | "ask";
-/** Only the Claude Code CLI is built; the other two are listed as "later" and disabled (§5.27). */
+/** The agent engines Settings › Agents offers (§5.27). A stored `anthropic-api` from older builds loads as `claude-cli`. */
 export type AgentEngineSetting = "claude-cli" | "local" | "codex-cli" | "none";
 
 /** The Codex CLI engine (agents/codexCli.ts): the person's own OpenAI sign-in, run headless in a read-only sandbox. */
